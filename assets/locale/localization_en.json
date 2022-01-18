@@ -1,0 +1,17 @@
+{
+  "passwordLabel": "Password",
+  "errorMsgPwd": "Please enter password",
+  "errorMsgCommon": "Field invalid",
+  "errorMsgEmail": "Please enter Email",
+  "emailLabel": "Email",
+  "forgotPassword": "Forgot password?",
+  "registerTitle": "Create new account",
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "username": "Username",
+  "dob": "Date of birth",
+  "dummyShipping1": "Lor is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown.",
+  "loginTitle": "Login",
+  "facebook": "Facebook",
+  "google": "Google"
+}
