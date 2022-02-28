@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lcp_mobile/feature/auth/model/user_app.dart';
 import 'package:lcp_mobile/feature/profile/repository/profile_repository.dart';
 
 class FirebaseProfileRepository extends ProfileRepository {
   FirebaseAuth _auth;
+  GoogleSignIn _googleSignIn = GoogleSignIn();
   final CollectionReference userCollection =
       FirebaseFirestore.instance.collection("user");
 
@@ -13,14 +15,21 @@ class FirebaseProfileRepository extends ProfileRepository {
   }
 
   @override
-  Future<void> logout() {
-    return _auth.signOut();
+  Future<void> logout() async {
+    if (_auth.currentUser != null) {
+      return await _auth.signOut();
+    } else {
+      return await _googleSignIn.signOut();
+    }
   }
 
   @override
   Future<UserData> getUserInfo() async {
     if (_auth.currentUser == null) return null;
+    print(_auth.currentUser.toString());
+
     var userFirebase = await userCollection.doc(_auth.currentUser.uid).get();
+
     return _mapDocumentToUserData(userFirebase);
   }
 
@@ -28,8 +37,7 @@ class FirebaseProfileRepository extends ProfileRepository {
     return UserData(
       uid: data.data()['uid'],
       email: data.data()['email'],
-      firstname: data.data()['firstname'],
-      lastname: data.data()['lastname'],
+      fullName: data.data()['fullname'],
       username: data.data()['username'],
       dob: data.data()['dob'],
     );

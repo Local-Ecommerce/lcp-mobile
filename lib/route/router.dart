@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lcp_mobile/feature/auth/login/login_screen.dart';
 import 'package:lcp_mobile/feature/auth/register/regis_screen.dart';
+import 'package:lcp_mobile/feature/auth/register/update_info_screen.dart';
 import 'package:lcp_mobile/feature/cart/ui/cart_screen.dart';
 import 'package:lcp_mobile/feature/checkout/checkout_screen.dart';
 import 'package:lcp_mobile/feature/credit_card_details/card_details_screen.dart';
@@ -29,6 +30,8 @@ class AppRouter {
         return SlideRouteBuilder(page: LoginScreen());
       case RouteConstant.registerRoute:
         return SlideRouteBuilder(page: RegisterScreen());
+      case RouteConstant.updateProfileRoute:
+        return SlideRouteBuilder(page: UpdateProfileScreen());
       case RouteConstant.cart:
         return SlideRouteBuilder(page: CartScreen());
       case RouteConstant.shippingMethod:

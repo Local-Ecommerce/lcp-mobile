@@ -33,6 +33,10 @@ class Submitted extends LoginEvent {
   Submitted();
 }
 
+class GoogleLogin extends LoginEvent {
+  GoogleLogin();
+}
+
 // class SignInCheck extends LoginEvent {
 //   SignInCheck();
 // }

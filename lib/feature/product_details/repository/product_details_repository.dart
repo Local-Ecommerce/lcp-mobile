@@ -55,15 +55,13 @@ class ProductDetailsRepository {
         id: doc.id,
         images: List<String>.from(doc.data()['images']),
         colors: doc.data()['colors'],
-        title: doc.data()['title'],
-        price: doc.data()['price'],
+        productName: doc.data()['title'],
+        defaultPrice: doc.data()['price'],
         isFavourite: doc.data()['isFavourite'],
-        category: doc.data()['category'],
         description: doc.data()['description'],
         briefDescription: doc.data()['briefDescription'],
-        remainingSizeUK: List<double>.from(doc.data()['remainingSizeUK']),
-        remainingSizeUS: List<double>.from(doc.data()['remainingSizeUS']),
-        productType: doc.data()['productType']);
+        remainingSize: doc.data()['remainingSize'],
+        weight: doc.data()['remainingSize']);
   }
 
 /*  Future<void> query() async{

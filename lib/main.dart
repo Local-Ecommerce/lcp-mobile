@@ -26,7 +26,7 @@ void main() async {
       : RouteConstant.loginRoute;
 
   runApp(MyApp(
-    // initialRoute: RouteConstant.homeRoute,
-    initialRoute: _initialRoute,
+    initialRoute: RouteConstant.updateProfileRoute,
+    // initialRoute: _initialRoute,
   ));
 }

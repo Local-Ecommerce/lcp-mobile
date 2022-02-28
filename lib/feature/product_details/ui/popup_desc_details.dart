@@ -30,7 +30,7 @@ class DescriptionDetailsDialog extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: Text(
-                      product.title,
+                      product.productName,
                       style: TextStyle(fontSize: 20.0),
                     ),
                   ),
