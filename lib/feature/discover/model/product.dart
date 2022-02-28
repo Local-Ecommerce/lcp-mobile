@@ -12,14 +12,13 @@ class ProductType {
 
 class Product {
   final String id;
-  String title, briefDescription, description;
+  String productCode, productName, briefDescription, description;
   List<String> images;
   int colors;
-  double price;
+  double defaultPrice;
   String category;
   bool isFavourite;
-  List<double> remainingSizeUK;
-  List<double> remainingSizeUS;
+  double remainingSize, weight;
   String productType;
 
   Product(
@@ -27,28 +26,24 @@ class Product {
       this.images,
       this.colors,
       this.isFavourite = false,
-      this.title,
-      this.price,
-      this.category,
+      this.productName,
+      this.defaultPrice,
       this.description,
       this.briefDescription,
-      this.remainingSizeUK,
-      this.remainingSizeUS,
-      this.productType});
+      this.remainingSize,
+      this.weight});
 
   Map<String, dynamic> toMap() {
     return {
       'images': images,
       'colors': colors,
       'isFavourite': isFavourite,
-      'title': title,
-      'price': price,
-      'category': category,
+      'productName': productName,
+      'defaultPrice': defaultPrice,
       'description': description,
       'briefDescription': briefDescription,
-      'remainingSizeUK': remainingSizeUK,
-      'remainingSizeUS': remainingSizeUS,
-      'productType': productType.toString().split('.').last,
+      'remainingSize': remainingSize,
+      'weight': weight,
     };
   }
 
@@ -57,15 +52,13 @@ class Product {
         id: map['product_id'],
         images: List<String>.from(json.decode(map['images'])),
         colors: map['colors'],
-        title: map['title'],
-        price: map['price'],
+        productName: map['productName'],
+        defaultPrice: map['defaultPrice'],
         isFavourite: map['isFavourite'] == 1 ? true : false,
-        category: map['category'],
         description: map['description'],
         briefDescription: map['briefDescription'],
-        remainingSizeUK: List<double>.from(json.decode(map['remainingSizeUK'])),
-        remainingSizeUS: List<double>.from(json.decode(map['remainingSizeUS'])),
-        productType: map['productType']);
+        remainingSize: map['remainingSize'],
+        weight: map['weight']);
   }
 
   Map<String, dynamic> toMapSql() {
@@ -74,20 +67,19 @@ class Product {
       'images': json.encode(images),
       'colors': colors,
       'isFavourite': isFavourite ? 1 : 0,
-      'title': title,
-      'price': price,
+      'productName': productName,
+      'defaultPrice': defaultPrice,
       'category': category,
       'description': description,
       'briefDescription': briefDescription,
-      'remainingSizeUK': json.encode(remainingSizeUK),
-      'remainingSizeUS': json.encode(remainingSizeUS),
-      'productType': productType,
+      'remainingSize': remainingSize,
+      'weight': weight,
     };
   }
 
   @override
   String toString() {
-    return 'Product{id: $id, title: $title, briefDescription: $briefDescription, description: $description, images: $images, colors: $colors, price: $price, isFavourite: $isFavourite, remainingSizeUK: $remainingSizeUK, remainingSizeUS: $remainingSizeUS, productType: $productType}';
+    return 'Product{id: $id, productName: $productName, briefDescription: $briefDescription, description: $description, images: $images, colors: $colors, defaultPrice: $defaultPrice, isFavourite: $isFavourite, remainingSize: $remainingSize, weight: $weight, productType: $productType}';
   }
 }
 
@@ -95,69 +87,47 @@ List<Product> demoProducts = [
   Product(
       images: [R.icon.snkr02],
       colors: 0xFF82B1FF,
-      title: 'Air-Max-273-Big-KIDS',
-      price: 130,
-      category: 'Nike',
+      productName: 'Air-Max-273-Big-KIDS',
+      defaultPrice: 130,
       description: 'description',
       briefDescription: 'briefDescription',
-      remainingSizeUK: [7.5, 8, 9],
-      remainingSizeUS: [40, 41, 42],
-      productType: ProductType.UPCOMMING),
-  Product(
-      images: [R.icon.snkr01],
-      colors: 0xFF82B1FF,
-      title: 'Air-Max-274-Big-KIDS',
-      price: 130,
-      category: 'Adidas',
-      description: 'description',
-      briefDescription: 'briefDescription',
-      remainingSizeUK: [7.5, 8, 9],
-      remainingSizeUS: [40, 41, 42],
-      productType: ProductType.FEATURED),
-  Product(
-      images: [R.icon.snkr03],
-      colors: 0xFF82B1FF,
-      title: 'Air-Max-275-Big-KIDS',
-      price: 130,
-      category: 'Puma',
-      description: 'description',
-      briefDescription: 'briefDescription',
-      remainingSizeUK: [7.5, 8, 9],
-      remainingSizeUS: [40, 41, 42],
-      productType: ProductType.NEW),
+      remainingSize: 7.5,
+      weight: 0.25),
   Product(
       images: [R.icon.snkr02],
       colors: 0xFF82B1FF,
-      title: 'Air-Max-276-Big-KIDS',
-      price: 130,
-      category: 'Nike',
+      productName: 'Air-Max-273-Big-KIDS',
+      defaultPrice: 130,
       description: 'description',
       briefDescription: 'briefDescription',
-      remainingSizeUK: [7.5, 8, 9],
-      remainingSizeUS: [40, 41, 42],
-      productType: ProductType.UPCOMMING),
+      remainingSize: 7.5,
+      weight: 0.25),
   Product(
       images: [R.icon.snkr01],
       colors: 0xFF82B1FF,
-      title: 'Air-Max-277-Big-KIDS',
-      price: 130,
-      category: 'Adidas',
+      productName: 'Air-Max-273-Big-KIDS',
+      defaultPrice: 130,
       description: 'description',
       briefDescription: 'briefDescription',
-      remainingSizeUK: [7.5, 8, 9],
-      remainingSizeUS: [40, 41, 42],
-      productType: ProductType.FEATURED),
+      remainingSize: 7.5,
+      weight: 0.25),
   Product(
       images: [R.icon.snkr03],
       colors: 0xFF82B1FF,
-      title: 'Air-Max-278-Big-KIDS',
-      price: 130,
-      category: 'Puma',
+      productName: 'Air-Max-273-Big-KIDS',
+      defaultPrice: 130,
       description: 'description',
       briefDescription: 'briefDescription',
-      remainingSizeUK: [7.5, 8, 9],
-      remainingSizeUS: [40, 41, 42],
-      productType: ProductType.NEW),
+      remainingSize: 7.5,
+      weight: 0.25),
 ];
 
 List<String> categories = ['Nike', 'Adidas', 'Puma', 'Converse'];
+
+List<double> size = [38, 39, 40, 41, 42];
+
+List<double> weight1 = [0.25, 0.5, 0.75, 1.0];
+
+List<double> weight2 = [1.0, 2.0, 3.0, 5.0];
+
+List<double> weight3 = [3.0, 5.0, 7.0, 10.0];

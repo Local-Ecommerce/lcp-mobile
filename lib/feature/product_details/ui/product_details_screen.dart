@@ -145,14 +145,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                product.title,
+                product.productName,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
                 ),
               ),
               Text(
-                formatCurrency.format(product.price),
+                formatCurrency.format(product.defaultPrice),
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
@@ -180,7 +180,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 builder: (context) => Padding(
                   padding: const EdgeInsets.all(20),
                   child: BottomDialog(
-                    title: product.title,
+                    title: product.productName,
                     child: Text('${product.description}'),
                   ),
                 ),
@@ -235,7 +235,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           SizedBox(
             height: 16,
           ),
-          SizedBox(height: 60, child: listSize(product.remainingSizeUS)),
+          SizedBox(height: 60, child: listSize(size)),
           SizedBox(
             height: 100,
           ),

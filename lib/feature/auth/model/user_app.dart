@@ -1,11 +1,17 @@
+import 'package:flutter/cupertino.dart';
+
 class UserData {
   String uid;
   String username;
   String email;
   String password;
+  String confirmPassword;
   String dob;
-  String lastname;
-  String firstname;
+  String fullName;
+  String apartmentId;
+  String phoneNumber;
+  String gender;
+  String tokenId;
 
   UserData(
       {this.uid,
@@ -13,16 +19,14 @@ class UserData {
       this.email,
       this.password,
       this.dob,
-      this.lastname,
-      this.firstname});
+      this.fullName,
+      this.phoneNumber,
+      this.gender,
+      this.tokenId});
 
   @override
   String toString() {
-    return 'UserData{uid: $uid, username: $username, email: $email, dob: $dob, lastname: $lastname, firstname: $firstname}';
-  }
-
-  String get fullName {
-    return "$firstname $lastname";
+    return 'UserData{uid: $uid, username: $username, email: $email, dob: $dob, lastname: $fullName, firstname: $tokenId}';
   }
 }
 
@@ -34,4 +38,11 @@ class Credential {
 
   @override
   String toString() => 'Credential{email: $email, password: $password}';
+}
+
+class UserModel {
+  final String email;
+  final String token;
+
+  UserModel(@required this.email, @required this.token);
 }

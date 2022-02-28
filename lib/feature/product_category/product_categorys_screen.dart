@@ -97,14 +97,14 @@ class _ProductCategoryScreenState extends State<ProductCategoryScreen> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: Text(
-                  product.title,
+                  product.productName,
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 16, bottom: 12),
                 child: Text(
-                  "${formatCurrency.format(product.price)}",
+                  "${formatCurrency.format(product.defaultPrice)}",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),

@@ -29,10 +29,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       yield* _mapPasswordChangedToState(event.password);
     } else if (event is Submitted) {
       yield* _mapSubmittedLoginToState();
+    } else if (event is GoogleLogin) {
+      yield* _mapGoogleLoginToState();
     }
-    // } else if (event is SignInCheck) {
-    //   yield* _mapCheckSignedInToState();
-    // }
   }
 
   Stream<LoginState> _mapEmailChangedToState(String email) async* {
@@ -64,11 +63,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }
   }
 
-  // Stream<LoginState> _mapCheckSignedInToState() async* {
-  //   if (await _loginRepository.isSignedIn()) {
-  //     yield LoginFinishedState(isSuccess: true);
-  //   } else {
-  //     yield LoginFinishedState(isSuccess: false);
-  //   }
-  // }
+  Stream<LoginState> _mapGoogleLoginToState() async* {
+    try {
+      if (await _loginRepository.googleLogin()) {
+        yield LoginFinishedState(isSuccess: true);
+      }
+    } on Exception catch (e) {
+      print(e);
+      yield LoginFinishedState(isSuccess: false);
+    }
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lcp_mobile/feature/apartment/model/apartment.dart';
 import 'package:lcp_mobile/resources/R.dart';
 import 'package:lcp_mobile/resources/resources.dart';
 import 'package:lcp_mobile/route/route_constants.dart';
@@ -7,14 +8,16 @@ import 'package:lcp_mobile/widget/loader_widget.dart';
 
 import 'register_bloc.dart';
 
-class RegisterScreen extends StatefulWidget {
+class UpdateProfileScreen extends StatefulWidget {
   @override
-  _RegisterScreenState createState() => _RegisterScreenState();
+  _UpdateProfileScreenState createState() => _UpdateProfileScreenState();
 }
 
 RegisterBloc _registerBloc = RegisterBloc();
 
-class _RegisterScreenState extends State<RegisterScreen> {
+String _currentSelectedValue = '';
+
+class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -34,7 +37,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
         title: Center(
           child: Text(
-            R.strings.registerTitle,
+            R.strings.updateInfoTitle,
             style: TextStyle(color: Colors.black),
           ),
         ),
@@ -43,18 +46,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            IntrinsicHeight(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(child: _FullNameInput()),
-                  // SizedBox(
-                  //   width: 10,
-                  // ),
-                  // Expanded(child: _LastNameNameInput()),
-                ],
-              ),
-            ),
+            //TODO need map all info to user update
+            _ApartmentDropdown(),
             SizedBox(
               height: 10,
             ),
@@ -62,11 +55,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
             SizedBox(
               height: 10,
             ),
-            _EmailInput(),
+            _GenderInput(),
             SizedBox(
               height: 10,
             ),
-            _PasswordInput(),
+            _PhoneNumberInput(),
             SizedBox(
               height: 20,
             ),
@@ -116,15 +109,15 @@ class _SubmitRegister extends StatelessWidget {
                   }
                 });
               } else {
-                print('Register failed');
+                print('Update Info failed');
                 Scaffold.of(context).showSnackBar(SnackBar(
-                  content: Text("Register failed"),
+                  content: Text("Update Info failed"),
                 ));
               }
             },
             color: AppColors.indianRed,
             child: Text(
-              R.strings.registerTitle,
+              R.strings.updateInfoTitle,
               style: whiteText,
             ),
           ),
@@ -134,7 +127,7 @@ class _SubmitRegister extends StatelessWidget {
   }
 }
 
-class _FullNameInput extends StatelessWidget {
+class _ extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<bool>(
@@ -155,26 +148,47 @@ class _FullNameInput extends StatelessWidget {
   }
 }
 
-// class _LastNameNameInput extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return StreamBuilder(
-//       stream: _registerBloc.lastName$,
-//       builder: (context, snapshot) {
-//         return TextFormField(
-//           onChanged: _registerBloc.onLastNameChanged,
-//           decoration: InputDecoration(
-//               labelText: 'LastName',
-//               border: OutlineInputBorder(),
-//               contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-//               errorText: snapshot.data != null && !snapshot.data
-//                   ? 'Required field'
-//                   : null),
-//         );
-//       },
-//     );
-//   }
-// }
+class _PhoneNumberInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<bool>(
+      stream: _registerBloc.fullName$,
+      builder: (context, snapshot) {
+        return TextFormField(
+          onChanged: _registerBloc.onFullNameChanged,
+          decoration: InputDecoration(
+              labelText: 'Phone number',
+              border: OutlineInputBorder(),
+              contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+              errorText: snapshot.data != null && !snapshot.data
+                  ? 'Required field'
+                  : null),
+        );
+      },
+    );
+  }
+}
+
+class _GenderInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<bool>(
+      stream: _registerBloc.fullName$,
+      builder: (context, snapshot) {
+        return TextFormField(
+          onChanged: _registerBloc.onFullNameChanged,
+          decoration: InputDecoration(
+              labelText: 'Gender',
+              border: OutlineInputBorder(),
+              contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+              errorText: snapshot.data != null && !snapshot.data
+                  ? 'Required field'
+                  : null),
+        );
+      },
+    );
+  }
+}
 
 class _DobInput extends StatefulWidget {
   @override
@@ -245,43 +259,52 @@ class _EmailInput extends StatelessWidget {
   }
 }
 
-class _PasswordInput extends StatelessWidget {
+class _ApartmentDropdown extends StatefulWidget {
+  @override
+  __ApartmentDropdownState createState() => __ApartmentDropdownState();
+}
+
+class __ApartmentDropdownState extends State<_ApartmentDropdown> {
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: _registerBloc.password$,
-      builder: (context, snapshot) => TextFormField(
-        onChanged: _registerBloc.onPasswordChanged,
-        obscureText: true,
-        keyboardType: TextInputType.visiblePassword,
-        decoration: InputDecoration(
-            labelText: 'Password',
+    return FormField<String>(
+      builder: (FormFieldState<String> state) {
+        return InputDecorator(
+          decoration: InputDecoration(
+            // errorStyle: TextStyle(color: Colors.redAccent, fontSize: 16.0),
+
             border: OutlineInputBorder(),
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            errorText: snapshot.data != null && !snapshot.data
-                ? 'Invalid password, please enter more than 4 characters'
-                : null),
-      ),
+          ),
+          isEmpty: _currentSelectedValue == '',
+          child: StreamBuilder(
+              stream: _registerBloc.combobox$,
+              builder: (context, snapshot) {
+                return DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: _currentSelectedValue != ''
+                        ? _currentSelectedValue
+                        : null,
+                    hint: Text("Apartment"),
+                    isDense: true,
+                    onChanged: (String newValue) {
+                      _registerBloc.onComboboxChanged;
+                      setState(() {
+                        _currentSelectedValue = newValue;
+                        state.didChange(newValue);
+                      });
+                    },
+                    items: lstApartment.map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
+                );
+              }),
+        );
+      },
     );
   }
-
-  // class _ConfirmPasswordInput extends StatelessWidget {
-  // @override
-  // Widget build(BuildContext context) {
-  //   return StreamBuilder(
-  //     stream: _registerBloc.password$,
-  //     builder: (context, snapshot) => TextFormField(
-  //       onChanged: _registerBloc.onPasswordChanged,
-  //       obscureText: true,
-  //       keyboardType: TextInputType.visiblePassword,
-  //       decoration: InputDecoration(
-  //           labelText: 'Confirm Password',
-  //           border: OutlineInputBorder(),
-  //           contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-  //           errorText: snapshot.data != null && !snapshot.data
-  //               ? 'Invalid password, please enter more than 4 characters'
-  //               : null),
-  //     ),
-  //   );
-  // }
 }

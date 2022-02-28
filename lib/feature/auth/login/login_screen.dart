@@ -7,6 +7,7 @@ import 'package:lcp_mobile/resources/R.dart';
 import 'package:lcp_mobile/resources/resources.dart';
 import 'package:lcp_mobile/route/route_constants.dart';
 import 'package:lcp_mobile/widget/appbar.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -63,18 +64,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     text: 'Don have account? ',
                     style: minorText,
                     children: [
-                      TextSpan(
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              Navigator.pushNamed(
-                                  context, RouteConstant.registerRoute);
-                            },
-                          text: 'Register',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              decoration: TextDecoration.underline))
-                    ])),
+                  TextSpan(
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          Navigator.pushNamed(
+                              context, RouteConstant.registerRoute);
+                        },
+                      text: 'Register',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline))
+                ])),
           ),
           SizedBox(
             height: 50.0,
@@ -121,11 +122,26 @@ class _LoginScreenState extends State<LoginScreen> {
           width: 16.0,
         ),
         Expanded(
+            child: BlocListener(
+          bloc: context.bloc<LoginBloc>(),
+          listener: (context, state) {
+            if (state is LoginFinishedState) {
+              if (state.isSuccess) {
+                Navigator.pushNamedAndRemoveUntil(
+                    context, RouteConstant.homeRoute, (r) => false);
+              }
+            }
+          },
           child: RaisedButton(
             padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 0.0),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0)),
-            onPressed: () {},
+            onPressed: () {
+              // final provider =
+              //     Provider.of<GoogleSignInProvider>(context, listen: false);
+              // provider.googleLogin();
+              context.bloc<LoginBloc>().add(GoogleLogin());
+            },
             color: AppColors.indianRed,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -144,7 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ],
             ),
           ),
-        ),
+        )),
       ],
     );
   }
@@ -198,9 +214,10 @@ class _PasswordInput extends StatelessWidget {
             labelText: 'Password',
             helperText: '',
             icon: const Icon(Icons.lock),
-            errorText: state.isPasswordInvalid != null && state.isPasswordInvalid
-                ? 'invalid password'
-                : null,
+            errorText:
+                state.isPasswordInvalid != null && state.isPasswordInvalid
+                    ? 'invalid password'
+                    : null,
           ),
         );
       },
@@ -224,7 +241,7 @@ class _SubmitLogin extends StatelessWidget {
         child: RaisedButton(
           padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 0.0),
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
           onPressed: () {
             context.bloc<LoginBloc>().add(Submitted());
           },
