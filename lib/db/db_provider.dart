@@ -31,17 +31,16 @@ class DBProvider {
   static const CREATE_TABLE_PRODUCT_Q = '''
       CREATE TABLE $TABLE_PRODUCT(
                     product_id TEXT PRIMARY KEY,
-                    title TEXT,
+                    productName TEXT,
                     description TEXT,
                     briefDescription TEXT,
                     images TEXT,
                     colors INTEGER,
-                    price REAL,
+                    defaultPrice REAL,
                     category TEXT,
                     isFavourite INTEGER,
-                    remainingSizeUK TEXT,
-                    remainingSizeUS TEXT,
-                    productType TEXT
+                    remainingSize TEXT,
+                    weight TEXT,
           );
     ''';
 
@@ -54,4 +53,5 @@ class DBProvider {
               FOREIGN KEY (product_id) REFERENCES Product (product_id)
             );
          ''';
+
 }
