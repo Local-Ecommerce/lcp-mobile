@@ -60,7 +60,8 @@ class RegisterBloc with ValidatorsTransformer {
       //TODO cannot get dob value
       ..dob = _dobController.value
       ..email = _emailController.value
-      ..password = _passwordController.value;
+      ..password = _passwordController.value
+      ..role = "Customer";
     return loginRepository.register(userData);
   }
 

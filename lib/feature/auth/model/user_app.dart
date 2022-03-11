@@ -12,6 +12,7 @@ class UserData {
   String phoneNumber;
   String gender;
   String tokenId;
+  String role;
 
   UserData(
       {this.uid,
@@ -22,7 +23,9 @@ class UserData {
       this.fullName,
       this.phoneNumber,
       this.gender,
-      this.tokenId});
+      this.tokenId,
+      this.role,
+      this.apartmentId});
 
   @override
   String toString() {
@@ -45,4 +48,26 @@ class UserModel {
   final String token;
 
   UserModel(@required this.email, @required this.token);
+}
+
+class RefreshTokens {
+  String accessTokenExpiredDate;
+  String token;
+  String accessToken;
+
+  RefreshTokens({this.accessTokenExpiredDate, this.token, this.accessToken});
+
+  RefreshTokens.fromJson(Map<String, dynamic> json) {
+    accessTokenExpiredDate = json['AccessTokenExpiredDate'];
+    token = json['Token'];
+    accessToken = json['AccessToken'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['AccessTokenExpiredDate'] = this.accessTokenExpiredDate;
+    data['Token'] = this.token;
+    data['AccessToken'] = this.accessToken;
+    return data;
+  }
 }

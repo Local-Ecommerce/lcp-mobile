@@ -8,8 +8,6 @@ class CartItem {
   CartItem({this.id, this.quantity, this.product});
 
   Map<String, dynamic> toMap() {
-    return {'quantity': quantity, 'product_id': product.id};
+    return {'quantity': quantity, 'product_id': product.productId};
   }
-
-
 }

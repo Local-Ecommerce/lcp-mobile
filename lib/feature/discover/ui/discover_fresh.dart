@@ -194,7 +194,7 @@ class _DiscoverFreshItemScreenState extends State<DiscoverFreshItemScreen> {
                 onTapCard: () {
                   Navigator.pushNamed(
                       context, RouteConstant.productDetailsRoute,
-                      arguments: product.id);
+                      arguments: product.productId);
                 },
               );
             });

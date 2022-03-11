@@ -4,7 +4,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const BASE_URL = "https://localhost:5001/api/";
+  // static const BASE_URL = "https://localhost:5001/api";
+  static const BASE_URL = "https://192.168.149.1:5001/api";
   static const ACCOUNT = "${BASE_URL}/account";
   static const PRODUCT = "${BASE_URL}/product";
   static const APARTMENT = "${BASE_URL}/apartment";
@@ -14,6 +15,8 @@ class ApiService {
   static const NEWS = "${BASE_URL}/news";
   static const PAYMENT = "${BASE_URL}/payment";
   static const PAYMENTMETHOD = "${BASE_URL}/payment";
+  static const PRODUCTCATEGORY = "${BASE_URL}/categories-products";
+  static const SYSTEMCATEGORY = "${BASE_URL}/categories";
 
   Future<dynamic> get(String uri,
       {Map<String, dynamic> params, Map<String, String> headers}) async {

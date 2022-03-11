@@ -2,7 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 class DBProvider {
-  static const DB_NAME = 'shopping.db';
+  static const DB_NAME = 'lcp-test2.db';
   static const DB_VERSION = 1;
   static Database _database;
 
@@ -40,7 +40,7 @@ class DBProvider {
                     category TEXT,
                     isFavourite INTEGER,
                     remainingSize TEXT,
-                    weight TEXT,
+                    weight TEXT
           );
     ''';
 
@@ -53,5 +53,4 @@ class DBProvider {
               FOREIGN KEY (product_id) REFERENCES Product (product_id)
             );
          ''';
-
 }

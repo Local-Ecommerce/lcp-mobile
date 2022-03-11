@@ -33,7 +33,7 @@ class CartRepositoryLocal extends CartRepository {
 
   Future<void> updateQuantity(Product product, int value) async {
     _db.update(DBProvider.TABLE_CART_ITEMS, {"quantity": value},
-        where: "product_id = ?", whereArgs: [product.id]);
+        where: "product_id = ?", whereArgs: [product.productId]);
   }
 
   Future<void> removeCartItem(CartItem cartItem) async {

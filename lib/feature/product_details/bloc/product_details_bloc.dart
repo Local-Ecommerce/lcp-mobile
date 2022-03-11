@@ -41,7 +41,7 @@ class ProductDetailsBloc
       AddToWishlistEvent event) async* {
     await _productDetailsDao.addToWishlist(event.product);
 
-    add(LoadProductDetails(event.product.id));
+    add(LoadProductDetails(event.product.productId));
   }
 
   Stream<ProductDetailsState> _mapLoadProductDetailsEventToState(

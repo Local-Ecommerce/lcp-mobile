@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lcp_mobile/feature/discover/bloc/discover_bloc.dart';
 import 'package:lcp_mobile/feature/discover/model/product.dart';
+import 'package:lcp_mobile/feature/product_category/model/system_category.dart';
+import 'package:lcp_mobile/feature/product_category/repository/api_product_category_repository.dart';
 import 'package:lcp_mobile/resources/R.dart';
 import 'package:lcp_mobile/resources/resources.dart';
 import 'package:lcp_mobile/route/route_constants.dart';
@@ -31,13 +33,26 @@ class _DiscoverItemScreenState extends State<DiscoverItemScreen> {
   double height;
 
   List<Product> listProduct;
+  List<SysCategory> listSysCategories;
+
+  ApiProductCategoryRepository _apiProductCate;
 
   @override
   void initState() {
     super.initState();
+
+    _apiProductCate = new ApiProductCategoryRepository();
+
+    getSysCategory();
     context.bloc<DiscoverBloc>().add(LoadingDiscoverEvent(
         category: categories[_currentIndexCategory],
         productType: ProductType.values()[_currentIndexProductType]));
+  }
+
+  getSysCategory() async {
+    listSysCategories = await _apiProductCate.getMerchadiseCategory();
+    print("Syscategory:");
+    print(listSysCategories[_currentIndexCategory].toString());
   }
 
   @override
@@ -193,7 +208,7 @@ class _DiscoverItemScreenState extends State<DiscoverItemScreen> {
                 onTapCard: () {
                   Navigator.pushNamed(
                       context, RouteConstant.productDetailsRoute,
-                      arguments: product.id);
+                      arguments: product.productId);
                 },
               );
             });

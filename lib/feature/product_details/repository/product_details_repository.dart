@@ -20,7 +20,7 @@ class ProductDetailsRepository {
     );
 
     var findCartItem = await db.query(DBProvider.TABLE_CART_ITEMS,
-        where: "product_id = ?", whereArgs: [product.id]);
+        where: "product_id = ?", whereArgs: [product.productId]);
 
     if (findCartItem.isEmpty) {
       var cartItem = CartItem(product: product, quantity: 1).toMap();
@@ -37,12 +37,14 @@ class ProductDetailsRepository {
       });
       return db.update(
           DBProvider.TABLE_CART_ITEMS, {"quantity": currentQuantity + 1},
-          where: "product_id = ?", whereArgs: [product.id]);
+          where: "product_id = ?", whereArgs: [product.productId]);
     }
   }
 
   Future<void> addToWishlist(Product product) {
-    return productCollection.doc('${product.id}').update({'isFavourite': true});
+    return productCollection
+        .doc('${product.productId}')
+        .update({'isFavourite': true});
   }
 
   Future<Product> getProductDetails(String id) async {
@@ -52,16 +54,16 @@ class ProductDetailsRepository {
 
   Product _productListFromSnapshot(DocumentSnapshot doc) {
     return Product(
-        id: doc.id,
+        productId: doc.id,
         images: List<String>.from(doc.data()['images']),
-        colors: doc.data()['colors'],
+        color: doc.data()['colors'],
         productName: doc.data()['title'],
         defaultPrice: doc.data()['price'],
-        isFavourite: doc.data()['isFavourite'],
+        isFavorite: doc.data()['isFavourite'],
         description: doc.data()['description'],
         briefDescription: doc.data()['briefDescription'],
-        remainingSize: doc.data()['remainingSize'],
-        weight: doc.data()['remainingSize']);
+        size: doc.data()['remainingSize'],
+        weight: doc.data()['weight']);
   }
 
 /*  Future<void> query() async{
