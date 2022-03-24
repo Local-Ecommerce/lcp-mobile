@@ -6,6 +6,7 @@ import 'package:lcp_mobile/feature/discover/model/product.dart';
 import 'package:lcp_mobile/feature/discover/repository/discover_repository.dart';
 import 'package:lcp_mobile/feature/discover/repository/firebase_discover_repository.dart';
 import 'package:lcp_mobile/feature/discover/repository/api_discover_repository.dart';
+import 'package:lcp_mobile/feature/menu/model/menu.dart';
 
 part 'discover_event.dart';
 

@@ -11,17 +11,17 @@ class UserPreferences {
     _preferences = await SharedPreferences.getInstance();
   }
 
-  // static Future updateUser(UserData user) async {
-  //   final json = jsonEncode(user.toJson());
+  static Future updateUser(UserData user) async {
+    final json = jsonEncode(user.toJson());
 
-  //   await _preferences.setString(_keyUser, json);
-  // }
+    await _preferences.setString(_keyUser, json);
+  }
 
-  // static UserData getUser() {
-  //   final json = _preferences.getString(_keyUser);
+  static UserData getUser() {
+    final json = _preferences.getString(_keyUser);
 
-  //   return json == null ? null : UserData.fromJson(jsonDecode(json));
-  // }
+    return json == null ? null : UserData.fromJson(jsonDecode(json));
+  }
 
   static Future setUser(Map<String, dynamic> data) async {
     final json = jsonEncode(data);

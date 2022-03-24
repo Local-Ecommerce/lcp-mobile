@@ -8,4 +8,5 @@ abstract class LoginRepository extends ChangeNotifier {
   Future<void> updateUserData(UserData userData);
   Future<bool> register(UserData userData);
   Future<bool> googleLogin();
+  // Future<bool> saveUserPreferece();
 }

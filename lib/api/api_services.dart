@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 class ApiService {
   // static const BASE_URL = "https://localhost:5001/api";
   static const BASE_URL = "https://192.168.149.1:5001/api";
-  static const ACCOUNT = "${BASE_URL}/account";
+  static const ACCOUNT = "${BASE_URL}/accounts";
   static const PRODUCT = "${BASE_URL}/product";
   static const APARTMENT = "${BASE_URL}/apartment";
   static const COLLECTION = "${BASE_URL}/collection";
