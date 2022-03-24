@@ -8,7 +8,7 @@ class ApiService {
   static const BASE_URL = "https://192.168.149.1:5001/api";
   static const ACCOUNT = "${BASE_URL}/accounts";
   static const PRODUCT = "${BASE_URL}/product";
-  static const APARTMENT = "${BASE_URL}/apartment";
+  static const APARTMENT = "${BASE_URL}/apartments";
   static const COLLECTION = "${BASE_URL}/collection";
   static const MENU = "${BASE_URL}/menu";
   static const STORE = "${BASE_URL}/store";

@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lcp_mobile/feature/discover/bloc/discover_bloc.dart';
 import 'package:lcp_mobile/feature/discover/model/product.dart';
 import 'package:lcp_mobile/feature/menu/model/menu.dart';
+import 'package:lcp_mobile/feature/product_category/model/system_category.dart';
+import 'package:lcp_mobile/feature/product_category/repository/api_product_category_repository.dart';
 import 'package:lcp_mobile/resources/R.dart';
 import 'package:lcp_mobile/resources/resources.dart';
 import 'package:lcp_mobile/route/route_constants.dart';
@@ -35,13 +37,25 @@ class _DiscoverFreshItemScreenState extends State<DiscoverFreshItemScreen> {
 
   List<Product> listProduct;
   List<Menu> listMenu;
+  List<SysCategory> listSysCategories;
+
+  ApiProductCategoryRepository _apiProductCate;
 
   @override
   void initState() {
     super.initState();
+
+    _apiProductCate = new ApiProductCategoryRepository();
+
     context.bloc<DiscoverBloc>().add(LoadingDiscoverEvent(
         category: categories[_currentIndexCategory],
         productType: ProductType.values()[_currentIndexProductType]));
+  }
+
+  getSysCategory() async {
+    listSysCategories = await _apiProductCate.getMerchadiseCategory();
+    print("Syscategory:");
+    print(listSysCategories[_currentIndexCategory].toString());
   }
 
   @override
@@ -63,7 +77,7 @@ class _DiscoverFreshItemScreenState extends State<DiscoverFreshItemScreen> {
             Container(
                 width: width * 0.9,
                 height: height * 0.40,
-                child: _buildListProduct()),
+                child: _buildListMenu()),
           ],
         ),
         Padding(
@@ -82,7 +96,7 @@ class _DiscoverFreshItemScreenState extends State<DiscoverFreshItemScreen> {
                   onPressed: () {
                     Navigator.pushNamed(context, RouteConstant.productCategory,
                         arguments: {
-                          "listProduct": listProduct,
+                          "listMenu": listMenu,
                           "categoryName": categories[_currentIndexCategory]
                         });
                   })
@@ -216,16 +230,15 @@ class _DiscoverFreshItemScreenState extends State<DiscoverFreshItemScreen> {
 
         return ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: listProduct.length,
+            itemCount: listMenu.length,
             itemBuilder: (context, index) {
-              var product = listProduct[index];
-              print(product.images[0]);
-              return CardProduct(
-                product: product,
+              var menu = listMenu[index];
+              return CardMenu(
+                menu: menu,
                 onTapCard: () {
-                  Navigator.pushNamed(
-                      context, RouteConstant.productDetailsRoute,
-                      arguments: product.productId);
+                  // Navigator.pushNamed(
+                  //     context, RouteConstant.productDetailsRoute,
+                  //     arguments: menu.menuId);
                 },
               );
             });

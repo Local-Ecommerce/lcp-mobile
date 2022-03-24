@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lcp_mobile/api/api_services.dart';
 import 'package:lcp_mobile/api/base_response.dart';
+import 'package:lcp_mobile/feature/auth/login/repository/api_login_repository.dart';
 import 'package:lcp_mobile/feature/auth/login/repository/login_repository.dart';
 import 'package:lcp_mobile/feature/auth/model/user_app.dart';
 
@@ -16,7 +17,7 @@ import 'package:lcp_mobile/resources/api_strings.dart';
 class FirebaseLoginRepository extends LoginRepository {
   FirebaseAuth _auth;
   GoogleSignIn _googleSignIn = GoogleSignIn();
-  Dio _dio;
+  ApiLoginRepository _apiLoginRepository = new ApiLoginRepository();
   String baseUrl = ApiService.ACCOUNT;
 
   final CollectionReference userCollection =
@@ -24,6 +25,7 @@ class FirebaseLoginRepository extends LoginRepository {
 
   FirebaseLoginRepository() {
     _auth = FirebaseAuth.instance;
+    // _apiLoginRepository = new ApiLoginRepository();
   }
 
   GoogleSignInAccount _googleUser;
@@ -45,9 +47,9 @@ class FirebaseLoginRepository extends LoginRepository {
 
       print(result.user.toString());
 
-      print("Token is:");
-      print(token);
-      apiLogin(token);
+      // print("Token is:");
+      // print(token);
+      await _apiLoginRepository.apiLogin(token);
 
       return result.user != null;
     } on Exception catch (e) {
@@ -82,15 +84,6 @@ class FirebaseLoginRepository extends LoginRepository {
     }
   }
 
-  // Future<Map<dynamic, dynamic>> get _userClaims async {
-  //   final user = _auth.currentUser;
-
-  //   // If refresh is set to true, a refresh of the id token is forced.
-  //   final idTokenResult = await user.getIdTokenResult(true);
-
-  //   return idTokenResult.claims;
-  // }
-
   Future<bool> googleLogin() async {
     // _googleSignIn.signOut();
 
@@ -113,8 +106,6 @@ class FirebaseLoginRepository extends LoginRepository {
       username: _auth.currentUser.displayName,
     );
 
-    // print(userCollection.doc(_user.uid));
-
     var userFirebase = await userCollection.doc(_user.uid).get();
     try {
       if (userFirebase.data() == null) {
@@ -126,35 +117,4 @@ class FirebaseLoginRepository extends LoginRepository {
     }
     return _googleUser != null;
   }
-
-  Future<bool> apiLogin(String tokenId) async {
-    Response response = await _dio.post(baseUrl +
-        '/login?firebaseToken=${tokenId}&role=${ApiStrings.userRole}');
-
-    if (response.statusCode == 415) {
-      if (_auth.currentUser != null) {
-        await _auth.signOut();
-        return false;
-      } else {
-        await _googleSignIn.signOut();
-        return false;
-      }
-    }
-
-    print("Response:");
-    print(response);
-    BaseResponse baseResponse =
-        BaseResponse.fromJson(jsonDecode(response.data));
-
-    UserDataResponse userDataResponse =
-        UserDataResponse.fromJson(baseResponse.data);
-
-    print("userDataResponse:");
-    print(userDataResponse);
-    // UserData userData = UserData.fromJson(userDataResponse.residents);
-    // print(googleAuth.idToken);
-    // UserPreferences.setUser(data);
-  }
-
-  Future<bool> clearUserPreference() {}
 }
