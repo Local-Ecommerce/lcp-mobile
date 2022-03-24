@@ -28,6 +28,7 @@ void main() async {
   await Firebase.initializeApp();
   Bloc.observer = SimpleBlocObserver();
   await DBProvider.instance.init();
+  await UserPreferences.init();
   await TokenPreferences.init();
 
   FirebaseLoginRepository _authBloc = FirebaseLoginRepository();

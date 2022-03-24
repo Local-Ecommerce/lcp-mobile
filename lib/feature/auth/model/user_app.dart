@@ -104,3 +104,27 @@ class RefreshTokens {
     return data;
   }
 }
+
+class UserRequest {
+  String firebaseToken;
+  String role;
+
+  UserRequest({this.firebaseToken, this.role});
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+
+    data['firebaseToken'] = this.firebaseToken;
+    data['role'] = this.role;
+    return data;
+  }
+
+  UserRequest.fromJson(Map<String, dynamic> json) {
+    firebaseToken = json['firebaseToken'];
+    role = json['role'];
+  }
+
+  @override
+  String toString() =>
+      'UserRequest{ firebaseToken: $firebaseToken, role: $role}';
+}
