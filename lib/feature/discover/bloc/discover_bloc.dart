@@ -5,6 +5,10 @@ import 'package:equatable/equatable.dart';
 import 'package:lcp_mobile/feature/discover/model/product.dart';
 import 'package:lcp_mobile/feature/discover/repository/discover_repository.dart';
 import 'package:lcp_mobile/feature/discover/repository/firebase_discover_repository.dart';
+import 'package:lcp_mobile/feature/discover/repository/api_discover_repository.dart';
+import 'package:lcp_mobile/feature/menu/model/menu.dart';
+import 'package:lcp_mobile/references/user_preference.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'discover_event.dart';
 
@@ -13,9 +17,12 @@ part 'discover_state.dart';
 class DiscoverBloc extends Bloc<DiscoverEvent, DiscoverState> {
   DiscoverRepository _discoverRepository;
   StreamSubscription _streamSubscription;
+  ApiDiscoverRepository _apiDiscoverRepository;
+  UserPreferences _preferences;
 
   DiscoverBloc()
       : _discoverRepository = FirebaseDiscoverRepository(),
+        _apiDiscoverRepository = ApiDiscoverRepository(),
         super(DiscoverLoading());
 
   @override
@@ -41,20 +48,24 @@ class DiscoverBloc extends Bloc<DiscoverEvent, DiscoverState> {
 
   Stream<DiscoverState> _mapLoadDiscoverEvent(
       LoadingDiscoverEvent event) async* {
-    _streamSubscription =
-        _discoverRepository.getListProduct().listen((products) {
-      add(DiscoverUpdatedEvent(
-          products: products,
-          category: event.category,
-          productType: event.productType));
-    });
+    // _streamSubscription =
+    //     _discoverRepository.getListProduct().listen((products) {
+    //   add(DiscoverUpdatedEvent(
+    //       products: products,
+    //       category: event.category,
+    //       productType: event.productType));
+    // });
+    // _streamSubscription = _api
   }
 
+  //TODO need refactor
   Stream<DiscoverState> _mapDiscoverUpdatedEventToState(
       DiscoverUpdatedEvent event) async* {
     var filterList = event.products.where((element) {
-      return element.productType == event.productType &&
-          element.category == event.category;
+      return element.productCategories == event.category;
+      // &&
+      //     element. == event.category;
+      // return null;
     }).toList();
     // _discoverRepository.addListProduct(demoProducts);
     yield DiscoverLoadFinished(products: filterList, isSuccess: true);
@@ -64,7 +75,7 @@ class DiscoverBloc extends Bloc<DiscoverEvent, DiscoverState> {
       LoadingWishlistEvent event) async* {
     _discoverRepository.getListProduct().listen((event) {
       var filterList = event.where((element) {
-        return element.isFavourite;
+        return element.isFavorite;
       }).toList();
       add(WishlistUpdatedEvent(products: filterList));
     });

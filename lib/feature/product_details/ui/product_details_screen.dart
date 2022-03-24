@@ -107,7 +107,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       backgroundColor: Colors.redAccent,
       elevation: 0,
       title: Text(
-        product.category ?? "",
+        product.productCategories ?? "",
         style: TextStyle(
           color: Colors.white,
           fontSize: 24,
@@ -124,7 +124,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             shape: CircleBorder(),
             elevation: 6,
             child: Icon(
-              product.isFavourite
+              product.isFavorite
                   ? Ionicons.ios_heart
                   : Ionicons.ios_heart_empty,
               color: Colors.white,

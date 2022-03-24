@@ -44,17 +44,6 @@ class _DiscoverScreenState extends State<DiscoverScreen>
   void initState() {
     super.initState();
 
-    // _streamSubscription = Geolocator.getPositionStream(
-    //         desiredAccuracy: LocationAccuracy.high, distanceFilter: 10)
-    //     .listen((Position position) {
-    //   setState(() {
-    //     _position = position;
-    //     setNewAddress(_position.latitude, _position.longitude);
-    //     _streamSubscription.cancel();
-    //     _streamSubscription = null;
-    //   });
-    // });
-
     _tabController = TabController(length: 2, vsync: this);
     _freshItemScreen = DiscoverFreshItemScreen();
     _otherItemScreen = DiscoverItemScreen();
@@ -106,18 +95,3 @@ class _DiscoverScreenState extends State<DiscoverScreen>
     );
   }
 }
-
-// _getCurrentPosition() {
-//   _streamSubscription = Geolocator.getPositionStream(
-//           desiredAccuracy: LocationAccuracy.high, distanceFilter: 10)
-//       .listen((Position position) {
-//     setState(() {
-//       _currentPosition = position;
-//       _cameraPosition = CameraPosition(
-//           target: LatLng(_currentPosition.latitude, _currentPosition.longitude),
-//           zoom: 14);
-//       _streamSubscription.cancel();
-//       _streamSubscription = null;
-//     });
-//   });
-// }

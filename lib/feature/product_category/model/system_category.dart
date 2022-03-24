@@ -1,26 +1,30 @@
 import 'dart:convert';
 
 class SysCategory {
-  final String sysCategoryID;
-  final String sysCategoryName;
-  final int categoryLevel;
-  final String belongTo;
-  final int status;
+  String sysCategoryID;
+  String sysCategoryName;
+  int categoryLevel;
+  String type;
+  String belongTo;
+  int status;
+  List<dynamic> lstSysCategories;
 
   SysCategory(this.sysCategoryID, this.sysCategoryName, this.categoryLevel,
       this.belongTo, this.status);
 
   SysCategory.fromJson(Map<String, dynamic> json)
-      : sysCategoryID = json['sysCategoryID'],
-        sysCategoryName = json['sysCategoryName'],
-        categoryLevel = json['categoryLevel'],
-        belongTo = json['belongTo'],
-        status = json['status'];
+      : sysCategoryID = json['SystemCategoryId'],
+        sysCategoryName = json['SysCategoryName'],
+        type = json['Type'],
+        categoryLevel = json['CategoryLevel'],
+        belongTo = json['BelongTo'],
+        status = json['Status'],
+        lstSysCategories = json['InverseBelongToNavigation'];
 
   Map<String, dynamic> toMapSql() {
     return {
-      'sysCategoryID': sysCategoryID,
-      'sysCategoryName': sysCategoryName,
+      'SystemCategoryId': sysCategoryID,
+      'SysCategoryName': sysCategoryName,
       'categoryLevel': categoryLevel,
       'belongTo': belongTo,
       'status': status
@@ -30,4 +34,8 @@ class SysCategory {
   static String encode(List<SysCategory> categories) =>
       jsonEncode(categories.map((category) => category.toMapSql()).toList())
           .toString();
+
+  @override
+  String toString() =>
+      'Syscategory{sysCategoryID: $sysCategoryID, sysCategoryName: $sysCategoryName, categoryLevel: $categoryLevel, lstSysCategories: $lstSysCategories}';
 }

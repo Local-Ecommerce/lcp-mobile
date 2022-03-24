@@ -1,22 +1,31 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:lcp_mobile/api/api_services.dart';
+import 'package:lcp_mobile/api/base_response.dart';
+import 'package:lcp_mobile/feature/auth/login/repository/api_login_repository.dart';
 import 'package:lcp_mobile/feature/auth/login/repository/login_repository.dart';
 import 'package:lcp_mobile/feature/auth/model/user_app.dart';
 
 import 'package:dio/dio.dart';
+import 'package:lcp_mobile/references/user_preference.dart';
+import 'package:lcp_mobile/resources/api_strings.dart';
 
 class FirebaseLoginRepository extends LoginRepository {
   FirebaseAuth _auth;
   GoogleSignIn _googleSignIn = GoogleSignIn();
+  ApiLoginRepository _apiLoginRepository = new ApiLoginRepository();
+  String baseUrl = ApiService.ACCOUNT;
 
   final CollectionReference userCollection =
       FirebaseFirestore.instance.collection("user");
 
   FirebaseLoginRepository() {
     _auth = FirebaseAuth.instance;
+    // _apiLoginRepository = new ApiLoginRepository();
   }
 
   GoogleSignInAccount _googleUser;
@@ -38,8 +47,9 @@ class FirebaseLoginRepository extends LoginRepository {
 
       print(result.user.toString());
 
-      print("Token is:");
-      print(token);
+      // print("Token is:");
+      // print(token);
+      await _apiLoginRepository.apiLogin(token);
 
       return result.user != null;
     } on Exception catch (e) {
@@ -74,15 +84,6 @@ class FirebaseLoginRepository extends LoginRepository {
     }
   }
 
-  // Future<Map<dynamic, dynamic>> get _userClaims async {
-  //   final user = _auth.currentUser;
-
-  //   // If refresh is set to true, a refresh of the id token is forced.
-  //   final idTokenResult = await user.getIdTokenResult(true);
-
-  //   return idTokenResult.claims;
-  // }
-
   Future<bool> googleLogin() async {
     // _googleSignIn.signOut();
 
@@ -104,17 +105,6 @@ class FirebaseLoginRepository extends LoginRepository {
       fullName: _auth.currentUser.displayName,
       username: _auth.currentUser.displayName,
     );
-
-    // print(googleAuth.idToken);
-    print(userCollection.doc(_user.uid));
-
-    // String token = await _auth.currentUser.getIdToken(true);
-    // while (token.length > 0) {
-    //   int initLength = (token.length >= 500 ? 500 : token.length);
-    //   print(token.substring(0, initLength));
-    //   int endLength = token.length;
-    //   token = token.substring(initLength, endLength);
-    // }
 
     var userFirebase = await userCollection.doc(_user.uid).get();
     try {
