@@ -8,17 +8,17 @@ import 'package:lcp_mobile/route/route_constants.dart';
 import '../discover/model/product.dart';
 import 'package:intl/intl.dart';
 
-class ProductCategoryScreen extends StatefulWidget {
+class MenuDetailScreen extends StatefulWidget {
   final List<Product> listProduct;
-  final String categoryName;
+  final String menuName;
 
-  ProductCategoryScreen({@required this.listProduct, this.categoryName});
+  MenuDetailScreen({@required this.listProduct, this.menuName});
 
   @override
   _ProductCategoryScreenState createState() => _ProductCategoryScreenState();
 }
 
-class _ProductCategoryScreenState extends State<ProductCategoryScreen> {
+class _ProductCategoryScreenState extends State<MenuDetailScreen> {
   final formatCurrency = NumberFormat.simpleCurrency();
 
   @override
@@ -38,7 +38,7 @@ class _ProductCategoryScreenState extends State<ProductCategoryScreen> {
               padding: const EdgeInsets.only(
                   top: 16, left: 28, right: 28, bottom: 16),
               child: Text(
-                '${widget.categoryName}',
+                '${widget.menuName}',
                 style: headingText1,
               )),
           Expanded(

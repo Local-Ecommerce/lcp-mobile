@@ -33,4 +33,15 @@ class ProductCategory {
   static String encode(List<ProductCategory> categories) =>
       jsonEncode(categories.map((category) => category.toMapSql()).toList())
           .toString();
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['ProductCategoryId'] = this.productCategoryID;
+    data['CategoryName'] = this.categoryName;
+    data['Status'] = this.status;
+    data['ResidentId'] = this.residentID;
+    data['ProductId'] = this.productID;
+    data['SystemCategoryId'] = this.systemCategoryID;
+    return data;
+  }
 }

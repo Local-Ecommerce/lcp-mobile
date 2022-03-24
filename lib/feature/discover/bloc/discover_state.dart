@@ -12,17 +12,22 @@ class DiscoverLoading extends DiscoverState {}
 class DiscoverLoadFinished extends DiscoverState {
   final bool isSuccess;
   final List<Product> products;
+  final List<Menu> menus;
 
-  DiscoverLoadFinished({this.products = const [], this.isSuccess = false});
+  DiscoverLoadFinished(
+      {this.menus = const [],
+      this.products = const [],
+      this.isSuccess = false});
 
   @override
-  List<Object> get props => [products.hashCode, isSuccess];
+  List<Object> get props => [products.hashCode, menus.hashCode, isSuccess];
 
   @override
   String toString() {
-    return 'DiscoverLoadFinished{products: $products}';
+    return 'DiscoverLoadFinished{products: $products, menus: $menus}';
   }
 }
+
 class WishlistLoadFinished extends DiscoverState {
   final bool isSuccess;
   final List<Product> products;

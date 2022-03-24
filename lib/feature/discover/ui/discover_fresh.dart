@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lcp_mobile/feature/discover/bloc/discover_bloc.dart';
 import 'package:lcp_mobile/feature/discover/model/product.dart';
+import 'package:lcp_mobile/feature/menu/model/menu.dart';
 import 'package:lcp_mobile/resources/R.dart';
 import 'package:lcp_mobile/resources/resources.dart';
 import 'package:lcp_mobile/route/route_constants.dart';
 import 'package:lcp_mobile/widget/appbar.dart';
 import 'package:lcp_mobile/widget/card_product.dart';
+import 'package:lcp_mobile/widget/menu_card.dart';
 
 import '../../../route/route_constants.dart';
 import '../bloc/discover_bloc.dart';
@@ -32,6 +34,7 @@ class _DiscoverFreshItemScreenState extends State<DiscoverFreshItemScreen> {
   double height;
 
   List<Product> listProduct;
+  List<Menu> listMenu;
 
   @override
   void initState() {
@@ -194,7 +197,35 @@ class _DiscoverFreshItemScreenState extends State<DiscoverFreshItemScreen> {
                 onTapCard: () {
                   Navigator.pushNamed(
                       context, RouteConstant.productDetailsRoute,
-                      arguments: product.id);
+                      arguments: product.productId);
+                },
+              );
+            });
+      },
+    );
+  }
+
+  Widget _buildListMenu() {
+    return BlocBuilder<DiscoverBloc, DiscoverState>(
+      builder: (context, state) {
+        listMenu = [];
+
+        if (state is DiscoverLoadFinished) {
+          listMenu = state.menus;
+        }
+
+        return ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: listProduct.length,
+            itemBuilder: (context, index) {
+              var product = listProduct[index];
+              print(product.images[0]);
+              return CardProduct(
+                product: product,
+                onTapCard: () {
+                  Navigator.pushNamed(
+                      context, RouteConstant.productDetailsRoute,
+                      arguments: product.productId);
                 },
               );
             });
