@@ -10,11 +10,14 @@ import 'package:lcp_mobile/feature/apartment/model/apartment.dart';
 import 'package:lcp_mobile/feature/auth/model/user_app.dart';
 import 'package:lcp_mobile/feature/product_category/model/product_category.dart';
 import 'package:lcp_mobile/feature/product_category/model/system_category.dart';
+import 'package:lcp_mobile/references/user_preference.dart';
 import 'package:lcp_mobile/resources/api_strings.dart';
 
 class ApiProductCategoryRepository {
   final Dio _dio = new Dio();
   FirebaseAuth _auth = FirebaseAuth.instance;
+
+  RefreshTokens _refreshTokens;
 
   Future<List<SysCategory>> getAllCategories() async {
     try {
@@ -35,8 +38,9 @@ class ApiProductCategoryRepository {
     String _url =
         ApiService.SYSTEMCATEGORY + "?id=${ApiStrings.merchandiseCate}";
 
+    _refreshTokens = TokenPreferences.getRefreshTokens();
     _dio.options.headers["Authorization"] =
-        "Bearer ${_auth.currentUser.getIdToken()}";
+        "Bearer ${_refreshTokens.token}";
 
     try {
       Response response = await _dio.get(_url);

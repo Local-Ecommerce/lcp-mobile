@@ -41,10 +41,16 @@ class TokenPreferences {
     _preferences = await SharedPreferences.getInstance();
   }
 
-  static Future updateUserToken(RefreshTokens refreshTokens) async {
+  static Future updateToken(RefreshTokens refreshTokens) async {
     final json = jsonEncode(refreshTokens.toJson());
 
     await _preferences.setString(_token, json);
+  }
+
+  static RefreshTokens getRefreshTokens() {
+    final json = _preferences.getString(_token);
+
+    return json == null ? null : RefreshTokens.fromJson(jsonDecode(json));
   }
 
   static void clearToken() async {
