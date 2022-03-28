@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lcp_mobile/feature/auth/model/user_app.dart';
 import 'package:lcp_mobile/feature/discover/bloc/discover_bloc.dart';
 import 'package:lcp_mobile/feature/discover/model/product.dart';
 import 'package:lcp_mobile/feature/menu/model/menu.dart';
 import 'package:lcp_mobile/feature/product_category/model/system_category.dart';
 import 'package:lcp_mobile/feature/product_category/repository/api_product_category_repository.dart';
+import 'package:lcp_mobile/references/user_preference.dart';
 import 'package:lcp_mobile/resources/R.dart';
+import 'package:lcp_mobile/resources/api_strings.dart';
 import 'package:lcp_mobile/resources/resources.dart';
 import 'package:lcp_mobile/route/route_constants.dart';
 import 'package:lcp_mobile/widget/appbar.dart';
@@ -40,22 +43,25 @@ class _DiscoverFreshItemScreenState extends State<DiscoverFreshItemScreen> {
   List<SysCategory> listSysCategories;
 
   ApiProductCategoryRepository _apiProductCate;
+  UserData _userData;
+
+  // getSysCategory() async {
+  //   listSysCategories = await _apiProductCate.getMerchadiseCategory();
+  // }
 
   @override
   void initState() {
     super.initState();
-
+    _userData = UserPreferences.getUser();
     _apiProductCate = new ApiProductCategoryRepository();
+    // getSysCategory();
 
     context.bloc<DiscoverBloc>().add(LoadingDiscoverEvent(
-        category: categories[_currentIndexCategory],
-        productType: ProductType.values()[_currentIndexProductType]));
-  }
-
-  getSysCategory() async {
-    listSysCategories = await _apiProductCate.getMerchadiseCategory();
-    print("Syscategory:");
-    print(listSysCategories[_currentIndexCategory].toString());
+        // category: listSysCategories[_currentIndexCategory],
+        // productType: ProductType.values()[_currentIndexProductType]));
+        // apartmentId: _userData.apartmentId,
+        apartmentId: "AP001",
+        productType: ApiStrings.fresh));
   }
 
   @override
@@ -77,6 +83,7 @@ class _DiscoverFreshItemScreenState extends State<DiscoverFreshItemScreen> {
             Container(
                 width: width * 0.9,
                 height: height * 0.40,
+                // height: 200,
                 child: _buildListMenu()),
           ],
         ),
@@ -171,11 +178,11 @@ class _DiscoverFreshItemScreenState extends State<DiscoverFreshItemScreen> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Text(
-                            'Nike Air Max',
+                            'Hủ tiếu',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            '\$130.00',
+                            '\$5.00',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ],
@@ -227,7 +234,8 @@ class _DiscoverFreshItemScreenState extends State<DiscoverFreshItemScreen> {
         if (state is DiscoverLoadFinished) {
           listMenu = state.menus;
         }
-
+        // print("listMenu:");
+        // print(listMenu.length);
         return ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: listMenu.length,
@@ -235,11 +243,7 @@ class _DiscoverFreshItemScreenState extends State<DiscoverFreshItemScreen> {
               var menu = listMenu[index];
               return CardMenu(
                 menu: menu,
-                onTapCard: () {
-                  // Navigator.pushNamed(
-                  //     context, RouteConstant.productDetailsRoute,
-                  //     arguments: menu.menuId);
-                },
+                onTapCard: () {},
               );
             });
       },
@@ -248,9 +252,10 @@ class _DiscoverFreshItemScreenState extends State<DiscoverFreshItemScreen> {
 
   Widget _buildListType() {
     return ListView.builder(
-        itemCount: ProductType.values().length,
+        // scrollDirection: Axis.horizontal,
+        itemCount: MenuType.values().length,
         itemBuilder: (context, index) {
-          var type = ProductType.values()[index];
+          var type = MenuType.values()[index];
           _isSelectedProductType = _currentIndexProductType == index;
 
           return Padding(
@@ -273,25 +278,34 @@ class _DiscoverFreshItemScreenState extends State<DiscoverFreshItemScreen> {
   }
 
   Widget _buildListCategory() {
-    return ListView.builder(
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        itemCount: categories.length,
-        itemBuilder: (context, index) {
-          var category = categories[index];
-          _isSelectedCategory = _currentIndexCategory == index;
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: FlatButton(
-                onPressed: () => _onClickFilterCategory(index, category),
-                child: Text(
-                  category,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: _isSelectedCategory ? Colors.black : Colors.grey),
-                )),
-          );
-        });
+    return BlocBuilder<DiscoverBloc, DiscoverState>(builder: (context, state) {
+      listSysCategories = [];
+
+      if (state is DiscoverLoadFinished) {
+        listSysCategories = state.categories;
+      }
+      return ListView.builder(
+          // shrinkWrap: true,
+          scrollDirection: Axis.horizontal,
+          itemCount: listSysCategories.length,
+          itemBuilder: (context, index) {
+            var category = listSysCategories[index];
+            _isSelectedCategory = _currentIndexCategory == index;
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: FlatButton(
+                  onPressed: () =>
+                      _onClickFilterCategory(index, category.sysCategoryName),
+                  child: Text(
+                    category.sysCategoryName,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color:
+                            _isSelectedCategory ? Colors.black : Colors.grey),
+                  )),
+            );
+          });
+    });
   }
 
   _onClickFilterProductType(int index, String type) {

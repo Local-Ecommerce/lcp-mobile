@@ -10,11 +10,11 @@ class ApiService {
   static const PRODUCT = "${BASE_URL}/product";
   static const APARTMENT = "${BASE_URL}/apartments";
   static const COLLECTION = "${BASE_URL}/collection";
-  static const MENU = "${BASE_URL}/menu";
-  static const STORE = "${BASE_URL}/store";
+  static const MENU = "${BASE_URL}/menus";
+  static const STORE = "${BASE_URL}/stores";
   static const NEWS = "${BASE_URL}/news";
-  static const PAYMENT = "${BASE_URL}/payment";
-  static const PAYMENTMETHOD = "${BASE_URL}/payment";
+  static const PAYMENT = "${BASE_URL}/payments";
+  static const PAYMENTMETHOD = "${BASE_URL}/payment-methods";
   static const PRODUCTCATEGORY = "${BASE_URL}/categories-products";
   static const SYSTEMCATEGORY = "${BASE_URL}/categories";
 

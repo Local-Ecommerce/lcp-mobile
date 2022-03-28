@@ -8,24 +8,26 @@ abstract class DiscoverEvent extends Equatable {
 class DiscoverUpdatedEvent extends DiscoverEvent {
   final List<Menu> menus;
   final List<Product> products;
-  final String category;
+  final List<SysCategory> categories;
+  // final String category;
   final String productType;
 
   DiscoverUpdatedEvent(
-      {this.menus, this.products, this.category, this.productType});
+      {this.menus, this.products, this.categories, this.productType});
 
   @override
-  List<Object> get props => [products, category, productType];
+  List<Object> get props => [products, categories, productType];
 }
 
 class LoadingDiscoverEvent extends DiscoverEvent {
   final Object category;
   final String productType;
+  final String apartmentId;
 
-  LoadingDiscoverEvent({this.category, this.productType});
+  LoadingDiscoverEvent({this.category, this.productType, this.apartmentId});
 
   @override
-  List<Object> get props => [category, productType];
+  List<Object> get props => [category, productType, apartmentId];
 }
 
 class LoadingWishlistEvent extends DiscoverEvent {}

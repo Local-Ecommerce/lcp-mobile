@@ -5,7 +5,7 @@ import 'package:lcp_mobile/feature/product_category/model/product_category.dart'
 import 'package:lcp_mobile/resources/R.dart';
 
 class MenuType {
-  static const HOT = 'Hot';
+  static const HOT = 'Popular';
   static const NEW = 'New';
 
   static List<String> values() => [HOT, NEW];

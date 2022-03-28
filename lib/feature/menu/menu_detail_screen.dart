@@ -15,10 +15,10 @@ class MenuDetailScreen extends StatefulWidget {
   MenuDetailScreen({@required this.listProduct, this.menuName});
 
   @override
-  _ProductCategoryScreenState createState() => _ProductCategoryScreenState();
+  _MenuDetailScreenState createState() => _MenuDetailScreenState();
 }
 
-class _ProductCategoryScreenState extends State<MenuDetailScreen> {
+class _MenuDetailScreenState extends State<MenuDetailScreen> {
   final formatCurrency = NumberFormat.simpleCurrency();
 
   @override

@@ -57,7 +57,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 100,
-        backgroundColor: AppColors.gray,
+        backgroundColor: Colors.pinkAccent.withOpacity(0.8),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(0),
           child: SingleChildScrollView(

@@ -31,22 +31,20 @@ class ApiProductCategoryRepository {
     }
   }
 
-  Future<List<SysCategory>> getMerchadiseCategory() async {
-    String _url =
-        ApiService.SYSTEMCATEGORY + "?id=${ApiStrings.merchandiseCate}";
+  Future<List<SysCategory>> getCategoryByType(String productType) async {
+    String _url = ApiService.SYSTEMCATEGORY + "?type=${productType}";
 
-    _dio.options.headers["Authorization"] =
-        "Bearer ${_auth.currentUser.getIdToken()}";
+    _dio.options.headers["Authorization"] = "Bearer ${ApiStrings.token}";
 
     try {
       Response response = await _dio.get(_url);
       BaseResponse baseResponse =
           BaseResponse.fromJson(jsonDecode(response.data));
-      Data _data = Data.fromJson(baseResponse.data);
-      // print("_data:");
-      // print(_data.list);
+
+      Data data = Data.fromJson(baseResponse.data);
+
       List<SysCategory> listSysCate =
-          List.from(_data.list).map((e) => SysCategory.fromJson(e)).toList();
+          List.from(data.list).map((e) => SysCategory.fromJson(e)).toList();
       _dio.clear();
       return listSysCate;
     } on DioError catch (ex) {

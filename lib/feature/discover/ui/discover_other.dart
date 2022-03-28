@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lcp_mobile/feature/auth/model/user_app.dart';
 import 'package:lcp_mobile/feature/discover/bloc/discover_bloc.dart';
 import 'package:lcp_mobile/feature/discover/model/product.dart';
+import 'package:lcp_mobile/feature/menu/model/menu.dart';
 import 'package:lcp_mobile/feature/product_category/model/system_category.dart';
 import 'package:lcp_mobile/feature/product_category/repository/api_product_category_repository.dart';
 import 'package:lcp_mobile/resources/R.dart';
+import 'package:lcp_mobile/resources/api_strings.dart';
 import 'package:lcp_mobile/resources/resources.dart';
 import 'package:lcp_mobile/route/route_constants.dart';
 import 'package:lcp_mobile/widget/appbar.dart';
 import 'package:lcp_mobile/widget/card_product.dart';
+import 'package:lcp_mobile/widget/menu_card.dart';
 
 import '../../../route/route_constants.dart';
 import '../bloc/discover_bloc.dart';
@@ -33,9 +37,11 @@ class _DiscoverItemScreenState extends State<DiscoverItemScreen> {
   double height;
 
   List<Product> listProduct;
+  List<Menu> listMenu;
   List<SysCategory> listSysCategories;
 
   ApiProductCategoryRepository _apiProductCate;
+  UserData _userData;
 
   @override
   void initState() {
@@ -43,17 +49,18 @@ class _DiscoverItemScreenState extends State<DiscoverItemScreen> {
 
     _apiProductCate = new ApiProductCategoryRepository();
 
-    getSysCategory();
+    // getSysCategory();
     context.bloc<DiscoverBloc>().add(LoadingDiscoverEvent(
-        category: categories[_currentIndexCategory],
-        productType: ProductType.values()[_currentIndexProductType]));
+        apartmentId: "AP001", productType: ApiStrings.other));
+    // category: categories[_currentIndexCategory],
+    // productType: ProductType.values()[_currentIndexProductType]));
   }
 
-  getSysCategory() async {
-    listSysCategories = await _apiProductCate.getMerchadiseCategory();
-    print("Syscategory:");
-    print(listSysCategories[_currentIndexCategory].toString());
-  }
+  // getSysCategory() async {
+  //   listSysCategories = await _apiProductCate.getMerchadiseCategory();
+  //   print("Syscategory:");
+  //   print(listSysCategories[_currentIndexCategory].toString());
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +81,7 @@ class _DiscoverItemScreenState extends State<DiscoverItemScreen> {
             Container(
                 width: width * 0.9,
                 height: height * 0.40,
-                child: _buildListProduct()),
+                child: _buildListMenu()),
           ],
         ),
         Padding(
@@ -216,11 +223,84 @@ class _DiscoverItemScreenState extends State<DiscoverItemScreen> {
     );
   }
 
+  // Widget _buildListType() {
+  //   return ListView.builder(
+  //       itemCount: ProductType.values().length,
+  //       itemBuilder: (context, index) {
+  //         var type = ProductType.values()[index];
+  //         _isSelectedProductType = _currentIndexProductType == index;
+
+  //         return Padding(
+  //           padding: const EdgeInsets.symmetric(horizontal: 10.0),
+  //           child: RotatedBox(
+  //             quarterTurns: -1,
+  //             child: FlatButton(
+  //                 onPressed: () => _onClickFilterProductType(index, type),
+  //                 child: Text(
+  //                   type,
+  //                   style: TextStyle(
+  //                       fontWeight: FontWeight.bold,
+  //                       color: _isSelectedProductType
+  //                           ? Colors.black
+  //                           : Colors.grey),
+  //                 )),
+  //           ),
+  //         );
+  //       });
+  // }
+
+  // Widget _buildListCategory() {
+  //   return ListView.builder(
+  //       shrinkWrap: true,
+  //       scrollDirection: Axis.horizontal,
+  //       itemCount: categories.length,
+  //       itemBuilder: (context, index) {
+  //         var category = categories[index];
+  //         _isSelectedCategory = _currentIndexCategory == index;
+  //         return Padding(
+  //           padding: const EdgeInsets.symmetric(vertical: 16.0),
+  //           child: FlatButton(
+  //               onPressed: () => _onClickFilterCategory(index, category),
+  //               child: Text(
+  //                 category,
+  //                 style: TextStyle(
+  //                     fontWeight: FontWeight.bold,
+  //                     color: _isSelectedCategory ? Colors.black : Colors.grey),
+  //               )),
+  //         );
+  //       });
+  // }
+
+  Widget _buildListMenu() {
+    return BlocBuilder<DiscoverBloc, DiscoverState>(
+      builder: (context, state) {
+        listMenu = [];
+
+        if (state is DiscoverLoadFinished) {
+          listMenu = state.menus;
+        }
+        // print("listMenu:");
+        // print(listMenu.length);
+        return ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: listMenu.length,
+            itemBuilder: (context, index) {
+              var menu = listMenu[index];
+              return CardMenu(
+                menu: menu,
+                onTapCard: () {},
+              );
+            });
+      },
+    );
+  }
+
   Widget _buildListType() {
     return ListView.builder(
-        itemCount: ProductType.values().length,
+        // scrollDirection: Axis.horizontal,
+        itemCount: MenuType.values().length,
         itemBuilder: (context, index) {
-          var type = ProductType.values()[index];
+          var type = MenuType.values()[index];
           _isSelectedProductType = _currentIndexProductType == index;
 
           return Padding(
@@ -243,25 +323,34 @@ class _DiscoverItemScreenState extends State<DiscoverItemScreen> {
   }
 
   Widget _buildListCategory() {
-    return ListView.builder(
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        itemCount: categories.length,
-        itemBuilder: (context, index) {
-          var category = categories[index];
-          _isSelectedCategory = _currentIndexCategory == index;
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: FlatButton(
-                onPressed: () => _onClickFilterCategory(index, category),
-                child: Text(
-                  category,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: _isSelectedCategory ? Colors.black : Colors.grey),
-                )),
-          );
-        });
+    return BlocBuilder<DiscoverBloc, DiscoverState>(builder: (context, state) {
+      listSysCategories = [];
+
+      if (state is DiscoverLoadFinished) {
+        listSysCategories = state.categories;
+      }
+      return ListView.builder(
+          // shrinkWrap: true,
+          scrollDirection: Axis.horizontal,
+          itemCount: listSysCategories.length,
+          itemBuilder: (context, index) {
+            var category = listSysCategories[index];
+            _isSelectedCategory = _currentIndexCategory == index;
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: FlatButton(
+                  onPressed: () =>
+                      _onClickFilterCategory(index, category.sysCategoryName),
+                  child: Text(
+                    category.sysCategoryName,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color:
+                            _isSelectedCategory ? Colors.black : Colors.grey),
+                  )),
+            );
+          });
+    });
   }
 
   _onClickFilterProductType(int index, String type) {
