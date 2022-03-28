@@ -53,6 +53,12 @@ class TokenPreferences {
     await _preferences.setString(_token, json);
   }
 
+  static RefreshTokens getRefreshTokens() {
+    final json = _preferences.getString(_token);
+
+    return json == null ? null : RefreshTokens.fromJson(jsonDecode(json));
+  }
+
   static void clearToken() async {
     await _preferences.clear();
   }

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lcp_mobile/feature/auth/model/user_app.dart';
 import 'package:lcp_mobile/feature/profile/repository/profile_repository.dart';
+import 'package:lcp_mobile/references/user_preference.dart';
 
 class FirebaseProfileRepository extends ProfileRepository {
   FirebaseAuth _auth;
@@ -17,8 +18,12 @@ class FirebaseProfileRepository extends ProfileRepository {
   @override
   Future<void> logout() async {
     if (_auth.currentUser != null) {
+      TokenPreferences.clearToken();
+      UserPreferences.clearUser();
       return await _auth.signOut();
     } else {
+      TokenPreferences.clearToken();
+      UserPreferences.clearUser();
       return await _googleSignIn.signOut();
     }
   }
