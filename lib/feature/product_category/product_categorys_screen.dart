@@ -19,7 +19,8 @@ class ProductCategoryScreen extends StatefulWidget {
 }
 
 class _ProductCategoryScreenState extends State<ProductCategoryScreen> {
-  final formatCurrency = NumberFormat.simpleCurrency();
+  final formatCurrency =
+      NumberFormat.currency(locale: "en_US", symbol: "VNĐ ", decimalDigits: 0);
 
   @override
   Widget build(BuildContext context) {
@@ -87,8 +88,8 @@ class _ProductCategoryScreenState extends State<ProductCategoryScreen> {
                   child: Transform(
                     alignment: Alignment.center,
                     transform: Matrix4.rotationY(pi),
-                    child: Image.asset(
-                      product.images[0],
+                    child: Image.network(
+                      splitImageStringToList(product.images)[0],
                     ),
                   ),
                 ),
@@ -113,5 +114,9 @@ class _ProductCategoryScreenState extends State<ProductCategoryScreen> {
         ),
       ),
     );
+  }
+
+  splitImageStringToList(String images) {
+    return images.split("|");
   }
 }

@@ -36,8 +36,7 @@ class ApiLoginRepository {
   Future<bool> apiLogin(String tokenId) async {
     String url = ApiService.ACCOUNT + '/login';
 
-    print("tokenId:");
-    print(tokenId);
+    // print(tokenId);
 
     UserRequest userRequest =
         UserRequest(firebaseToken: tokenId, role: ApiStrings.userRole);
@@ -47,44 +46,43 @@ class ApiLoginRepository {
         url,
         data: userRequest.toJson(),
       );
-      print("Response là:");
-      print(response);
       BaseResponse baseResponse =
           BaseResponse.fromJson(jsonDecode(response.data));
 
       UserDataResponse userDataResponse =
           UserDataResponse.fromJson(baseResponse.data);
 
+      // print(userDataResponse.residents[0]);
+      // print(userDataResponse.refreshTokens[0]);
+
       UserPreferences.updateUser(userDataResponse.residents[0]);
 
-      TokenPreferences.updateToken(userDataResponse.refreshTokens[0]);
+      TokenPreferences.updateUserToken(userDataResponse.refreshTokens[0]);
 
-      // print("Preferences");
-      //
-      // print(UserPreferences.getUser());
-
-      print("userDataResponse:");
-      print(userDataResponse);
       _dio.clear();
-
     } on DioError catch (ex) {
       log(jsonEncode(ex.response));
       _dio.clear();
     }
-    //     // if (response.statusCode == 415) {
-    //     //   if (_auth.currentUser != null) {
-    //     //     await _auth.signOut();
-    //     //     return false;
-    //     //   } else {
-    //     //     await _googleSignIn.signOut();
-    //     //     return false;
-    //     //   }
-    // }
-
-    // UserData userData = UserData.fromJson(userDataResponse.residents);
-    // print(googleAuth.idToken);
-    // UserPreferences.setUser(userData);
   }
 
-  Future<bool> clearUserPreference() {}
+  Future<void> updateExpiredToken(
+      String refreshToken, String accesssToken) async {
+    String url = ApiService.ACCOUNT + '/refresh-token';
+
+    TokenRequest tokenRequest =
+        TokenRequest(token: refreshToken, accessToken: accesssToken);
+
+    try {
+      Response response = await _dio.post(url, data: tokenRequest.toJson());
+      BaseResponse baseResponse =
+          BaseResponse.fromJson(jsonDecode(response.data));
+      TokenPreferences.updateUserToken(baseResponse.data);
+
+      _dio.clear();
+    } on DioError catch (ex) {
+      log(jsonEncode(ex.response));
+      _dio.clear();
+    }
+  }
 }

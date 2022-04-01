@@ -11,7 +11,8 @@ class ShippingMethodScreen extends StatefulWidget {
 }
 
 class _ShippingMethodScreenState extends State<ShippingMethodScreen> {
-  final formatCurrency = NumberFormat.simpleCurrency();
+  final formatCurrency =
+      NumberFormat.currency(locale: "en_US", symbol: "VNĐ ", decimalDigits: 0);
   var _isSelectedShipMethod = false;
   var _currentIndexShipMethod = 0;
 
