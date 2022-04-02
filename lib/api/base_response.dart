@@ -1,4 +1,5 @@
 import 'package:lcp_mobile/feature/auth/model/user_app.dart';
+import 'package:lcp_mobile/feature/product_category/model/system_category.dart';
 
 class BaseResponse {
   int _resultCode;
@@ -136,6 +137,54 @@ class UserDataResponse {
     data['UpdatedDate'] = this.updatedDate;
     data['Status'] = this.status;
     data['RoleId'] = this.roleId;
+    return data;
+  }
+}
+
+class ChildrenDataResponse {
+  List<SysCategory> children;
+  String systemCategoryId;
+  String sysCategoryName;
+  String type;
+  int status;
+  int categoryLevel;
+  String belongTo;
+
+  ChildrenDataResponse(
+      {this.children,
+      this.systemCategoryId,
+      this.sysCategoryName,
+      this.type,
+      this.status,
+      this.categoryLevel,
+      this.belongTo});
+
+  ChildrenDataResponse.fromJson(Map<String, dynamic> json) {
+    if (json['Children'] != null) {
+      children = <Null>[];
+      json['Children'].forEach((v) {
+        children.add(new SysCategory.fromJson(v));
+      });
+    }
+    systemCategoryId = json['SystemCategoryId'];
+    sysCategoryName = json['SysCategoryName'];
+    type = json['Type'];
+    status = json['Status'];
+    categoryLevel = json['CategoryLevel'];
+    belongTo = json['BelongTo'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.children != null) {
+      data['Children'] = this.children.map((v) => v.toMapSql()).toList();
+    }
+    data['SystemCategoryId'] = this.systemCategoryId;
+    data['SysCategoryName'] = this.sysCategoryName;
+    data['Type'] = this.type;
+    data['Status'] = this.status;
+    data['CategoryLevel'] = this.categoryLevel;
+    data['BelongTo'] = this.belongTo;
     return data;
   }
 }

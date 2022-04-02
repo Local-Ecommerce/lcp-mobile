@@ -29,9 +29,11 @@ class DescriptionDetailsDialog extends StatelessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(12.0),
-                    child: Text(
-                      product.productName,
-                      style: TextStyle(fontSize: 20.0),
+                    child: Flexible(
+                      child: Text(
+                        product.productName,
+                        style: TextStyle(fontSize: 20.0),
+                      ),
                     ),
                   ),
                   IconButton(

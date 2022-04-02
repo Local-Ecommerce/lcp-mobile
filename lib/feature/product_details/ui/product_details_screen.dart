@@ -4,6 +4,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:lcp_mobile/feature/discover/model/product.dart';
 import 'package:lcp_mobile/feature/product_details/bloc/product_details_bloc.dart';
+import 'package:lcp_mobile/resources/api_strings.dart';
 import 'package:lcp_mobile/resources/app_theme.dart';
 import 'package:lcp_mobile/resources/colors.dart';
 import 'package:lcp_mobile/route/route_constants.dart';
@@ -22,7 +23,8 @@ class ProductDetailsScreen extends StatefulWidget {
 }
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
-  final formatCurrency = NumberFormat.simpleCurrency();
+  final formatCurrency =
+      NumberFormat.currency(locale: "en_US", symbol: "VNĐ ", decimalDigits: 0);
   var _isSelectedSize = false;
   var _currentIndexSize = 0;
 
@@ -78,9 +80,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 child: Center(
                     child: Container(
                   margin: EdgeInsets.only(right: 40),
-                  child: Image.asset(
-                    product.images[0],
-                    width: 300,
+                  child: Image.network(
+                    splitImageStringToList(product.images)[0],
+                    width: 200,
                     fit: BoxFit.fill,
                   ),
                 ))),
@@ -89,7 +91,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         SizedBox(
           height: 16,
         ),
-        SizedBox(height: 100, child: listImageDetails(product.images)),
+        SizedBox(
+            height: 100,
+            child: listImageDetails(splitImageStringToList(product.images))),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
           child: Container(
@@ -107,7 +111,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       backgroundColor: Colors.redAccent,
       elevation: 0,
       title: Text(
-        product.productCategories ?? "",
+        product.systemCategoryId ?? "",
         style: TextStyle(
           color: Colors.white,
           fontSize: 24,
@@ -124,7 +128,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             shape: CircleBorder(),
             elevation: 6,
             child: Icon(
-              product.isFavorite
+              product.isFavorite == 1
                   ? Ionicons.ios_heart
                   : Ionicons.ios_heart_empty,
               color: Colors.white,
@@ -144,11 +148,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                product.productName,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
+              Flexible(
+                child: Text(
+                  product.productName,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
                 ),
               ),
               Text(
@@ -247,7 +253,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   Widget listImageDetails(List<String> images) {
     return ListView.builder(
       scrollDirection: Axis.horizontal,
-      itemCount: images.length,
+      itemCount: images.length - ApiStrings.one,
       itemBuilder: (context, index) {
         String image = images[index];
         return Container(
@@ -259,7 +265,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               borderRadius: BorderRadius.all(Radius.circular(8.0))),
           child: Padding(
             padding: const EdgeInsets.all(6.0),
-            child: Image.asset(
+            child: Image.network(
               image,
             ),
           ),
@@ -347,5 +353,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
   addToWishlistClick() {
     context.bloc<ProductDetailsBloc>().add(AddToWishlistEvent(product));
+  }
+
+  splitImageStringToList(String images) {
+    return images.split("|");
   }
 }

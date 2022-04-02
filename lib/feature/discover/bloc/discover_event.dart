@@ -6,14 +6,13 @@ abstract class DiscoverEvent extends Equatable {
 }
 
 class DiscoverUpdatedEvent extends DiscoverEvent {
-  final List<Menu> menus;
+  // final List<Menu> menus;
   final List<Product> products;
-  final List<SysCategory> categories;
-  // final String category;
+  // final List<SysCategory> categories;
+  final Object category;
   final String productType;
 
-  DiscoverUpdatedEvent(
-      {this.menus, this.products, this.categories, this.productType});
+  DiscoverUpdatedEvent({this.products, this.category, this.productType});
 
   @override
   List<Object> get props => [products, categories, productType];

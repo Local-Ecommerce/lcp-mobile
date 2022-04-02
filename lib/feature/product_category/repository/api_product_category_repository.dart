@@ -20,14 +20,25 @@ class ApiProductCategoryRepository {
   RefreshTokens _refreshTokens;
 
   Future<List<SysCategory>> getAllCategories() async {
+    String _url = ApiService.SYSTEMCATEGORY;
+
+    _refreshTokens = TokenPreferences.getRefreshTokens();
+
+    _dio.options.headers["Authorization"] =
+        "Bearer ${_refreshTokens.accessToken}";
+
     try {
-      Response response = await _dio.get(ApiService.PRODUCTCATEGORY);
+      Response response = await _dio.get(ApiService.SYSTEMCATEGORY);
       BaseResponse baseResponse =
           BaseResponse.fromJson(jsonDecode(response.data));
-      List<SysCategory> organizations = List.from(baseResponse.data)
-          .map((e) => SysCategory.fromJson(e))
-          .toList();
+
+      Data data = Data.fromJson(baseResponse.data);
+
+      List<SysCategory> listSysCate =
+          List.from(data.list).map((e) => SysCategory.fromJson(e)).toList();
       _dio.clear();
+
+      return listSysCate;
     } on DioError catch (ex) {
       log(jsonEncode(ex.response));
       _dio.clear();
@@ -39,7 +50,7 @@ class ApiProductCategoryRepository {
 
     _refreshTokens = TokenPreferences.getRefreshTokens();
     _dio.options.headers["Authorization"] =
-        "Bearer ${_refreshTokens.token}";
+        "Bearer ${_refreshTokens.accessToken}";
 
     try {
       Response response = await _dio.get(_url);
@@ -47,6 +58,33 @@ class ApiProductCategoryRepository {
           BaseResponse.fromJson(jsonDecode(response.data));
 
       Data data = Data.fromJson(baseResponse.data);
+
+      List<SysCategory> listSysCate =
+          List.from(data.list).map((e) => SysCategory.fromJson(e)).toList();
+      _dio.clear();
+      return listSysCate;
+    } on DioError catch (ex) {
+      log(jsonEncode(ex.response));
+      _dio.clear();
+    }
+  }
+
+  Future<List<SysCategory>> getChildListCategory(String categoryId) async {
+    String _url = ApiService.SYSTEMCATEGORY + "?id=${categoryId}";
+
+    _refreshTokens = TokenPreferences.getRefreshTokens();
+
+    _dio.options.headers["Authorization"] =
+        "Bearer ${_refreshTokens.accessToken}";
+
+    try {
+      Response response = await _dio.get(_url);
+      BaseResponse baseResponse =
+          BaseResponse.fromJson(jsonDecode(response.data));
+
+      Data data = Data.fromJson(baseResponse.data);
+
+      // ChildrenDataResponse child = ChildrenDataResponse.fromJson(data.list);
 
       List<SysCategory> listSysCate =
           List.from(data.list).map((e) => SysCategory.fromJson(e)).toList();

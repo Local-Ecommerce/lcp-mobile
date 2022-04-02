@@ -45,7 +45,7 @@ class FirebaseLoginRepository extends LoginRepository {
           email: email, password: password);
       var token = await _auth.currentUser.getIdToken();
 
-      print(result.user.toString());
+      // print(result.user.toString());
 
       // print("Token is:");
       // print(token);
@@ -99,6 +99,8 @@ class FirebaseLoginRepository extends LoginRepository {
         accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
 
     await FirebaseAuth.instance.signInWithCredential(credential);
+
+    await _apiLoginRepository.apiLogin(googleAuth.idToken);
 
     UserData _user = UserData(
       uid: _auth.currentUser.uid,

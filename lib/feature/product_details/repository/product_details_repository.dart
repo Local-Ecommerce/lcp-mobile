@@ -2,14 +2,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lcp_mobile/db/db_provider.dart';
 import 'package:lcp_mobile/feature/cart/models/cart_item.dart';
 import 'package:lcp_mobile/feature/discover/model/product.dart';
+import 'package:lcp_mobile/feature/discover/repository/api_discover_repository.dart';
 import 'package:sqflite_common/sqlite_api.dart';
 
 class ProductDetailsRepository {
   Database db;
   final productCollection = FirebaseFirestore.instance.collection('products');
+  ApiDiscoverRepository apiDiscoverRepository;
 
   ProductDetailsRepository() {
     db = DBProvider.instance.database;
+    apiDiscoverRepository = new ApiDiscoverRepository();
   }
 
   Future<int> insertProductToCart(Product product) async {
@@ -48,22 +51,33 @@ class ProductDetailsRepository {
   }
 
   Future<Product> getProductDetails(String id) async {
-    var result = await productCollection.doc(id).get();
+    // var result = await productCollection.doc(id).get();
+    Product result = await apiDiscoverRepository.getProductDetail(id);
     return _productListFromSnapshot(result);
   }
 
-  Product _productListFromSnapshot(DocumentSnapshot doc) {
+  Product _productListFromSnapshot(Product doc) {
     return Product(
-        productId: doc.id,
-        images: List<String>.from(doc.data()['images']),
-        color: doc.data()['colors'],
-        productName: doc.data()['title'],
-        defaultPrice: doc.data()['price'],
-        isFavorite: doc.data()['isFavourite'],
-        description: doc.data()['description'],
-        briefDescription: doc.data()['briefDescription'],
-        size: doc.data()['remainingSize'],
-        weight: doc.data()['weight']);
+        productId: doc.productId,
+        // images: List<String>.from(doc.data()['images']),
+        // images: doc.data()['image'],
+        // color: doc.data()['colors'],
+        // productName: doc.data()['title'],
+        // defaultPrice: doc.data()['price'],
+        // isFavorite: doc.data()['isFavourite'],
+        // description: doc.data()['description'],
+        // briefDescription: doc.data()['briefDescription'],
+        // size: doc.data()['remainingSize'],
+        // weight: doc.data()['weight']);
+        images: doc.images,
+        color: doc.color,
+        productName: doc.productName,
+        defaultPrice: doc.defaultPrice,
+        isFavorite: doc.isFavorite,
+        description: doc.description,
+        briefDescription: doc.briefDescription,
+        size: doc.size,
+        weight: doc.weight);
   }
 
 /*  Future<void> query() async{

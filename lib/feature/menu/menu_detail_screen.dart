@@ -19,7 +19,8 @@ class MenuDetailScreen extends StatefulWidget {
 }
 
 class _MenuDetailScreenState extends State<MenuDetailScreen> {
-  final formatCurrency = NumberFormat.simpleCurrency();
+  final formatCurrency =
+      NumberFormat.currency(locale: "en_US", symbol: "VNĐ ", decimalDigits: 0);
 
   @override
   Widget build(BuildContext context) {

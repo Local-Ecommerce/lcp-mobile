@@ -62,7 +62,7 @@ class UserData {
 
   @override
   String toString() {
-    return 'UserData{uid: $uid, username: $username, email: $email, dob: $dob, lastname: $fullName, firstname: $tokenId}';
+    return 'UserData{uid: $uid, username: $username, email: $email, dob: $dob, lastname: $fullName, firstname: $tokenId, apartment: $apartmentId, }';
   }
 }
 
@@ -103,6 +103,11 @@ class RefreshTokens {
     data['AccessToken'] = this.accessToken;
     return data;
   }
+
+  @override
+  String toString() {
+    return 'RefreshTokens{accessTokenExpiredDate: $accessTokenExpiredDate, token: $token, accessToken: $accessToken}';
+  }
 }
 
 class UserRequest {
@@ -127,4 +132,25 @@ class UserRequest {
   @override
   String toString() =>
       'UserRequest{ firebaseToken: $firebaseToken, role: $role}';
+}
+
+class TokenRequest {
+  String token;
+  String accessToken;
+
+  TokenRequest({this.token, this.accessToken});
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+
+    data['token'] = this.token;
+    data['accessToken'] = this.accessToken;
+
+    return data;
+  }
+
+  TokenRequest.fromJson(Map<String, dynamic> json) {
+    token = json['token'];
+    accessToken = json['accessToken'];
+  }
 }

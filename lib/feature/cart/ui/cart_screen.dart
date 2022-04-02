@@ -16,7 +16,8 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-  final formatCurrency = NumberFormat.simpleCurrency();
+  final formatCurrency =
+      NumberFormat.currency(locale: "en_US", symbol: "VNĐ ", decimalDigits: 0);
 
   @override
   void initState() {

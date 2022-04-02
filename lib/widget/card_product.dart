@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 // import 'package:lcp_mobile/feature/discover/model/product.dart';
 import 'package:lcp_mobile/resources/R.dart';
+import 'package:intl/intl.dart';
 
 class CardProduct extends StatelessWidget {
   //TODO product req
@@ -31,8 +32,22 @@ class CardProduct extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Flexible(
                   Text(
-                    'Nike',
+                    '${product.productName}',
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 3,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontSize: 22),
+                  ),
+                  // ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    formatCurrency(),
                     style: TextStyle(
                         fontWeight: FontWeight.normal,
                         color: Colors.white,
@@ -41,32 +56,26 @@ class CardProduct extends StatelessWidget {
                   SizedBox(
                     height: 10,
                   ),
-                  Text(
-                    'Epic React',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 22),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text('130', style: TextStyle(color: Colors.white)),
+                  // Text('130', style: TextStyle(color: Colors.white)),
                 ],
               ),
             ),
           ),
           Positioned(
-            right: 0,
-            bottom: 12,
+            right: 50,
+            bottom: 40,
             child: Align(
-              alignment: Alignment.centerRight,
+              alignment: Alignment.center,
               child: Container(
-                  width: width * 0.5,
-                  height: height * 0.3,
-                  child: Image.asset(
-                    '${product.images[0]}',
-                    fit: BoxFit.contain,
+                  width: width * 0.4,
+                  height: height * 0.2,
+                  alignment: Alignment.bottomLeft,
+                  child: Image.network(
+                    splitImageStringToList('${product.images}')[0],
+                    width: 150,
+                    height: 150,
+                    fit: BoxFit.fill,
+                    alignment: Alignment.bottomLeft,
                   )),
             ),
           ),
@@ -82,5 +91,16 @@ class CardProduct extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  formatCurrency() {
+    final formatCurrency = NumberFormat.currency(
+        locale: "en_US", symbol: "VNĐ ", decimalDigits: 0);
+
+    return formatCurrency.format(int.parse('${product.defaultPrice}'));
+  }
+
+  splitImageStringToList(String images) {
+    return images.split("|");
   }
 }

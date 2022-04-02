@@ -21,12 +21,13 @@ part 'discover_state.dart';
 class DiscoverBloc extends Bloc<DiscoverEvent, DiscoverState> {
   DiscoverRepository _discoverRepository;
   StreamSubscription _streamSubscription;
-  ApiMenuRepository _apiMenuRepository;
+  // ApiMenuRepository _apiMenuRepository;
+  ApiDiscoverRepository _apiDiscoverRepository;
   ApiProductCategoryRepository _apiProductCategoryRepository;
 
   DiscoverBloc()
       : _discoverRepository = FirebaseDiscoverRepository(),
-        _apiMenuRepository = ApiMenuRepository(),
+        _apiDiscoverRepository = ApiDiscoverRepository(),
         _apiProductCategoryRepository = ApiProductCategoryRepository(),
         super(DiscoverLoading());
 
@@ -54,56 +55,60 @@ class DiscoverBloc extends Bloc<DiscoverEvent, DiscoverState> {
 
   Stream<DiscoverState> _mapLoadDiscoverEvent(
       LoadingDiscoverEvent event) async* {
+    // List<SysCategory> _sysCate =
+    //     await _apiProductCategoryRepository.getAllCategories();
+
     // _streamSubscription =
     //     _discoverRepository.getListProduct().listen((products) {
-    //   add(DiscoverUpdatedEvent(
-    //       products: products,
-    //       category: event.category,
-    //       productType: event.productType));
+    //   add(DiscoverUpdatedEvent(products: products, category: _sysCate));
     // });
-    List<SysCategory> _sysCate = await _apiProductCategoryRepository
-        .getCategoryByType(event.productType);
 
-    print(_sysCate);
+    print(event.category);
+    print(event.apartmentId);
 
-    _streamSubscription = Stream.fromFuture(_apiMenuRepository
-            .getMenuByApartmentIdType(event.apartmentId, event.productType))
-        .listen((menus) {
-      add(DiscoverUpdatedEvent(
-          menus: menus, categories: _sysCate, productType: event.productType));
+    _streamSubscription = Stream.fromFuture(_apiDiscoverRepository
+            .getProductByApartmentCategory(event.apartmentId, event.category))
+        .listen((products) {
+      print(products);
+      add(DiscoverUpdatedEvent(products: products, category: event.category));
     });
+
+    // _streamSubscription = Stream.fromFuture(_apiMenuRepository
+    //         .getMenuByApartmentIdType(event.apartmentId, event.productType))
+    //     .listen((menus) {
+    //   add(DiscoverUpdatedEvent(
+    //       menus: menus, categories: _sysCate, productType: event.productType));
+    // });
   }
 }
 
 //TODO need refactor
 Stream<DiscoverState> _mapDiscoverUpdatedEventToState(
     DiscoverUpdatedEvent event) async* {
-  // var filterList = event.menus.where((element) {
-  // return element. == event.category;
-  // &&
-  //     element. == event.category;
-  // return null;
-  // }).toList();
+  var filterList = event.products.where((element) {
+    return element.systemCategoryId == event.category;
+    // &&
+    //     element. == event.category;
+    // return null;
+  }).toList();
 
-  var filterList = event.menus.toList();
-  var categories = event.categories.toList();
+  // var filterList = event.products.toList();
+  // var categories = event.category;
   // _discoverRepository.addListProduct(demoProducts);
-  yield DiscoverLoadFinished(
-      menus: filterList, categories: categories, isSuccess: true);
+  yield DiscoverLoadFinished(products: filterList, isSuccess: true);
 }
 
-  // Stream<DiscoverState> _mapLoadWishlistEvent(
-  //     LoadingWishlistEvent event) async* {
-  //   _discoverRepository.getListProduct().listen((event) {
-  //     var filterList = event.where((element) {
-  //       return element.isFavorite;
-  //     }).toList();
-  //     add(WishlistUpdatedEvent(products: filterList));
-  //   });
-  // }
+// Stream<DiscoverState> _mapLoadWishlistEvent(
+//     LoadingWishlistEvent event) async* {
+//   _discoverRepository.getListProduct().listen((event) {
+//     var filterList = event.where((element) {
+//       return element.isFavorite;
+//     }).toList();
+//     add(WishlistUpdatedEvent(products: filterList));
+//   });
+// }
 
-  // Stream<DiscoverState> _mapWishlistUpdatedEventToState(
-  //     WishlistUpdatedEvent event) async* {
-  //   yield WishlistLoadFinished(products: event.products, isSuccess: true);
-  // }
+// Stream<DiscoverState> _mapWishlistUpdatedEventToState(
+//     WishlistUpdatedEvent event) async* {
+//   yield WishlistLoadFinished(products: event.products, isSuccess: true);
 // }

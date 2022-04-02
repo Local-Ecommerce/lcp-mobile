@@ -24,27 +24,28 @@ class Product {
   // int status;
 
   List<Product> inverseBelongToNavigation;
-  List<ProductCategory> productCategories;
+  // List<ProductCategory> productCategories;
+  String systemCategoryId;
   String productId;
   String productCode;
   String productName;
   String briefDescription;
   String description;
-  double defaultPrice;
+  int defaultPrice;
   // int defaultPrice;
-  List<String> images;
+  String images;
   int status;
   // String size;
   // String color;
   double size;
   int color;
-  // int weight;
-  double weight;
-  bool isFavorite;
+  int weight;
+  // double weight;
+  int isFavorite;
 
   Product(
       {this.inverseBelongToNavigation,
-      this.productCategories,
+      this.systemCategoryId,
       this.productId,
       this.productCode,
       this.productName,
@@ -56,7 +57,7 @@ class Product {
       this.size,
       this.color,
       this.weight,
-      this.isFavorite = false});
+      this.isFavorite});
 
   Map<String, dynamic> toMap() {
     return {
@@ -75,13 +76,15 @@ class Product {
   static Product fromMap(Map<String, dynamic> map) {
     return Product(
         productId: map['product_id'],
-        images: List<String>.from(json.decode(map['images'])),
-        color: map['colors'],
+        // images: List<String>.from(json.decode(map['images'])),
+        images: map['Image'],
+        color: map['Color'],
         productName: map['productName'],
         defaultPrice: map['defaultPrice'],
-        isFavorite: map['isFavourite'] == 1 ? true : false,
-        description: map['description'],
-        briefDescription: map['briefDescription'],
+        // isFavorite: map['IsFavourite'] == 1 ? true : false,
+        isFavorite: map['isFavorite'],
+        description: map['Description'],
+        briefDescription: map['BriefDescription'],
         size: map['remainingSize'],
         weight: map['weight']);
   }
@@ -90,8 +93,9 @@ class Product {
     return {
       'product_id': productId,
       'images': json.encode(images),
-      'colors': color,
-      'isFavourite': isFavorite ? 1 : 0,
+      'color': color,
+      // 'isFavourite': isFavorite ? 1 : 0,
+      'isFavorite': isFavorite,
       'productName': productName,
       'defaultPrice': defaultPrice,
       'description': description,
@@ -108,12 +112,13 @@ class Product {
         inverseBelongToNavigation.add(new Product.fromJson(v));
       });
     }
-    if (json['ProductCategories'] != null) {
-      productCategories = <ProductCategory>[];
-      json['ProductCategories'].forEach((v) {
-        productCategories.add(new ProductCategory.fromJson(v));
-      });
-    }
+    // if (json['ProductCategories'] != null) {
+    //   productCategories = <ProductCategory>[];
+    //   json['ProductCategories'].forEach((v) {
+    //     productCategories.add(new ProductCategory.fromJson(v));
+    //   });
+    // }
+    systemCategoryId = json['SystemCategoryId'];
     productId = json['ProductId'];
     productCode = json['ProductCode'];
     productName = json['ProductName'];
@@ -134,10 +139,11 @@ class Product {
       data['InverseBelongToNavigation'] =
           this.inverseBelongToNavigation.map((v) => v.toJson()).toList();
     }
-    if (this.productCategories != null) {
-      data['ProductCategories'] =
-          this.productCategories.map((v) => v.toJson()).toList();
-    }
+    // if (this.productCategories != null) {
+    //   data['ProductCategories'] =
+    //       this.productCategories.map((v) => v.toJson()).toList();
+    // }
+    data['SystemCategoryId'] = this.systemCategoryId;
     data['ProductId'] = this.productId;
     data['ProductCode'] = this.productCode;
     data['ProductName'] = this.productName;

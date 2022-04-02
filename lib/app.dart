@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:lcp_mobile/feature/auth/login/bloc/login_bloc.dart';
+import 'package:lcp_mobile/feature/menu/bloc/category_bloc.dart';
 import 'package:lcp_mobile/localization/app_localization.dart';
 import 'package:lcp_mobile/route/router.dart';
 
@@ -26,6 +27,7 @@ class _MyAppState extends State<MyApp> {
   final productDetailsBloc = ProductDetailsBloc();
   final profileBloc = ProfileBloc();
   final loginBloc = LoginBloc();
+  final categoryBloc = CategoryBloc();
 
   @override
   void didChangeDependencies() {
@@ -61,6 +63,11 @@ class _MyAppState extends State<MyApp> {
               return loginBloc;
             },
           ),
+          BlocProvider(
+            create: (context) {
+              return categoryBloc;
+            },
+          )
         ],
         child: MaterialApp(
             initialRoute: widget.initialRoute,

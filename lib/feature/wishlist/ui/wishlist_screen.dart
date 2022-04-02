@@ -18,7 +18,8 @@ class Wishlist extends StatefulWidget {
 class _WishlistState extends State<Wishlist> {
   double width;
   double height;
-  final formatCurrency = NumberFormat.simpleCurrency();
+  final formatCurrency =
+      NumberFormat.currency(locale: "en_US", symbol: "VNĐ ", decimalDigits: 0);
 
   @override
   void initState() {
