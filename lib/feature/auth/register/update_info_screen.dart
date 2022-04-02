@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lcp_mobile/feature/apartment/model/apartment.dart';
+import 'package:lcp_mobile/feature/apartment/repository/api_apartment_repository.dart';
+import 'package:lcp_mobile/feature/auth/model/user_app.dart';
+import 'package:lcp_mobile/references/user_preference.dart';
 import 'package:lcp_mobile/resources/R.dart';
 import 'package:lcp_mobile/resources/resources.dart';
 import 'package:lcp_mobile/route/route_constants.dart';
@@ -20,9 +23,26 @@ String _currentSelectedValue = '';
 class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  ApiApartmentRepository _apiApartmentRepository;
+  UserData _userData;
+  List<Apartment> listApartment;
+  Apartment apartment;
+
+  getAllApartment() async {
+    listApartment = await _apiApartmentRepository.getAllApartments();
+  }
+
+  getApartmentById(String id) async {
+    apartment = await _apiApartmentRepository.getApartmentById(id);
+  }
+
   @override
   void initState() {
     super.initState();
+    _userData = UserPreferences.getUser();
+    _apiApartmentRepository = new ApiApartmentRepository();
+    getAllApartment();
+    getApartmentById('AP001');
   }
 
   @override
@@ -47,7 +67,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         child: ListView(
           children: [
             //TODO need map all info to user update
-            _ApartmentDropdown(),
+            _ApartmentDropdown(listApartment:listApartment),
             SizedBox(
               height: 10,
             ),
@@ -127,7 +147,7 @@ class _SubmitRegister extends StatelessWidget {
   }
 }
 
-class _ extends StatelessWidget {
+class _FullNameInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<bool>(
@@ -260,8 +280,13 @@ class _EmailInput extends StatelessWidget {
 }
 
 class _ApartmentDropdown extends StatefulWidget {
+  final List<Apartment> listApartment;
+
+  const _ApartmentDropdown({Key key, @required this.listApartment})
+      : super(key: key);
   @override
   __ApartmentDropdownState createState() => __ApartmentDropdownState();
+
 }
 
 class __ApartmentDropdownState extends State<_ApartmentDropdown> {
@@ -294,10 +319,10 @@ class __ApartmentDropdownState extends State<_ApartmentDropdown> {
                         state.didChange(newValue);
                       });
                     },
-                    items: lstApartment.map((String value) {
+                    items: widget.listApartment.map((value) {
                       return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
+                        value: value.apartmentId,
+                        child: Text(value.apartmentName),
                       );
                     }).toList(),
                   ),

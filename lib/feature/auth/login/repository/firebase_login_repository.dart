@@ -64,6 +64,7 @@ class FirebaseLoginRepository extends LoginRepository {
       'email': userData.email,
       'dob': userData.dob,
       'fullname': userData.fullName,
+      'role': userData.role
     });
   }
 

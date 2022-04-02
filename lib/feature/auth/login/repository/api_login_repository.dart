@@ -57,7 +57,7 @@ class ApiLoginRepository {
 
       UserPreferences.updateUser(userDataResponse.residents[0]);
 
-      TokenPreferences.updateToken(userDataResponse.refreshTokens[0]);
+      TokenPreferences.updateUserToken(userDataResponse.refreshTokens[0]);
 
       // print("Preferences");
       //
