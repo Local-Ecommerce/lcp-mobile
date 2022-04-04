@@ -77,7 +77,8 @@ class ProductDetailsRepository {
         description: doc.description,
         briefDescription: doc.briefDescription,
         size: doc.size,
-        weight: doc.weight);
+        weight: doc.weight,
+        children: doc.children);
   }
 
 /*  Future<void> query() async{

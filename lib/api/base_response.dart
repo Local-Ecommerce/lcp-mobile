@@ -161,7 +161,7 @@ class ChildrenDataResponse {
 
   ChildrenDataResponse.fromJson(Map<String, dynamic> json) {
     if (json['Children'] != null) {
-      children = <Null>[];
+      children = <SysCategory>[];
       json['Children'].forEach((v) {
         children.add(new SysCategory.fromJson(v));
       });

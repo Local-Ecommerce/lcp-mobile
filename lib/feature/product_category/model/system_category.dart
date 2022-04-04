@@ -19,7 +19,7 @@ class SysCategory {
         categoryLevel = json['CategoryLevel'],
         belongTo = json['BelongTo'],
         status = json['Status'],
-        lstSysCategories = json['InverseBelongToNavigation'];
+        lstSysCategories = json['Children'];
 
   Map<String, dynamic> toMapSql() {
     return {
@@ -27,7 +27,8 @@ class SysCategory {
       'SysCategoryName': sysCategoryName,
       'categoryLevel': categoryLevel,
       'belongTo': belongTo,
-      'status': status
+      'status': status,
+      'Children': lstSysCategories
     };
   }
 

@@ -7,6 +7,7 @@ import 'package:lcp_mobile/feature/checkout/checkout_screen.dart';
 import 'package:lcp_mobile/feature/credit_card_details/card_details_screen.dart';
 import 'package:lcp_mobile/feature/discover/model/product.dart';
 import 'package:lcp_mobile/feature/home/home.dart';
+import 'package:lcp_mobile/feature/portal_details/ui/new_detail_screen.dart';
 import 'package:lcp_mobile/feature/product_category/product_categorys_screen.dart';
 import 'package:lcp_mobile/feature/product_details/ui/product_details_screen.dart';
 import 'package:lcp_mobile/feature/shipping/shipping_method_screen.dart';
@@ -25,6 +26,18 @@ class AppRouter {
         return SlideRouteBuilder(
             page: ProductDetailsScreen(
           productId: productId,
+        ));
+      case RouteConstant.newDetailsRoute:
+        String newId = settings.arguments;
+        return SlideRouteBuilder(
+            page: NewDetailScreen(
+          newId: newId,
+        ));
+      case RouteConstant.newDetailsRoute:
+        String newId = settings.arguments;
+        return SlideRouteBuilder(
+            page: NewDetailScreen(
+          newId: newId,
         ));
       case RouteConstant.loginRoute:
         return SlideRouteBuilder(page: LoginScreen());

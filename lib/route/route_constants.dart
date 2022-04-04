@@ -11,4 +11,6 @@ class RouteConstant {
   static const String creditCard = '/credit_card';
   static const String productCategory = '/product_category';
   static const String checkout = '/checkout';
+  static const String poiDetailsRoute = '/poi_details';
+  static const String newDetailsRoute = '/new_details';
 }

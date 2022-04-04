@@ -31,17 +31,22 @@ class _DiscoverScreenState extends State<DiscoverScreen>
   var _isSelectedCategory = false;
   var _currentIndexCategory = 0;
 
+  var _isSelectedCategoryChild = false;
+  var _currentIndexCategoryChild = 0;
+
   var _isSelectedProductType = false;
   var _currentIndexProductType = 0;
 
   String _currentProductType = '';
   String _currentCategory = '';
+  String _currentCategoryChild = '';
 
   double width;
   double height;
 
   List<Product> listProduct = [];
   List<SysCategory> listSysCategories = [];
+  List<SysCategory> listChildCategories = [];
 
   TabController _tabController;
   // DiscoverFreshItemScreen _freshItemScreen;
@@ -127,7 +132,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                 Container(
                     width: width * 0.1,
                     height: height * 0.40,
-                    child: _buildListType()),
+                    child: _buildListCategoryChild()),
                 Container(
                     width: width * 0.9,
                     height: height * 0.40,
@@ -330,7 +335,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
     return BlocBuilder<CategoryBloc, CategoryState>(builder: (context, state) {
       listSysCategories = [];
 
-      if (state is CategoryLoadFinished) {
+      if (state is CategoryChildLoadFinished) {
         listSysCategories = state.categories;
       }
       return ListView.builder(
@@ -358,6 +363,43 @@ class _DiscoverScreenState extends State<DiscoverScreen>
     });
   }
 
+  Widget _buildListCategoryChild() {
+    return BlocBuilder<CategoryBloc, CategoryState>(builder: (context, state) {
+      listChildCategories = [];
+
+      if (state is CategoryChildLoadFinished) {
+        listChildCategories = state.cateChild;
+      }
+      return ListView.builder(
+          // shrinkWrap: true,
+          scrollDirection: Axis.vertical,
+          itemCount: listChildCategories.length,
+          itemBuilder: (context, index) {
+            var category = listChildCategories[index];
+            _isSelectedCategoryChild = _currentIndexCategoryChild == index;
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: RotatedBox(
+                quarterTurns: -1,
+                child: FlatButton(
+                    onPressed: () => {
+                          _onClickFilterCategoryChild(
+                              index, category.sysCategoryID),
+                        },
+                    child: Text(
+                      category.sysCategoryName,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: _isSelectedCategoryChild
+                              ? Colors.black
+                              : Colors.grey),
+                    )),
+              ),
+            );
+          });
+    });
+  }
+
   _onClickFilterProductType(int index, String type) {
     setState(() {
       _currentIndexProductType = index;
@@ -366,6 +408,9 @@ class _DiscoverScreenState extends State<DiscoverScreen>
 
     BlocProvider.of<DiscoverBloc>(context).add(LoadingDiscoverEvent(
         category: _currentCategory, apartmentId: _userData.apartmentId));
+
+    BlocProvider.of<CategoryBloc>(context)
+        .add(LoadingCategoryChildEvent(category: _currentCategory));
   }
 
   _onClickFilterCategory(int index, String category) {
@@ -375,7 +420,24 @@ class _DiscoverScreenState extends State<DiscoverScreen>
 
     _currentCategory = category;
 
+    BlocProvider.of<CategoryBloc>(context).add(LoadingCategoryChildEvent(
+        category: _currentCategory, categories: listSysCategories));
+
+    // BlocProvider.of<DiscoverBloc>(context).add(LoadingDiscoverEvent(
+    //     category: _currentCategory, apartmentId: _userData.apartmentId));
+  }
+
+  _onClickFilterCategoryChild(int index, String category) {
+    setState(() {
+      _currentIndexCategoryChild = index;
+    });
+
+    _currentCategoryChild = category;
+
     BlocProvider.of<DiscoverBloc>(context).add(LoadingDiscoverEvent(
-        category: _currentCategory, apartmentId: _userData.apartmentId));
+        category: _currentCategoryChild, apartmentId: _userData.apartmentId));
+
+    BlocProvider.of<DiscoverBloc>(context).add(LoadingDiscoverEvent(
+        category: _currentCategoryChild, apartmentId: _userData.apartmentId));
   }
 }

@@ -22,3 +22,24 @@ class LoadingCategoryEvent extends CategoryEvent {
   @override
   List<Object> get props => [categories];
 }
+
+class LoadingCategoryChildEvent extends CategoryEvent {
+  final List<SysCategory> cateChild;
+  final List<SysCategory> categories;
+  final String category;
+
+  LoadingCategoryChildEvent({this.cateChild, this.categories, this.category});
+
+  @override
+  List<Object> get props => [cateChild, categories];
+}
+
+class CategoryChildUpdatedEvent extends CategoryEvent {
+  final List<SysCategory> categories;
+  final List<SysCategory> cateChild;
+
+  CategoryChildUpdatedEvent({this.categories, this.cateChild});
+
+  @override
+  List<Object> get props => [categories, cateChild];
+}

@@ -23,7 +23,7 @@ class Product {
   // String productType;
   // int status;
 
-  List<Product> inverseBelongToNavigation;
+  List<Product> children;
   // List<ProductCategory> productCategories;
   String systemCategoryId;
   String productId;
@@ -44,7 +44,7 @@ class Product {
   int isFavorite;
 
   Product(
-      {this.inverseBelongToNavigation,
+      {this.children,
       this.systemCategoryId,
       this.productId,
       this.productCode,
@@ -70,23 +70,26 @@ class Product {
       'briefDescription': briefDescription,
       'remainingSize': size,
       'weight': weight,
+      'children': children,
     };
   }
 
   static Product fromMap(Map<String, dynamic> map) {
     return Product(
-        productId: map['product_id'],
-        // images: List<String>.from(json.decode(map['images'])),
-        images: map['Image'],
-        color: map['Color'],
-        productName: map['productName'],
-        defaultPrice: map['defaultPrice'],
-        // isFavorite: map['IsFavourite'] == 1 ? true : false,
-        isFavorite: map['isFavorite'],
-        description: map['Description'],
-        briefDescription: map['BriefDescription'],
-        size: map['remainingSize'],
-        weight: map['weight']);
+      productId: map['product_id'],
+      // images: List<String>.from(json.decode(map['images'])),
+      images: map['Image'],
+      color: map['Color'],
+      productName: map['productName'],
+      defaultPrice: map['defaultPrice'],
+      // isFavorite: map['IsFavourite'] == 1 ? true : false,
+      isFavorite: map['isFavorite'],
+      description: map['Description'],
+      briefDescription: map['BriefDescription'],
+      size: map['remainingSize'],
+      weight: map['weight'],
+      children: map['children'],
+    );
   }
 
   Map<String, dynamic> toMapSql() {
@@ -102,14 +105,15 @@ class Product {
       'briefDescription': briefDescription,
       'remainingSize': size,
       'weight': weight,
+      'children': children,
     };
   }
 
   Product.fromJson(Map<String, dynamic> json) {
-    if (json['InverseBelongToNavigation'] != null) {
-      inverseBelongToNavigation = <Product>[];
-      json['InverseBelongToNavigation'].forEach((v) {
-        inverseBelongToNavigation.add(new Product.fromJson(v));
+    if (json['Children'] != null) {
+      children = <Product>[];
+      json['Children'].forEach((v) {
+        children.add(new Product.fromJson(v));
       });
     }
     // if (json['ProductCategories'] != null) {
@@ -131,13 +135,13 @@ class Product {
     color = json['Color'];
     weight = json['Weight'];
     isFavorite = json['IsFavorite'];
+    children = json['Children'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.inverseBelongToNavigation != null) {
-      data['InverseBelongToNavigation'] =
-          this.inverseBelongToNavigation.map((v) => v.toJson()).toList();
+    if (this.children != null) {
+      data['RelatedProducts'] = this.children.map((v) => v.toJson()).toList();
     }
     // if (this.productCategories != null) {
     //   data['ProductCategories'] =
