@@ -2,7 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 class DBProvider {
-  static const DB_NAME = 'lcp-test2.db';
+  static const DB_NAME = 'lcp-test6.db';
   static const DB_VERSION = 1;
   static Database _database;
 
@@ -27,30 +27,52 @@ class DBProvider {
 
   Database get database => _database;
 
+  // static const CREATE_TABLE_PRODUCT_Q = '''
+  //     CREATE TABLE $TABLE_PRODUCT(
+  //                   product_id TEXT PRIMARY KEY,
+  //                   productName TEXT,
+  //                   description TEXT,
+  //                   briefDescription TEXT,
+  //                   images TEXT,
+  //                   colors INTEGER,
+  //                   defaultPrice REAL,
+  //                   category TEXT,
+  //                   isFavourite INTEGER,
+  //                   remainingSize TEXT,
+  //                   weight TEXT
+  //         );
+  //   ''';
   static const TABLE_PRODUCT = 'Product';
   static const CREATE_TABLE_PRODUCT_Q = '''
-      CREATE TABLE $TABLE_PRODUCT(
-                    product_id TEXT PRIMARY KEY,
+      CREATE TABLE IF NOT EXISTS $TABLE_PRODUCT(
+                    productId TEXT PRIMARY KEY,
+                    productCode TEXT,
+                    systemCategoryId TEXT,
                     productName TEXT,
                     description TEXT,
                     briefDescription TEXT,
                     images TEXT,
-                    colors INTEGER,
+                    color TEXT,
                     defaultPrice REAL,
                     category TEXT,
-                    isFavourite INTEGER,
+                    isFavorite INTEGER,
                     remainingSize TEXT,
-                    weight TEXT
+                    status INTEGER,
+                    weight FLOAT,
+                    size TEXT,
+                    belongTo TEXT, 
+                    residentId TEXT
           );
     ''';
 
   static const TABLE_CART_ITEMS = 'CartItems';
+
   static const CREATE_TABLE_CART_ITEMS_Q = '''
-            CREATE TABLE $TABLE_CART_ITEMS (
+            CREATE TABLE IF NOT EXISTS $TABLE_CART_ITEMS (
               cart_items_id INTEGER PRIMARY KEY,
-              product_id TEXT NOT NULL UNIQUE,
+              productId TEXT NOT NULL UNIQUE,
               quantity INTEGER NOT NULL,
-              FOREIGN KEY (product_id) REFERENCES Product (product_id)
+              FOREIGN KEY (productId) REFERENCES Product (productId)
             );
          ''';
 }

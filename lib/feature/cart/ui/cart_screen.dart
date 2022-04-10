@@ -160,71 +160,74 @@ class _CartScreenState extends State<CartScreen> {
                   borderRadius: BorderRadius.circular(26)),
             ),
             Positioned(
-                right: 0,
-                bottom: 40,
+                right: 35,
+                bottom: 35,
                 child: Center(
-                    child: Image.asset(
-                  cartItem.product.images[0],
-                  width: 140,
+                    child: Image.network(
+                  splitImageStringToList(cartItem.product.images)[0],
+                  width: 100,
                 )))
           ],
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                cartItem.product.productName,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
+        Flexible(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  cartItem.product.productName,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                formatCurrency.format(cartItem.product.defaultPrice),
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: [
-                  SizedBox(
-                    width: 40,
-                    height: 30,
-                    child: OutlineButton(
-                      padding: EdgeInsets.zero,
-                      onPressed: () =>
-                          decreaseQuantity(cartItem.product, cartItem),
-                      child: Icon(Icons.remove),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(13)),
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  formatCurrency.format(cartItem.product.defaultPrice),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 40,
+                      height: 30,
+                      child: OutlineButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: () =>
+                            decreaseQuantity(cartItem.product, cartItem),
+                        child: Icon(Icons.remove),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(13)),
+                      ),
                     ),
-                  ),
-                  Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Text(
-                        "${cartItem.quantity}",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      )),
-                  SizedBox(
-                    width: 40,
-                    height: 32,
-                    child: OutlineButton(
-                      padding: EdgeInsets.zero,
-                      onPressed: () =>
-                          increaseQuantity(cartItem.product, cartItem),
-                      child: Icon(Icons.add),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(13)),
+                    Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Text(
+                          "${cartItem.quantity}",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        )),
+                    SizedBox(
+                      width: 40,
+                      height: 32,
+                      child: OutlineButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: () =>
+                            increaseQuantity(cartItem.product, cartItem),
+                        child: Icon(Icons.add),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(13)),
+                      ),
                     ),
-                  ),
-                ],
-              )
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         )
       ],
@@ -249,5 +252,9 @@ class _CartScreenState extends State<CartScreen> {
       BlocProvider.of<CartBloc>(context).add(
           ChangeQuantityCartItem(product, cartItem.quantity - 1, cartItem));
     }
+  }
+
+  splitImageStringToList(String images) {
+    return images.split("|");
   }
 }

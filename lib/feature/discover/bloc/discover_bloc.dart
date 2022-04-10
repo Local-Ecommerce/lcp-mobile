@@ -21,14 +21,11 @@ part 'discover_state.dart';
 class DiscoverBloc extends Bloc<DiscoverEvent, DiscoverState> {
   DiscoverRepository _discoverRepository;
   StreamSubscription _streamSubscription;
-  // ApiMenuRepository _apiMenuRepository;
   ApiDiscoverRepository _apiDiscoverRepository;
-  ApiProductCategoryRepository _apiProductCategoryRepository;
 
   DiscoverBloc()
       : _discoverRepository = FirebaseDiscoverRepository(),
         _apiDiscoverRepository = ApiDiscoverRepository(),
-        _apiProductCategoryRepository = ApiProductCategoryRepository(),
         super(DiscoverLoading());
 
   @override
@@ -55,46 +52,35 @@ class DiscoverBloc extends Bloc<DiscoverEvent, DiscoverState> {
 
   Stream<DiscoverState> _mapLoadDiscoverEvent(
       LoadingDiscoverEvent event) async* {
-    // List<SysCategory> _sysCate =
-    //     await _apiProductCategoryRepository.getAllCategories();
-
-    // _streamSubscription =
-    //     _discoverRepository.getListProduct().listen((products) {
-    //   add(DiscoverUpdatedEvent(products: products, category: _sysCate));
-    // });
-
     print(event.category);
     print(event.apartmentId);
-
-    _streamSubscription = Stream.fromFuture(_apiDiscoverRepository
-            .getProductByApartmentCategory(event.apartmentId, event.category))
-        .listen((products) {
-      print(products);
-      add(DiscoverUpdatedEvent(products: products, category: event.category));
-    });
-
-    // _streamSubscription = Stream.fromFuture(_apiMenuRepository
-    //         .getMenuByApartmentIdType(event.apartmentId, event.productType))
-    //     .listen((menus) {
-    //   add(DiscoverUpdatedEvent(
-    //       menus: menus, categories: _sysCate, productType: event.productType));
-    // });
+    if (event.category != "") {
+      _streamSubscription = Stream.fromFuture(_apiDiscoverRepository
+              .getProductByApartmentCategory(event.apartmentId, event.category))
+          .listen((products) {
+        add(DiscoverUpdatedEvent(products: products, category: event.category));
+      });
+    } else {
+      _streamSubscription = Stream.fromFuture(_apiDiscoverRepository
+              .getProductListByApartment(event.apartmentId))
+          .listen((products) {
+        add(DiscoverUpdatedEvent(products: products, category: event.category));
+      });
+    }
   }
 }
 
-//TODO need refactor
 Stream<DiscoverState> _mapDiscoverUpdatedEventToState(
     DiscoverUpdatedEvent event) async* {
-  var filterList = event.products.where((element) {
-    return element.systemCategoryId == event.category;
-    // &&
-    //     element. == event.category;
-    // return null;
-  }).toList();
+  var filterList;
+  if (event.category != "") {
+    filterList = event.products.where((element) {
+      return element.systemCategoryId == event.category;
+    }).toList();
+  } else {
+    filterList = event.products;
+  }
 
-  // var filterList = event.products.toList();
-  // var categories = event.category;
-  // _discoverRepository.addListProduct(demoProducts);
   yield DiscoverLoadFinished(products: filterList, isSuccess: true);
 }
 

@@ -26,9 +26,25 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   final formatCurrency =
       NumberFormat.currency(locale: "en_US", symbol: "VNĐ ", decimalDigits: 0);
   var _isSelectedSize = false;
+  var _isSelectedColor = false;
+  var _isSelectedWeight = false;
+
+  var _currentIndexWeight = 0;
+  var _currentIndexColor = 0;
   var _currentIndexSize = 0;
 
+  var _imageIndex = 0;
+
   Product product;
+  List<Product> relatedProduct;
+
+  List<String> lstSize = [];
+  List<num> lstWeight = [];
+  List<String> lstColor = [];
+
+  bool isHaveSize = false;
+  bool isHaveWeight = false;
+  bool isHaveColor = false;
 
   var _isAddedToBag = false;
 
@@ -46,6 +62,29 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       builder: (context, state) {
         if (state is LoadProductDetailsFinished) {
           product = state.product;
+          lstWeight.clear();
+          lstSize.clear();
+          lstColor.clear();
+          isHaveSize = false;
+          isHaveWeight = false;
+          isHaveColor = false;
+          if (product.children != null) {
+            relatedProduct = product.children;
+            relatedProduct.forEach((product) {
+              if (product.color != null) {
+                isHaveColor = true;
+                if (!lstColor.contains(product.color))
+                  lstColor.add(product.color);
+              } else if (product.weight != 0) {
+                isHaveWeight = true;
+                if (!lstWeight.contains(product.weight))
+                  lstWeight.add(product.weight);
+              } else if (product.size != null) {
+                isHaveSize = true;
+                if (!lstSize.contains(product.size)) lstSize.add(product.size);
+              }
+            });
+          }
         }
 
         return Scaffold(
@@ -81,7 +120,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     child: Container(
                   margin: EdgeInsets.only(right: 40),
                   child: Image.network(
-                    splitImageStringToList(product.images)[0],
+                    splitImageStringToList(product.images)[_imageIndex],
                     width: 200,
                     fit: BoxFit.fill,
                   ),
@@ -203,47 +242,77 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           SizedBox(
             height: 26,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Size',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
-              ),
-              Row(
-                children: [
-                  Text(
-                    'UK',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    'USA',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  )
-                ],
-              )
-            ],
-          ),
+
+          //   if (product.color != null) ...[
+          //     Row(
+          //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //       children: [
+          //         Text(
+          //           'Size',
+          //           style: TextStyle(
+          //             fontWeight: FontWeight.bold,
+          //             fontSize: 20,
+          //           ),
+          //         ),
+          //         Row(
+          //           children: [
+          //             Text(
+          //               'UK',
+          //               style: TextStyle(
+          //                 color: Colors.grey,
+          //                 fontWeight: FontWeight.bold,
+          //                 fontSize: 20,
+          //               ),
+          //             ),
+          //             SizedBox(
+          //               width: 10,
+          //             ),
+          //             Text(
+          //               'USA',
+          //               style: TextStyle(
+          //                 color: Colors.grey,
+          //                 fontWeight: FontWeight.bold,
+          //                 fontSize: 20,
+          //               ),
+          //             )
+          //           ],
+          //         )
+          //       ],
+          //     ),
+          //     SizedBox(
+          //       height: 16,
+          //     ),
+          //     // SizedBox(height: 60, child: listSize(size)),
+          //     SizedBox(
+          //       height: 100,
+          //     ),
+          //   ],
+          if (isHaveColor == true) ...[
+            _buildAttributeTitle("Màu sắc"),
+            SizedBox(
+              height: 16,
+            ),
+            SizedBox(height: 60, child: listColor()),
+            Padding(padding: EdgeInsets.symmetric(vertical: 16)),
+          ],
+          if (isHaveSize == true) ...[
+            _buildAttributeTitle("Kích thước"),
+            SizedBox(
+              height: 16,
+            ),
+            SizedBox(height: 60, child: listSize()),
+            Padding(padding: EdgeInsets.symmetric(vertical: 16)),
+          ],
+          if (isHaveWeight == true) ...[
+            _buildAttributeTitle("Khối lượng"),
+            SizedBox(
+              height: 16,
+            ),
+            SizedBox(height: 60, child: listWeight()),
+            Padding(padding: EdgeInsets.symmetric(vertical: 16)),
+          ],
           SizedBox(
-            height: 16,
-          ),
-          SizedBox(height: 60, child: listSize(size)),
-          SizedBox(
-            height: 100,
+            height: 50,
           ),
         ],
       ),
@@ -256,51 +325,25 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       itemCount: images.length - ApiStrings.one,
       itemBuilder: (context, index) {
         String image = images[index];
-        return Container(
-          margin: EdgeInsets.symmetric(horizontal: 6.0),
-          width: 100,
-          height: 50,
-          decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.all(Radius.circular(8.0))),
-          child: Padding(
-            padding: const EdgeInsets.all(6.0),
-            child: Image.network(
-              image,
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget listSize(List<double> sizes) {
-    return ListView.builder(
-      scrollDirection: Axis.horizontal,
-      itemCount: sizes.length,
-      itemBuilder: (context, index) {
-        double size = sizes[index];
-        _isSelectedSize = _currentIndexSize == index;
         return GestureDetector(
-          onTap: () => onSelectedSize(index, size),
+          onTap: () {
+            setState(() {
+              _imageIndex = index;
+            });
+          },
           child: Container(
             margin: EdgeInsets.symmetric(horizontal: 6.0),
             width: 100,
             height: 50,
             decoration: BoxDecoration(
-                color: _isSelectedSize ? Colors.black : Colors.white,
-                border: Border.all(color: Colors.grey[300]),
+                color: Colors.grey[300],
                 borderRadius: BorderRadius.all(Radius.circular(8.0))),
             child: Padding(
-                padding: const EdgeInsets.all(6.0),
-                child: Center(
-                  child: Text(
-                    "$size",
-                    style: TextStyle(
-                        color: _isSelectedSize ? Colors.white : Colors.black,
-                        fontWeight: FontWeight.bold),
-                  ),
-                )),
+              padding: const EdgeInsets.all(6.0),
+              child: Image.network(
+                image,
+              ),
+            ),
           ),
         );
       },
@@ -341,13 +384,144 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     );
   }
 
-  onSelectedSize(int index, double size) {
+  Widget _buildAttributeTitle(String title) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget listColor() {
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemCount: lstColor.length,
+      itemBuilder: (context, index) {
+        var attribute = lstColor[index];
+
+        _isSelectedSize = _currentIndexColor == index;
+        return GestureDetector(
+          onTap: () => onSelectedIndexColor(index),
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 6.0),
+            width: 100,
+            height: 50,
+            decoration: BoxDecoration(
+                color: _isSelectedSize ? Colors.black : Colors.white,
+                border: Border.all(color: Colors.grey[300]),
+                borderRadius: BorderRadius.all(Radius.circular(8.0))),
+            child: Padding(
+                padding: const EdgeInsets.all(6.0),
+                child: Center(
+                  child: Text(
+                    "$attribute",
+                    style: TextStyle(
+                        color: _isSelectedSize ? Colors.white : Colors.black,
+                        fontWeight: FontWeight.bold),
+                  ),
+                )),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget listSize() {
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemCount: lstSize.length,
+      itemBuilder: (context, index) {
+        var attribute = lstSize[index];
+
+        _isSelectedSize = _currentIndexSize == index;
+        return GestureDetector(
+          onTap: () => onSelectedIndexSize(index),
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 6.0),
+            width: 100,
+            height: 50,
+            decoration: BoxDecoration(
+                color: _isSelectedSize ? Colors.black : Colors.white,
+                border: Border.all(color: Colors.grey[300]),
+                borderRadius: BorderRadius.all(Radius.circular(8.0))),
+            child: Padding(
+                padding: const EdgeInsets.all(6.0),
+                child: Center(
+                  child: Text(
+                    "$attribute",
+                    style: TextStyle(
+                        color: _isSelectedSize ? Colors.white : Colors.black,
+                        fontWeight: FontWeight.bold),
+                  ),
+                )),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget listWeight() {
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
+      itemCount: lstWeight.length,
+      itemBuilder: (context, index) {
+        var weight = lstWeight[index];
+        _isSelectedSize = _currentIndexWeight == index;
+        return GestureDetector(
+          onTap: () => onSelectedIndexWeight(index),
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 6.0),
+            width: 100,
+            height: 50,
+            decoration: BoxDecoration(
+                color: _isSelectedSize ? Colors.black : Colors.white,
+                border: Border.all(color: Colors.grey[300]),
+                borderRadius: BorderRadius.all(Radius.circular(8.0))),
+            child: Padding(
+                padding: const EdgeInsets.all(6.0),
+                child: Center(
+                  child: Text(
+                    "$weight",
+                    style: TextStyle(
+                        color: _isSelectedSize ? Colors.white : Colors.black,
+                        fontWeight: FontWeight.bold),
+                  ),
+                )),
+          ),
+        );
+      },
+    );
+  }
+
+  onSelectedIndexColor(int index) {
+    setState(() {
+      _currentIndexColor = index;
+    });
+  }
+
+  onSelectedIndexSize(int index) {
     setState(() {
       _currentIndexSize = index;
     });
   }
 
+  onSelectedIndexWeight(int index) {
+    setState(() {
+      _currentIndexWeight = index;
+    });
+  }
+
   addProductToCart() {
+    print("productCode:");
+    print(product.productCode);
+    print(product.productId);
     BlocProvider.of<ProductDetailsBloc>(context).add(AddProductToCart(product));
   }
 

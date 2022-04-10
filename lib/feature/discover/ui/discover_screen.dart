@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lcp_mobile/feature/auth/login/bloc/login_bloc.dart';
 import 'package:lcp_mobile/feature/auth/model/user_app.dart';
 import 'package:lcp_mobile/feature/discover/bloc/discover_bloc.dart';
 import 'package:lcp_mobile/feature/discover/model/product.dart';
-import 'package:lcp_mobile/feature/discover/ui/discover_fresh.dart';
-import 'package:lcp_mobile/feature/discover/ui/discover_other.dart';
 import 'package:lcp_mobile/feature/menu/bloc/category_bloc.dart';
 import 'package:lcp_mobile/feature/product_category/model/system_category.dart';
 import 'package:lcp_mobile/feature/product_category/repository/api_product_category_repository.dart';
 import 'package:lcp_mobile/references/user_preference.dart';
 import 'package:lcp_mobile/resources/R.dart';
+import 'package:lcp_mobile/resources/api_strings.dart';
 import 'package:lcp_mobile/resources/resources.dart';
 import 'package:lcp_mobile/route/route_constants.dart';
 import 'package:lcp_mobile/widget/appbar.dart';
@@ -28,6 +26,8 @@ class DiscoverScreen extends StatefulWidget {
 
 class _DiscoverScreenState extends State<DiscoverScreen>
     with TickerProviderStateMixin {
+  bool _firstLoad = true;
+
   var _isSelectedCategory = false;
   var _currentIndexCategory = 0;
 
@@ -58,12 +58,15 @@ class _DiscoverScreenState extends State<DiscoverScreen>
   @override
   void initState() {
     super.initState();
+    setState(() {
+      _userData = UserPreferences.getUser();
 
-    _userData = UserPreferences.getUser();
+      _refreshTokens = TokenPreferences.getRefreshTokens();
+    });
 
-    _refreshTokens = TokenPreferences.getRefreshTokens();
-
+    // print("userData:");
     // print(_userData);
+    // print("refreshToken:");
     print(_refreshTokens);
 
     _apiProductCate = new ApiProductCategoryRepository();
@@ -71,7 +74,8 @@ class _DiscoverScreenState extends State<DiscoverScreen>
     context.bloc<CategoryBloc>().add(LoadingCategoryEvent());
 
     context.bloc<DiscoverBloc>().add(LoadingDiscoverEvent(
-        apartmentId: _userData == null ? "AP001" : _userData.apartmentId));
+        apartmentId: _userData == null ? "AP001" : _userData.apartmentId,
+        category: _currentCategory));
   }
 
   // getSysCategory() async {
@@ -166,16 +170,87 @@ class _DiscoverScreenState extends State<DiscoverScreen>
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
                 children: [
-                  Flexible(flex: 2, child: _buildCardBottomNew()),
-                  Flexible(flex: 2, child: _buildCardBottomNew())
+                  // Flexible(flex: 2, child: _buildCardBottomNew()),
+                  // Flexible(flex: 2, child: _buildCardBottomNew()),
+                  Container(
+                      height: 150, width: width * 0.92, child: _buildTestList())
                 ],
               ),
             )
           ],
         ));
+  }
+
+  Widget _buildTestList() {
+    // return BlocBuilder<CategoryBloc, CategoryState>(builder: (context, state) {
+    //   listSysCategories = [];
+
+    //   if (state is CategoryChildLoadFinished) {
+    //     listSysCategories = state.categories;
+    //   }
+    return ListView.builder(
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        itemCount: listSysCategories.length,
+        itemBuilder: (context, index) {
+          var category = listSysCategories[index];
+          _isSelectedCategory = _currentIndexCategory == index;
+          return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: Card(
+                color: Colors.white,
+                child: Container(
+                  width: width * 0.5,
+                  height: width * 0.4,
+                  child: Stack(
+                    children: [
+                      // Align(
+                      //   child: IconButton(
+                      //       icon: Image.asset(
+                      //         R.icon.heartOutline,
+                      //         width: 20,
+                      //         height: 20,
+                      //       ),
+                      //       onPressed: () {}),
+                      //   alignment: Alignment.topRight,
+                      // ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            return Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  R.icon.snkr01,
+                                  width: constraints.maxWidth * 0.5,
+                                  height: constraints.maxHeight * 0.5,
+                                ),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      category.sysCategoryName,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ));
+        });
+    // });
   }
 
   Widget _buildCardBottomNew() {
@@ -280,33 +355,8 @@ class _DiscoverScreenState extends State<DiscoverScreen>
     );
   }
 
-  // Widget _buildListMenu() {
-  //   return BlocBuilder<DiscoverBloc, DiscoverState>(
-  //     builder: (context, state) {
-  //       listProduct = [];
-
-  //       if (state is DiscoverLoadFinished) {
-  //         listProduct = state.products;
-  //       }
-  //       // print("listMenu:");
-  //       // print(listMenu.length);
-  //       return ListView.builder(
-  //           scrollDirection: Axis.horizontal,
-  //           itemCount: listMenu.length,
-  //           itemBuilder: (context, index) {
-  //             var menu = listMenu[index];
-  //             return CardMenu(
-  //               menu: menu,
-  //               onTapCard: () {},
-  //             );
-  //           });
-  //     },
-  //   );
-  // }
-
   Widget _buildListType() {
     return ListView.builder(
-        // scrollDirection: Axis.horizontal,
         itemCount: ProductType.values().length,
         itemBuilder: (context, index) {
           var type = ProductType.values()[index];
@@ -355,8 +405,9 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                     category.sysCategoryName,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color:
-                            _isSelectedCategory ? Colors.black : Colors.grey),
+                        color: _isSelectedCategory && !_firstLoad
+                            ? Colors.black
+                            : Colors.grey),
                   )),
             );
           });
@@ -390,7 +441,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                       category.sysCategoryName,
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: _isSelectedCategoryChild
+                          color: _isSelectedCategoryChild && !_firstLoad
                               ? Colors.black
                               : Colors.grey),
                     )),
@@ -416,6 +467,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
   _onClickFilterCategory(int index, String category) {
     setState(() {
       _currentIndexCategory = index;
+      _firstLoad = false;
     });
 
     _currentCategory = category;
@@ -425,6 +477,8 @@ class _DiscoverScreenState extends State<DiscoverScreen>
 
     // BlocProvider.of<DiscoverBloc>(context).add(LoadingDiscoverEvent(
     //     category: _currentCategory, apartmentId: _userData.apartmentId));
+    _currentIndexCategoryChild = ApiStrings.zero;
+    _onClickFilterCategoryChild(ApiStrings.zero, category);
   }
 
   _onClickFilterCategoryChild(int index, String category) {
@@ -433,9 +487,6 @@ class _DiscoverScreenState extends State<DiscoverScreen>
     });
 
     _currentCategoryChild = category;
-
-    BlocProvider.of<DiscoverBloc>(context).add(LoadingDiscoverEvent(
-        category: _currentCategoryChild, apartmentId: _userData.apartmentId));
 
     BlocProvider.of<DiscoverBloc>(context).add(LoadingDiscoverEvent(
         category: _currentCategoryChild, apartmentId: _userData.apartmentId));
