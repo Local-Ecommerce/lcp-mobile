@@ -18,8 +18,8 @@ class CartRepositoryLocal extends CartRepository {
     var res = await _db.rawQuery(""" 
       SELECT * FROM ${DBProvider.TABLE_CART_ITEMS} 
       JOIN ${DBProvider.TABLE_PRODUCT} 
-      on ${DBProvider.TABLE_PRODUCT}.product_id 
-      = ${DBProvider.TABLE_CART_ITEMS}.product_id
+      on ${DBProvider.TABLE_PRODUCT}.productId 
+      = ${DBProvider.TABLE_CART_ITEMS}.productId
     """);
     var cartItems = List.generate(res.length, (index) {
       final data = res[index];
@@ -33,7 +33,7 @@ class CartRepositoryLocal extends CartRepository {
 
   Future<void> updateQuantity(Product product, int value) async {
     _db.update(DBProvider.TABLE_CART_ITEMS, {"quantity": value},
-        where: "product_id = ?", whereArgs: [product.productId]);
+        where: "productId = ?", whereArgs: [product.productId]);
   }
 
   Future<void> removeCartItem(CartItem cartItem) async {

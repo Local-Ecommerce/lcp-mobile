@@ -4,7 +4,7 @@ class ApiStrings {
   static String fresh = "tươi sống";
   static String other = "khác";
   static String token =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjEwYWlXNFhzN2dWdzVZdERyODJSOHRpVExTRTIiLCJyb2xlIjoiUjAwMiIsIm5iZiI6MTY0ODM4MzY5OCwiZXhwIjoxNjQ4Mzg3Mjk4LCJpYXQiOjE2NDgzODM2OTh9.fAJQK7SmiTb8YgD_3CIXE1erhwxtlBM1VILJgpBd9M4";
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IlpyUFhWZEMzSDNZZ0VtbTVIaXF0Z0JqT1hVeDEiLCJyb2xlIjoiTWVyY2hhbnQiLCJuYmYiOjE2NDkwNjAwODAsImV4cCI6MTY0OTE0NjQ4MCwiaWF0IjoxNjQ5MDYwMDgwfQ.jwAhbTIsrl3-AP3mQSY7dwHQYk6DXv3seZVHAurAxJY";
   static int zero = 0;
   static int one = 1;
   static String activeProduct = "1001";

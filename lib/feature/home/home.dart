@@ -3,8 +3,8 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:lcp_mobile/feature/cart/ui/cart_screen.dart';
 import 'package:lcp_mobile/feature/discover/ui/discover_screen.dart';
+import 'package:lcp_mobile/feature/portal/ui/portal_screen.dart';
 import 'package:lcp_mobile/feature/profile/profile_screen.dart';
-import 'package:lcp_mobile/feature/wishlist/ui/wishlist_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
@@ -18,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
   PageController _pageController;
   DiscoverScreen _discoverScreen;
   CartScreen _cartScreen;
-  Wishlist _wishlist;
+  Portal _portal;
   ProfileScreen _profileScreen;
 
   @override
@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _pageController = PageController();
     _discoverScreen = DiscoverScreen();
     _cartScreen = CartScreen();
-    _wishlist = Wishlist();
+    _portal = Portal();
     _profileScreen = ProfileScreen();
   }
 
@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
             },
             children: <Widget>[
               _discoverScreen,
-              _wishlist,
+              _portal,
               _cartScreen,
               _profileScreen,
             ],
@@ -75,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   GButton(
                     icon: Ionicons.ios_heart,
-                    text: 'Yêu thích',
+                    text: 'Tin tức',
                   ),
                   GButton(
                     icon: Ionicons.ios_cart,

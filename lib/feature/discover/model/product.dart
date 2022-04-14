@@ -12,18 +12,7 @@ class ProductType {
 }
 
 class Product {
-  // final String id;
-  // String productCode, productName, briefDescription, description;
-  // List<String> images;
-  // List<ProductCategory> productCategories;
-  // String color;
-  // double defaultPrice;
-  // bool isFavourite;
-  // double remainingSize, weight;
-  // String productType;
-  // int status;
-
-  List<Product> inverseBelongToNavigation;
+  List<Product> children;
   // List<ProductCategory> productCategories;
   String systemCategoryId;
   String productId;
@@ -31,20 +20,18 @@ class Product {
   String productName;
   String briefDescription;
   String description;
-  int defaultPrice;
-  // int defaultPrice;
+  num defaultPrice;
   String images;
   int status;
-  // String size;
-  // String color;
-  double size;
-  int color;
-  int weight;
-  // double weight;
+  String size;
+  String color;
+  String belongTo;
+  num weight;
   int isFavorite;
+  String residentId;
 
   Product(
-      {this.inverseBelongToNavigation,
+      {this.children,
       this.systemCategoryId,
       this.productId,
       this.productCode,
@@ -57,67 +44,80 @@ class Product {
       this.size,
       this.color,
       this.weight,
-      this.isFavorite});
+      this.isFavorite,
+      this.belongTo,
+      this.residentId});
 
   Map<String, dynamic> toMap() {
     return {
-      'images': images,
-      'colors': color,
-      'isFavourite': isFavorite,
+      'productId': productId,
       'productName': productName,
-      'defaultPrice': defaultPrice,
-      'description': description,
+      'productCode': productCode,
       'briefDescription': briefDescription,
-      'remainingSize': size,
+      'description': description,
+      'defaultPrice': defaultPrice,
+      'images': images,
+      'status': status,
+      'size': size,
+      'color': color,
       'weight': weight,
+      'isFavorite': isFavorite,
+      'belongTo': belongTo,
+      'residentId': residentId,
+      'relatedProducts': children,
     };
   }
 
   static Product fromMap(Map<String, dynamic> map) {
     return Product(
-        productId: map['product_id'],
-        // images: List<String>.from(json.decode(map['images'])),
-        images: map['Image'],
-        color: map['Color'],
-        productName: map['productName'],
-        defaultPrice: map['defaultPrice'],
-        // isFavorite: map['IsFavourite'] == 1 ? true : false,
-        isFavorite: map['isFavorite'],
-        description: map['Description'],
-        briefDescription: map['BriefDescription'],
-        size: map['remainingSize'],
-        weight: map['weight']);
+      // images: List<String>.from(json.decode(map['images'])),
+      // isFavorite: map['IsFavourite'] == 1 ? true : false,
+      productId: map['productId'],
+      productName: map['productName'],
+      productCode: map['productCode'],
+      briefDescription: map['briefDescription'],
+      description: map['description'],
+      defaultPrice: map['defaultPrice'],
+      images: map['images'],
+      status: map['status'],
+      size: map['size'],
+      color: map['color'],
+      weight: map['weight'],
+      isFavorite: map['isFavorite'],
+      belongTo: map['belongTo'],
+      residentId: map['residentId'],
+      children: map['relatedProducts'],
+    );
   }
 
   Map<String, dynamic> toMapSql() {
     return {
-      'product_id': productId,
-      'images': json.encode(images),
-      'color': color,
-      // 'isFavourite': isFavorite ? 1 : 0,
-      'isFavorite': isFavorite,
+      'productId': productId,
       'productName': productName,
-      'defaultPrice': defaultPrice,
-      'description': description,
+      'productCode': productCode,
       'briefDescription': briefDescription,
-      'remainingSize': size,
+      'description': description,
+      'defaultPrice': defaultPrice,
+      'images': images,
+      'status': status,
+      'size': size,
+      'color': color,
       'weight': weight,
+      'isFavorite': isFavorite,
+      'belongTo': belongTo,
+      'residentId': residentId,
+      // 'RelatedProducts': children,
     };
   }
 
   Product.fromJson(Map<String, dynamic> json) {
-    if (json['InverseBelongToNavigation'] != null) {
-      inverseBelongToNavigation = <Product>[];
-      json['InverseBelongToNavigation'].forEach((v) {
-        inverseBelongToNavigation.add(new Product.fromJson(v));
+    if (json['RelatedProducts'] != null) {
+      children = <Product>[];
+      json['RelatedProducts'].forEach((v) {
+        children.add(new Product.fromJson(v));
       });
     }
-    // if (json['ProductCategories'] != null) {
-    //   productCategories = <ProductCategory>[];
-    //   json['ProductCategories'].forEach((v) {
-    //     productCategories.add(new ProductCategory.fromJson(v));
-    //   });
-    // }
+
     systemCategoryId = json['SystemCategoryId'];
     productId = json['ProductId'];
     productCode = json['ProductCode'];
@@ -131,18 +131,15 @@ class Product {
     color = json['Color'];
     weight = json['Weight'];
     isFavorite = json['IsFavorite'];
+    belongTo = json['belongTo'];
+    residentId = json['residentId'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.inverseBelongToNavigation != null) {
-      data['InverseBelongToNavigation'] =
-          this.inverseBelongToNavigation.map((v) => v.toJson()).toList();
+    if (this.children != null) {
+      data['RelatedProducts'] = this.children.map((v) => v.toJson()).toList();
     }
-    // if (this.productCategories != null) {
-    //   data['ProductCategories'] =
-    //       this.productCategories.map((v) => v.toJson()).toList();
-    // }
     data['SystemCategoryId'] = this.systemCategoryId;
     data['ProductId'] = this.productId;
     data['ProductCode'] = this.productCode;
@@ -156,53 +153,16 @@ class Product {
     data['Color'] = this.color;
     data['Weight'] = this.weight;
     data['IsFavorite'] = this.isFavorite;
+    data['BelongTo'] = this.belongTo;
+    data['ResidentId'] = this.residentId;
     return data;
   }
 
   @override
   String toString() {
-    return 'Product{id: $productId, productName: $productName, briefDescription: $briefDescription, description: $description, images: $images, colors: $color, defaultPrice: $defaultPrice, isFavourite: $isFavorite, remainingSize: $size, weight: $weight}';
+    return 'Product{id: $productId, productName: $productName, briefDescription: $briefDescription, description: $description, images: $images, colors: $color, defaultPrice: $defaultPrice, isFavorite: $isFavorite, remainingSize: $size, weight: $weight}';
   }
 }
-
-// List<Product> demoProducts = [
-//   Product(
-//       images: [R.icon.snkr02],
-//       colors: 0xFF82B1FF,
-//       productName: 'Air-Max-273-Big-KIDS',
-//       defaultPrice: 130,
-//       description: 'description',
-//       briefDescription: 'briefDescription',
-//       remainingSize: 7.5,
-//       weight: 0.25),
-//   Product(
-//       images: [R.icon.snkr02],
-//       colors: 0xFF82B1FF,
-//       productName: 'Air-Max-273-Big-KIDS',
-//       defaultPrice: 130,
-//       description: 'description',
-//       briefDescription: 'briefDescription',
-//       remainingSize: 7.5,
-//       weight: 0.25),
-//   Product(
-//       images: [R.icon.snkr01],
-//       colors: 0xFF82B1FF,
-//       productName: 'Air-Max-273-Big-KIDS',
-//       defaultPrice: 130,
-//       description: 'description',
-//       briefDescription: 'briefDescription',
-//       remainingSize: 7.5,
-//       weight: 0.25),
-//   Product(
-//       images: [R.icon.snkr03],
-//       colors: 0xFF82B1FF,
-//       productName: 'Air-Max-273-Big-KIDS',
-//       defaultPrice: 130,
-//       description: 'description',
-//       briefDescription: 'briefDescription',
-//       remainingSize: 7.5,
-//       weight: 0.25),
-// ];
 
 List<String> categories = ['Nike', 'Adidas', 'Puma', 'Converse'];
 

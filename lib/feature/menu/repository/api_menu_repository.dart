@@ -40,10 +40,4 @@ class ApiMenuRepository {
       _dio.clear();
     }
   }
-
-  Future<List<Product>> getProductByApartmentId(Apartment apartmentId) async {}
-
-  Future<List<Product>> getProductByCategoryId(Apartment apartmentId) async {}
-
-  Future<List<Product>> getProductDetail(Apartment apartmentId) async {}
 }

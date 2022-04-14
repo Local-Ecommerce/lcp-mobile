@@ -24,8 +24,10 @@ class ApiProductCategoryRepository {
 
     _refreshTokens = TokenPreferences.getRefreshTokens();
 
-    _dio.options.headers["Authorization"] =
-        "Bearer ${_refreshTokens.accessToken}";
+    if (_refreshTokens != null) {
+      _dio.options.headers["Authorization"] =
+          "Bearer ${_refreshTokens.accessToken}";
+    }
 
     try {
       Response response = await _dio.get(ApiService.SYSTEMCATEGORY);
@@ -40,8 +42,38 @@ class ApiProductCategoryRepository {
 
       return listSysCate;
     } on DioError catch (ex) {
-      log(jsonEncode(ex.response));
-      _dio.clear();
+      if (ex.response.statusCode == 408 || ex.response.statusCode == 401) {
+        _dio.clear();
+        // await _apiLoginRepository.updateExpiredToken(
+        //     _refreshTokens.token, _refreshTokens.accessToken);
+        String url = ApiService.ACCOUNT + '/refresh-token';
+
+        TokenRequest tokenRequest = TokenRequest(
+            token: _refreshTokens.token,
+            accessToken: _refreshTokens.accessToken);
+
+        try {
+          Response response = await _dio.post(url,
+              data: tokenRequest.toJson(),
+              options: Options(
+                  followRedirects: false, validateStatus: (status) => true));
+          BaseResponse baseResponse =
+              BaseResponse.fromJson(jsonDecode(response.data));
+
+          print(response);
+
+          TokenPreferences.updateUserToken(baseResponse.data);
+
+          _dio.clear();
+        } on DioError catch (ex) {
+          log(jsonEncode(ex.response));
+          _dio.clear();
+        }
+      } else {
+        log(jsonEncode(ex.response));
+      }
+      // log(jsonEncode(ex.response));
+      // _dio.clear();
     }
   }
 
@@ -88,8 +120,16 @@ class ApiProductCategoryRepository {
 
       List<SysCategory> listSysCate =
           List.from(data.list).map((e) => SysCategory.fromJson(e)).toList();
+
+      List<SysCategory> listSysCateChild =
+          List.from(listSysCate[0].lstSysCategories)
+              .map((e) => SysCategory.fromJson(e))
+              .toList();
+
+      print(listSysCateChild);
+
       _dio.clear();
-      return listSysCate;
+      return listSysCateChild;
     } on DioError catch (ex) {
       log(jsonEncode(ex.response));
       _dio.clear();

@@ -16,6 +16,10 @@ class ProductDetailsRepository {
   }
 
   Future<int> insertProductToCart(Product product) async {
+    print("mapSQL");
+    //productCodenull
+    print(product.toMapSql());
+
     db.insert(
       DBProvider.TABLE_PRODUCT,
       product.toMapSql(),
@@ -23,7 +27,7 @@ class ProductDetailsRepository {
     );
 
     var findCartItem = await db.query(DBProvider.TABLE_CART_ITEMS,
-        where: "product_id = ?", whereArgs: [product.productId]);
+        where: "productId = ?", whereArgs: [product.productId]);
 
     if (findCartItem.isEmpty) {
       var cartItem = CartItem(product: product, quantity: 1).toMap();
@@ -40,7 +44,7 @@ class ProductDetailsRepository {
       });
       return db.update(
           DBProvider.TABLE_CART_ITEMS, {"quantity": currentQuantity + 1},
-          where: "product_id = ?", whereArgs: [product.productId]);
+          where: "productId = ?", whereArgs: [product.productId]);
     }
   }
 
@@ -77,7 +81,8 @@ class ProductDetailsRepository {
         description: doc.description,
         briefDescription: doc.briefDescription,
         size: doc.size,
-        weight: doc.weight);
+        weight: doc.weight,
+        children: doc.children);
   }
 
 /*  Future<void> query() async{

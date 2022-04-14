@@ -4,8 +4,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  // static const BASE_URL = "https://localhost:5001/api";
-  static const BASE_URL = "https://192.168.0.3:5001/api";
+  static const BASE_URL =
+      "https://localcommercialplatform-api.azurewebsites.net/api";
+  // static const BASE_URL = "https://192.168.0.3:5001/api";
   static const ACCOUNT = "${BASE_URL}/accounts";
   static const PRODUCT = "${BASE_URL}/products";
   static const APARTMENT = "${BASE_URL}/apartments";
@@ -13,6 +14,7 @@ class ApiService {
   static const MENU = "${BASE_URL}/menus";
   static const STORE = "${BASE_URL}/stores";
   static const NEWS = "${BASE_URL}/news";
+  static const POIS = "${BASE_URL}/pois";
   static const PAYMENT = "${BASE_URL}/payments";
   static const PAYMENTMETHOD = "${BASE_URL}/payment-methods";
   static const PRODUCTCATEGORY = "${BASE_URL}/categories-products";
