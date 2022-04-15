@@ -5,6 +5,10 @@ class Icon {
   String ex01 = 'assets/icon/ex01.png';
   String ex03 = 'assets/icon/ex03.png';
   String ex02 = 'assets/icon/ex02.png';
+  String momo = 'assets/icon/momo.png';
+  String cash = 'assets/icon/cash.png';
+  String zalopay = 'assets/icon/zalopay.png';
+  String success = 'assets/icon/success.png';
 
   String masterCard = 'assets/images/mastercard.png';
   String amexCard = 'assets/images/amex.png';
@@ -15,4 +19,6 @@ class Icon {
   String snkr01 = 'assets/images/snkr_01.png';
   String snkr02 = 'assets/images/snkr_02.png';
   String snkr03 = 'assets/images/snkr_03.png';
+
+  String tmpAvt = 'assets/images/temp_bg.png';
 }

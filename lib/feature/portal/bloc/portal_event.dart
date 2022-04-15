@@ -5,20 +5,39 @@ abstract class PortalEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class PortalUpdatedEvent extends PortalEvent {
+class PoisUpdateEvent extends PortalEvent {
   final List<POI> pois;
-  final List<New> news;
 
-  PortalUpdatedEvent({this.pois, this.news});
+  PoisUpdateEvent({this.pois});
 
   @override
-  List<Object> get props => [pois, news];
+  List<Object> get props => [pois];
 }
 
-class LoadingPortalEvent extends PortalEvent {
-  final String apartmentId;
+class NewsUpdateEvent extends PortalEvent {
+  final List<New> news;
 
-  LoadingPortalEvent({this.apartmentId});
+  NewsUpdateEvent({this.news});
+
+  @override
+  List<Object> get props => [news];
+}
+
+class LoadingPoisEvent extends PortalEvent {
+  final String apartmentId;
+  final String type;
+
+  LoadingPoisEvent({this.apartmentId, this.type});
+
+  @override
+  List<Object> get props => [apartmentId];
+}
+
+class LoadingNewsEvent extends PortalEvent {
+  final String apartmentId;
+  final String type;
+
+  LoadingNewsEvent({this.apartmentId, this.type});
 
   @override
   List<Object> get props => [apartmentId];

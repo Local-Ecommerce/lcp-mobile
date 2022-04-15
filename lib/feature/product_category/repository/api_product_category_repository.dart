@@ -39,10 +39,9 @@ class ApiProductCategoryRepository {
       List<SysCategory> listSysCate =
           List.from(data.list).map((e) => SysCategory.fromJson(e)).toList();
       _dio.clear();
-
       return listSysCate;
     } on DioError catch (ex) {
-      if (ex.response.statusCode == 408 || ex.response.statusCode == 401) {
+      if (ex.response.statusCode == 408) {
         _dio.clear();
         // await _apiLoginRepository.updateExpiredToken(
         //     _refreshTokens.token, _refreshTokens.accessToken);
@@ -52,23 +51,20 @@ class ApiProductCategoryRepository {
             token: _refreshTokens.token,
             accessToken: _refreshTokens.accessToken);
 
-        try {
-          Response response = await _dio.post(url,
-              data: tokenRequest.toJson(),
-              options: Options(
-                  followRedirects: false, validateStatus: (status) => true));
-          BaseResponse baseResponse =
-              BaseResponse.fromJson(jsonDecode(response.data));
+        Response response = await _dio.post(url,
+            data: tokenRequest.toJson(),
+            options: Options(
+                followRedirects: false, validateStatus: (status) => true));
+        BaseResponse baseResponse =
+            BaseResponse.fromJson(jsonDecode(response.data));
 
-          print(response);
+        print(baseResponse.data);
+        RefreshTokens _token = RefreshTokens.fromJson(baseResponse.data);
+        print(_token);
 
-          TokenPreferences.updateUserToken(baseResponse.data);
+        TokenPreferences.updateUserToken(_token);
 
-          _dio.clear();
-        } on DioError catch (ex) {
-          log(jsonEncode(ex.response));
-          _dio.clear();
-        }
+        _dio.clear();
       } else {
         log(jsonEncode(ex.response));
       }

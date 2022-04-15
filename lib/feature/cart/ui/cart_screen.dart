@@ -36,7 +36,6 @@ class _CartScreenState extends State<CartScreen> {
               if (state is CartLoadFinished) {
                 cart = state.cart;
               }
-
               if (cart != null) {
                 return Stack(
                   children: [
@@ -49,10 +48,11 @@ class _CartScreenState extends State<CartScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  'My Bag',
+                                  'Giỏ hàng',
                                   style: headingText,
                                 ),
-                                Text('Total ${cart.listCartItem.length} items')
+                                Text(
+                                    'Tổng ${cart.listCartItem.length} sản phẩm')
                               ],
                             )),
                         Padding(
@@ -110,7 +110,7 @@ class _CartScreenState extends State<CartScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Total',
+                'Tổng cộng',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               Text(
@@ -123,12 +123,12 @@ class _CartScreenState extends State<CartScreen> {
         SizedBox(
           height: 10,
         ),
-        _nextButton()
+        _nextButton(totalPrice)
       ],
     );
   }
 
-  Widget _nextButton() {
+  Widget _nextButton(double totalPrice) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20),
       child: RaisedButton(
@@ -136,11 +136,12 @@ class _CartScreenState extends State<CartScreen> {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
           onPressed: () {
-            Navigator.pushNamed(context, RouteConstant.shippingMethod);
+            Navigator.pushNamed(context, RouteConstant.shippingMethod,
+                arguments: totalPrice);
           },
           color: AppColors.indianRed,
           child: Text(
-            'Next',
+            'Tiếp tục',
             style: whiteText,
           )),
     );
@@ -175,6 +176,14 @@ class _CartScreenState extends State<CartScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                //TODO need get Shop name
+                // Text(
+                //   cartItem.product.residentId,
+                //   overflow: TextOverflow.ellipsis,
+                //   style: TextStyle(
+                //     fontWeight: FontWeight.bold,
+                //   ),
+                // ),
                 Text(
                   cartItem.product.productName,
                   overflow: TextOverflow.ellipsis,
@@ -182,16 +191,45 @@ class _CartScreenState extends State<CartScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(
-                  height: 10,
+                // SizedBox(
+                //   height: 10,
+                // ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (cartItem.product.size != null) ...[
+                      Text(
+                        'Size:' + cartItem.product.size,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 15),
+                      ),
+                    ],
+                    if (cartItem.product.color != null) ...[
+                      Text(
+                        'Màu:' + cartItem.product.color,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 15),
+                      ),
+                    ],
+                    if (cartItem.product.weight != 0) ...[
+                      Text(
+                        'Cân nặng:' + cartItem.product.weight.toString(),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 15),
+                      ),
+                    ]
+                  ],
                 ),
+                // SizedBox(
+                //   height: 10,
+                // ),
                 Text(
                   formatCurrency.format(cartItem.product.defaultPrice),
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 ),
-                SizedBox(
-                  height: 10,
-                ),
+                // SizedBox(
+                //   height: 10,
+                // ),
                 Row(
                   children: [
                     SizedBox(

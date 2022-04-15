@@ -6,12 +6,16 @@ import 'strings.dart';
 class AppData {
   static List<ShipMethod> shipMethods = [
     ShipMethod(
-        title: "Free ship", price: 0.0, description: R.strings.dummyShipping1),
+        title: "Free ship",
+        shippingFee: 0.0,
+        description: R.strings.dummyShipping1),
     ShipMethod(
-        title: "Fast ship", price: 15.0, description: R.strings.dummyShipping1),
+        title: "Fast ship",
+        shippingFee: 15000.0,
+        description: R.strings.dummyShipping1),
     ShipMethod(
         title: "Custom time",
-        price: 20.0,
+        shippingFee: 25000.0,
         description: R.strings.dummyShipping1),
   ];
 }

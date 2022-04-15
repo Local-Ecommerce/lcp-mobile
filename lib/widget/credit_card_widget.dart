@@ -35,21 +35,20 @@ class CreditCardWidget extends StatelessWidget {
   /// Card number, Exp. year and Card holder name
   ///
   Container buildFrontContainer(
-      double width,
-      double height,
-      BuildContext context,
-      Orientation orientation,
-      ) {
+    double width,
+    double height,
+    BuildContext context,
+    Orientation orientation,
+  ) {
     final TextStyle defaultTextStyle = Theme.of(context).textTheme.title.merge(
-      TextStyle(
-        color: Colors.white,
-        fontFamily: 'halter',
-        fontSize: 16,
-      ),
-    );
+          TextStyle(
+            color: Colors.white,
+            fontFamily: 'halter',
+            fontSize: 16,
+          ),
+        );
 
     return Container(
-
       margin: const EdgeInsets.all(16),
       width: width ?? width,
       height: height ??
@@ -81,18 +80,18 @@ class CreditCardWidget extends StatelessWidget {
                     Align(
                       alignment: Alignment.bottomRight,
                       child: Padding(
-                        padding:
-                        const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
-                        child: getCardTypeIcon(creditCard.cardNumber),
+                        padding: const EdgeInsets.only(
+                            left: 16, right: 16, top: 8, bottom: 8),
+                        child: getTypeIcon(creditCard.type),
                       ),
                     ),
-                  ],),
-
+                  ],
+                ),
                 Padding(
                   padding: const EdgeInsets.only(left: 16),
                   child: Text(
                     creditCard.cardNumber.isEmpty ||
-                        creditCard.cardNumber == null
+                            creditCard.cardNumber == null
                         ? 'XXXX XXXX XXXX XXXX'
                         : creditCard.cardNumber,
                     style: textStyle ?? defaultTextStyle,
@@ -110,22 +109,22 @@ class CreditCardWidget extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.only(left: 16, bottom: 6),
                             child: Text(
-                              'Card holder',
+                              'Phương thức thanh toán',
                               style: TextStyle(
                                 color: Colors.white38,
                                 fontFamily: 'halter',
-                                fontSize: 9,
+                                fontSize: 12,
                                 package: 'credit_card',
                               ),
                             ),
                           ),
                           Expanded(
                             child: Padding(
-                              padding:
-                              const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+                              padding: const EdgeInsets.only(
+                                  left: 16, right: 16, bottom: 16),
                               child: Text(
                                 creditCard.cardHolderName.isEmpty ||
-                                    creditCard.cardHolderName == null
+                                        creditCard.cardHolderName == null
                                     ? 'CARD HOLDER'
                                     : creditCard.cardHolderName,
                                 maxLines: 1,
@@ -133,7 +132,7 @@ class CreditCardWidget extends StatelessWidget {
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontFamily: 'halter',
-                                  fontSize: 14,
+                                  fontSize: 16,
                                   package: 'credit_card',
                                 ),
                               ),
@@ -142,38 +141,37 @@ class CreditCardWidget extends StatelessWidget {
                         ],
                         crossAxisAlignment: CrossAxisAlignment.start,
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8, bottom: 6, right: 32),
-                            child: Text(
-                              'Expiry',
-                              style: TextStyle(
-                                color: Colors.white38,
-                                fontFamily: 'halter',
-                                fontSize: 9,
-                                package: 'credit_card',
-                              ),
-                            ),
-                          ),
-                          Text(
-                            creditCard.expiryDate.isEmpty ||
-                                creditCard.expiryDate == null
-                                ? 'MM/YY'
-                                : creditCard.expiryDate,
-                            style: textStyle ?? defaultTextStyle,
-                          ),
-                        ],
-                      )
-
+                      // Column(
+                      //   crossAxisAlignment: CrossAxisAlignment.start,
+                      //   children: [
+                      //     Padding(
+                      //       padding: const EdgeInsets.only(
+                      //           left: 8, bottom: 6, right: 32),
+                      //       child: Text(
+                      //         'Expiry',
+                      //         style: TextStyle(
+                      //           color: Colors.white38,
+                      //           fontFamily: 'halter',
+                      //           fontSize: 9,
+                      //           package: 'credit_card',
+                      //         ),
+                      //       ),
+                      //     ),
+                      //     Text(
+                      //       creditCard.expiryDate.isEmpty ||
+                      //               creditCard.expiryDate == null
+                      //           ? 'MM/YY'
+                      //           : creditCard.expiryDate,
+                      //       style: textStyle ?? defaultTextStyle,
+                      //     ),
+                      //   ],
+                      // )
                     ],
                   ),
                 )
               ],
             ),
           ),
-
         ],
       ),
     );
@@ -190,11 +188,11 @@ class CreditCardWidget extends StatelessWidget {
     }
 
     cardNumPatterns.forEach(
-          (CardType type, Set<List<String>> patterns) {
+      (CardType type, Set<List<String>> patterns) {
         for (List<String> patternRange in patterns) {
           // Remove any spaces
           String ccPatternStr =
-          cardNumber.replaceAll(RegExp(r'\s+\b|\b\s'), '');
+              cardNumber.replaceAll(RegExp(r'\s+\b|\b\s'), '');
           final int rangeLen = patternRange[0].length;
           // Trim the Credit Card number string to match the pattern prefix length
           if (rangeLen < cardNumber.length) {
@@ -227,6 +225,34 @@ class CreditCardWidget extends StatelessWidget {
     );
 
     return cardType;
+  }
+
+  Widget getTypeIcon(String type) {
+    Widget icon;
+    switch (type) {
+      case "momo":
+        icon = Image.asset(
+          R.icon.momo,
+          height: 64,
+          width: 64,
+        );
+        break;
+      case "cash":
+        icon = Image.asset(
+          R.icon.cash,
+          height: 64,
+          width: 64,
+        );
+        break;
+
+      default:
+        icon = Container(
+          height: 64,
+          width: 64,
+        );
+        break;
+    }
+    return icon;
   }
 
   // This method returns the icon for the visa card type if found
@@ -284,10 +310,12 @@ enum CardType {
   visa,
   americanExpress,
   discover,
+  cash,
+  momo
 }
 
-
-Container getRandomBackground(double height, double width, MaterialColor color) {
+Container getRandomBackground(
+    double height, double width, MaterialColor color) {
   return Container(
     child: Flex(
       direction: Axis.horizontal,
@@ -298,8 +326,7 @@ Container getRandomBackground(double height, double width, MaterialColor color) 
               borderRadius: BorderRadius.circular(16.0),
               child: Container(
                 color: color,
-              )
-          ),
+              )),
         )
       ],
     ),
@@ -321,7 +348,7 @@ Container getChipImage() {
 /// A [List<String>] represents a range.
 /// i.e. ['51', '55'] represents the range of cards starting with '51' to those starting with '55'
 Map<CardType, Set<List<String>>> cardNumPatterns =
-<CardType, Set<List<String>>>{
+    <CardType, Set<List<String>>>{
   CardType.visa: <List<String>>{
     <String>['4'],
   },

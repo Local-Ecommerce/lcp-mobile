@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lcp_mobile/feature/discover/model/product.dart';
 // import 'package:lcp_mobile/feature/discover/model/product.dart';
 import 'package:lcp_mobile/resources/R.dart';
 import 'package:intl/intl.dart';
@@ -6,7 +7,7 @@ import 'package:intl/intl.dart';
 class CardProduct extends StatelessWidget {
   //TODO product req
   // final Product product;
-  final product;
+  final Product product;
   final Function onTapCard;
 
   const CardProduct({Key key, @required this.product, this.onTapCard})
@@ -47,7 +48,7 @@ class CardProduct extends StatelessWidget {
                     height: 10,
                   ),
                   Text(
-                    formatCurrency(),
+                    getPriceRange(),
                     style: TextStyle(
                         fontWeight: FontWeight.normal,
                         color: Colors.white,
@@ -102,5 +103,33 @@ class CardProduct extends StatelessWidget {
 
   splitImageStringToList(String images) {
     return images.split("|");
+  }
+
+  getPriceRange() {
+    var min = product.defaultPrice, max = product.defaultPrice;
+    product.children.forEach((product) {
+      product.defaultPrice < min ? min = product.defaultPrice : null;
+      product.defaultPrice > max ? max = product.defaultPrice : null;
+    });
+
+    return min == max && min == product.defaultPrice
+        ? formatPrice(product.defaultPrice).toString()
+        : formatPrice(min).toString() +
+            ' - ' +
+            formatSecondPrice(max).toString();
+  }
+
+  formatPrice(int price) {
+    final formatCurrency = NumberFormat.currency(
+        locale: "en_US", symbol: "VNĐ ", decimalDigits: 0);
+
+    return formatCurrency.format(price);
+  }
+
+  formatSecondPrice(int price) {
+    final formatCurrency =
+        NumberFormat.currency(locale: "en_US", symbol: "", decimalDigits: 0);
+
+    return formatCurrency.format(price);
   }
 }

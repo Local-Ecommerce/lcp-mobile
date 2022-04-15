@@ -53,7 +53,6 @@ class DiscoverBloc extends Bloc<DiscoverEvent, DiscoverState> {
   Stream<DiscoverState> _mapLoadDiscoverEvent(
       LoadingDiscoverEvent event) async* {
     print(event.category);
-    print(event.apartmentId);
     if (event.category != "") {
       _streamSubscription = Stream.fromFuture(_apiDiscoverRepository
               .getProductByApartmentCategory(event.apartmentId, event.category))

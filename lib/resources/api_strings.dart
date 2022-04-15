@@ -8,4 +8,10 @@ class ApiStrings {
   static int zero = 0;
   static int one = 1;
   static String activeProduct = "1001";
+
+  static String pois = "Địa điểm thú vị";
+  static String news = "Tin tức mới";
+
+  static String popular = "Popular";
+  static String hot = "Hot";
 }

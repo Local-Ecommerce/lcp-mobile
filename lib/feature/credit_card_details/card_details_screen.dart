@@ -16,53 +16,59 @@ class _CreditCardDetailsScreenState extends State<CreditCardDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          elevation: 0,
-          backgroundColor: Colors.white70,
-          iconTheme: IconThemeData(
-            color: Colors.black, //change your color here
-          ),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white70,
+        iconTheme: IconThemeData(
+          color: Colors.black, //change your color here
         ),
-        body: ListView(
-          children: [
-            Padding(
-                padding: const EdgeInsets.only(
-                    top: 16, left: 28, right: 28, bottom: 16),
-                child: Text(
-                  'Card details',
-                  style: headingText1,
-                )),
-            Container(
-              color: Colors.grey[300],
-              height: 1,
+      ),
+      body: ListView(
+        children: [
+          Padding(
+              padding: const EdgeInsets.only(
+                  top: 16, left: 28, right: 28, bottom: 16),
+              child: Text(
+                'Card details',
+                style: headingText1,
+              )),
+          Container(
+            color: Colors.grey[300],
+            height: 1,
+          ),
+          Container(
+            child: CarouselSlider(
+              items: List.generate(creditCards.length, (index) {
+                var creditCard = creditCards[index];
+                return Container(
+                    child: CreditCardWidget(creditCard: creditCard));
+              }).toList(),
+              options: CarouselOptions(
+                  scrollDirection: Axis.horizontal,
+                  autoPlayAnimationDuration: Duration(milliseconds: 800),
+                  autoPlayCurve: Curves.fastOutSlowIn,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      _current = index;
+                    });
+                  }),
             ),
-            Container(
-              child: CarouselSlider(
-                items: List.generate(creditCards.length, (index) {
-                  var creditCard = creditCards[index];
-                  return Container(
-                      child: CreditCardWidget(creditCard: creditCard));
-                }).toList(),
-                options: CarouselOptions(
-                    scrollDirection: Axis.horizontal,
-                    autoPlayAnimationDuration: Duration(milliseconds: 800),
-                    autoPlayCurve: Curves.fastOutSlowIn,
-                    onPageChanged: (index, reason) {
-                      setState(() {
-                        _current = index;
-                      });
-                    }),
-              ),
-            ),
-            _indicatorSlider(),
-            SizedBox(
-              height: 30,
-            ),
-            Container(child: rowInfo()),
-            _nextButton()
-          ],
-        ));
+          ),
+          _indicatorSlider(),
+          SizedBox(
+            height: 30,
+          ),
+          Container(child: rowInfo()),
+          SizedBox(
+            height: 50,
+          ),
+          // _nextButton()
+        ],
+      ),
+      bottomNavigationBar:
+          Padding(padding: EdgeInsets.all(8.0), child: _nextButton()),
+    );
   }
 
   Widget rowInfo() {
@@ -72,7 +78,7 @@ class _CreditCardDetailsScreenState extends State<CreditCardDetailsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Card holder name',
+            'Phương thức thanh toán',
             style: minorText,
           ),
           SizedBox(
@@ -87,38 +93,38 @@ class _CreditCardDetailsScreenState extends State<CreditCardDetailsScreen> {
             color: Colors.grey[300],
             margin: EdgeInsets.symmetric(vertical: 28),
           ),
-          Text(
-            'Card no',
-            style: minorText,
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Text(
-            '${creditCards[_current].cardNumber}',
-            style: boldTextMedium,
-          ),
-          Container(
-            height: 1,
-            color: Colors.grey[300],
-            margin: EdgeInsets.symmetric(vertical: 28),
-          ),
-          Text(
-            'Expiry',
-            style: minorText,
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Text(
-            '${creditCards[_current].expiryDate}',
-            style: boldTextMedium,
-          ),
-          Container(
-            height: 1,
-            color: Colors.grey[300],
-            margin: EdgeInsets.symmetric(vertical: 28),
-          ),
+          // Text(
+          //   'Card no',
+          //   style: minorText,
+          // ),
+          // SizedBox(
+          //   height: 10,
+          // ),
+          // Text(
+          //   '${creditCards[_current].cardNumber}',
+          //   style: boldTextMedium,
+          // ),
+          // Container(
+          //   height: 1,
+          //   color: Colors.grey[300],
+          //   margin: EdgeInsets.symmetric(vertical: 28),
+          // ),
+          // Text(
+          //   'Expiry',
+          //   style: minorText,
+          // ),
+          // SizedBox(
+          //   height: 10,
+          // ),
+          // Text(
+          //   '${creditCards[_current].expiryDate}',
+          //   style: boldTextMedium,
+          // ),
+          // Container(
+          //   height: 1,
+          //   color: Colors.grey[300],
+          //   margin: EdgeInsets.symmetric(vertical: 28),
+          // ),
         ],
       ),
     );

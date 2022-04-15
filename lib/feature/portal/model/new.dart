@@ -6,6 +6,8 @@ class New {
   int status;
   String residentId;
   String apartmentId;
+  String type;
+  String image;
 
   New(
       {this.newsId,
@@ -14,7 +16,9 @@ class New {
       this.text,
       this.status,
       this.residentId,
-      this.apartmentId});
+      this.apartmentId,
+      this.type,
+      this.image = ''});
 
   New.fromJson(Map<String, dynamic> json) {
     newsId = json['NewsId'];
@@ -24,6 +28,8 @@ class New {
     status = json['Status'];
     residentId = json['ResidentId'];
     apartmentId = json['ApartmentId'];
+    type = json['Type'];
+    image = json['Image'];
   }
 
   Map<String, dynamic> toJson() {
@@ -35,6 +41,8 @@ class New {
     data['Status'] = this.status;
     data['ResidentId'] = this.residentId;
     data['ApartmentId'] = this.apartmentId;
+    data['Type'] = this.type;
+    data['Image'] = this.image;
     return data;
   }
 }

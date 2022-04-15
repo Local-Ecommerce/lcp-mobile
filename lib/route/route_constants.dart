@@ -13,4 +13,5 @@ class RouteConstant {
   static const String checkout = '/checkout';
   static const String poiDetailsRoute = '/poi_details';
   static const String newDetailsRoute = '/new_details';
+  static const String checkoutResultRoute = '/checkout_result';
 }

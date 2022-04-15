@@ -1,8 +1,8 @@
 class ShipMethod {
   String title, description;
-  double price;
+  double shippingFee;
 
   bool isSelected;
 
-  ShipMethod({this.title, this.description, this.price});
+  ShipMethod({this.title, this.description, this.shippingFee});
 }
