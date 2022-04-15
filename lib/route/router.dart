@@ -58,13 +58,27 @@ class AppRouter {
       case RouteConstant.cart:
         return SlideRouteBuilder(page: CartScreen());
       case RouteConstant.shippingMethod:
-        double shippingFee = settings.arguments;
-        return SlideRouteBuilder(page: ShippingMethodScreen());
+        final Map arguments = settings.arguments as Map;
+        double totalPrice = arguments['totalPrice'];
+        String orderId = arguments['orderId'];
+        return SlideRouteBuilder(
+            page:
+                ShippingMethodScreen(totalPrice: totalPrice, orderId: orderId));
       case RouteConstant.creditCard:
         return SlideRouteBuilder(page: CreditCardDetailsScreen());
       case RouteConstant.checkout:
-        double totalPrice = settings.arguments;
-        return SlideRouteBuilder(page: CheckoutScreen());
+        final Map arguments = settings.arguments as Map;
+
+        String orderId = arguments['orderId'];
+        double shippingFee = arguments['shippingFee'];
+        String paymentType = arguments['paymentType'];
+        double totalPrice = arguments['totalPrice'];
+        return SlideRouteBuilder(
+            page: CheckoutScreen(
+                orderId: orderId,
+                totalPrice: totalPrice,
+                paymentType: paymentType,
+                shippingFee: shippingFee));
       case RouteConstant.productCategory:
         final Map arguments = settings.arguments as Map;
 

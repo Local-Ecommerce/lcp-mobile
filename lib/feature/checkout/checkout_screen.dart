@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:lcp_mobile/api/base_request.dart';
-import 'package:lcp_mobile/feature/cart/models/order.dart';
+import 'package:lcp_mobile/feature/auth/model/user_app.dart';
+import 'package:lcp_mobile/feature/order/model/order.dart';
 import 'package:lcp_mobile/feature/credit_card_details/models/credit_card_model.dart';
+import 'package:lcp_mobile/references/user_preference.dart';
 import 'package:lcp_mobile/resources/R.dart';
 import 'package:lcp_mobile/resources/resources.dart';
 import 'package:lcp_mobile/route/route_constants.dart';
@@ -15,8 +17,15 @@ import 'package:url_launcher/url_launcher.dart';
 class CheckoutScreen extends StatefulWidget {
   final double shippingFee;
   final double totalPrice;
+  final String paymentType;
+  final String orderId;
 
-  const CheckoutScreen({Key key, this.shippingFee, this.totalPrice})
+  const CheckoutScreen(
+      {Key key,
+      this.shippingFee,
+      this.totalPrice,
+      this.paymentType,
+      this.orderId})
       : super(key: key);
 
   @override
@@ -28,9 +37,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       NumberFormat.currency(locale: "en_US", symbol: "VNĐ ", decimalDigits: 0);
 
   final _formKey = GlobalKey<FormState>();
-
+  UserData _userData;
   StreamSubscription _sub;
-  CreditCard resultCreditCard = creditCards[0];
+  CreditCard resultCreditCard = creditCards[1];
   PaymentRequest _paymentRequest;
   Object _err;
   Uri _initialUri;
@@ -40,7 +49,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   void initState() {
     super.initState();
     _paymentRequest = new PaymentRequest();
-
+    _userData = UserPreferences.getUser();
     _handleIncomingLinks();
   }
 
@@ -114,7 +123,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Jane Doe',
+                                _userData.fullName != null
+                                    ? _userData.fullName
+                                    : "Temp",
                               ),
                               FlatButton(
                                   onPressed: () {},
@@ -124,7 +135,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                   )),
                             ],
                           ),
-                          Text(R.strings.dummyShipping1)
+                          Text(_userData.deliveryAddress)
                         ],
                       ),
                     ),
@@ -147,26 +158,29 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           )),
                     ],
                   ),
-                  Row(
-                    children: [
-                      Card(
-                          margin: EdgeInsets.only(right: 16),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Image.asset(
-                              resultCreditCard != null
-                                  ? resultCreditCard.image
-                                  : R.icon.masterCard,
-                              width: 30,
-                              height: 30,
-                            ),
-                          )),
-                      Text(resultCreditCard != null
-                          ? resultCreditCard.cardHolderName
-                          : '')
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Card(
+                            margin: EdgeInsets.only(right: 16),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Image.asset(
+                                resultCreditCard != null
+                                    ? resultCreditCard.image
+                                    : R.icon.masterCard,
+                                width: 30,
+                                height: 30,
+                              ),
+                            )),
+                        Text(resultCreditCard != null
+                            ? resultCreditCard.cardHolderName
+                            : '')
+                      ],
+                    ),
                   ),
                   SizedBox(
                     height: 20,
@@ -180,21 +194,41 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   ),
                   Row(
                     children: [
-                      deliveryCard(R.icon.ex01),
-                      deliveryCard(R.icon.ex02),
-                      deliveryCard(R.icon.ex03),
+                      if (widget.shippingFee < 10000) ...[
+                        deliveryCard(R.icon.ex01),
+                      ],
+                      if (widget.shippingFee < 20000 &&
+                          widget.shippingFee > 10000) ...[
+                        deliveryCard(R.icon.ex02),
+                      ],
+                      if (widget.shippingFee > 20000) ...[
+                        deliveryCard(R.icon.ex03),
+                      ],
                     ],
                   ),
                   SizedBox(
                     height: 30,
                   ),
-                  rowOrderInfo('Đơn hàng:', 112),
-                  rowOrderInfo(
-                      'Vận chuyển:',
-                      widget.shippingFee != null
-                          ? widget.shippingFee.toDouble()
-                          : 0),
-                  rowOrderInfo('Tổng cộng:', 0),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Mã đơn:',
+                          style: minorText,
+                        ),
+                        Text(
+                          widget.orderId,
+                          style: textMedium,
+                        )
+                      ],
+                    ),
+                  ),
+                  rowOrderInfo('Phí vận chuyển:',
+                      widget.shippingFee != null ? widget.shippingFee : 0),
+                  rowOrderInfo('Tổng cộng:',
+                      widget.totalPrice != null ? widget.totalPrice : 0),
                   SizedBox(
                     height: 16,
                   ),
@@ -234,7 +268,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
           onPressed: () {
-            Navigator.popUntil(context, (route) => route.isFirst);
+            Navigator.pushNamed(context, RouteConstant.checkoutResultRoute,
+                arguments: widget.orderId);
+            // Navigator.popUntil(context, (route) => route.isFirst);
             // if (_formKey.currentState.validate()) {
             //   DonateService donateService = new DonateService();
             //   donateService
@@ -252,36 +288,46 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   }
 
   Widget deliveryCard(String icon) {
-    return Expanded(
-      child: Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                Image.asset(
-                  icon,
-                  width: 30,
-                  height: 30,
-                ),
-                SizedBox(
-                  height: 6,
-                ),
-                Text(
-                  '2-3 days',
-                  style: smallText,
-                ),
-              ],
-            ),
-          )),
-    );
+    // return Expanded(
+    // child:
+    return Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Image.asset(
+                icon,
+                width: 30,
+                height: 30,
+              ),
+              SizedBox(
+                height: 6,
+              ),
+              Text(
+                widget.shippingFee < 10000
+                    ? '1 ngày'
+                    : widget.shippingFee > 20000
+                        ? '30 phút'
+                        : '1-3 giờ',
+                style: smallText,
+              ),
+            ],
+          ),
+        )
+        // ),
+        );
   }
 
   void changePayment() {
     Navigator.pushNamed(context, RouteConstant.creditCard).then((value) {
+      resultCreditCard = value as CreditCard;
+      print(resultCreditCard.type);
+      _paymentRequest.payType = resultCreditCard.type;
       setState(() {
-        resultCreditCard = value as CreditCard;
-        _paymentRequest.payType = resultCreditCard.type;
+        // resultCreditCard = value as CreditCard;
+        // print(resultCreditCard);
+        // _paymentRequest.payType = resultCreditCard.type;
       });
     });
   }

@@ -4,6 +4,8 @@ import 'package:lcp_mobile/feature/cart/bloc/cart_bloc.dart';
 import 'package:lcp_mobile/feature/cart/models/cart.dart';
 import 'package:lcp_mobile/feature/cart/models/cart_item.dart';
 import 'package:lcp_mobile/feature/discover/model/product.dart';
+import 'package:lcp_mobile/feature/order/bloc/order_bloc.dart';
+import 'package:lcp_mobile/feature/order/model/order.dart';
 import 'package:lcp_mobile/resources/app_theme.dart';
 import 'package:lcp_mobile/resources/colors.dart';
 import 'package:lcp_mobile/route/route_constants.dart';
@@ -19,10 +21,16 @@ class _CartScreenState extends State<CartScreen> {
   final formatCurrency =
       NumberFormat.currency(locale: "en_US", symbol: "VNĐ ", decimalDigits: 0);
 
+  List<OrderRequest> lstOrder = [];
+  OrderRequest orderRequest;
+  bool _isCreated = false;
+  String _orderId;
+
   @override
   void initState() {
     super.initState();
     BlocProvider.of<CartBloc>(context).add(CartLoadingEvent());
+    orderRequest = new OrderRequest();
   }
 
   @override
@@ -33,10 +41,19 @@ class _CartScreenState extends State<CartScreen> {
           body: BlocBuilder<CartBloc, CartState>(
             builder: (context, state) {
               Cart cart;
+              lstOrder = [];
               if (state is CartLoadFinished) {
                 cart = state.cart;
               }
               if (cart != null) {
+                for (int i = 0; i < cart.listCartItem.length; i++) {
+                  orderRequest.productId =
+                      cart.listCartItem[i].product.productId;
+                  orderRequest.quantity = cart.listCartItem[i].quantity;
+                  orderRequest.discount = 0;
+                  lstOrder.add(orderRequest);
+                  orderRequest = new OrderRequest();
+                }
                 return Stack(
                   children: [
                     Column(
@@ -100,7 +117,7 @@ class _CartScreenState extends State<CartScreen> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Container(
-          margin: EdgeInsets.only(bottom: 20),
+          margin: EdgeInsets.only(bottom: 16),
           height: 1,
           color: Colors.grey[300],
         ),
@@ -120,29 +137,76 @@ class _CartScreenState extends State<CartScreen> {
             ],
           ),
         ),
-        SizedBox(
-          height: 10,
-        ),
-        _nextButton(totalPrice)
+        _buttonAddToBag(totalPrice)
       ],
     );
   }
 
   Widget _nextButton(double totalPrice) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20),
-      child: RaisedButton(
-          padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 14.0),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-          onPressed: () {
-            Navigator.pushNamed(context, RouteConstant.shippingMethod,
-                arguments: totalPrice);
-          },
-          color: AppColors.indianRed,
-          child: Text(
-            'Tiếp tục',
-            style: whiteText,
+    return BlocBuilder<OrderBloc, OrderState>(builder: (context, state) {
+      return Container(
+        margin: EdgeInsets.symmetric(horizontal: 20),
+        child: RaisedButton(
+            padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 14.0),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0)),
+            onPressed: () async {
+              await createOrder(lstOrder);
+              if (state is OrderLoadFinished) {
+                Navigator.pushNamed(context, RouteConstant.shippingMethod,
+                    arguments: {'totalPrice': totalPrice});
+              }
+            },
+            color: AppColors.indianRed,
+            child: Text(
+              'Tiếp tục',
+              style: whiteText,
+            )),
+      );
+    });
+  }
+
+  Widget _buttonAddToBag(double totalPrice) {
+    return BlocListener(
+      bloc: context.bloc<OrderBloc>(),
+      listener: (context, state) {
+        if (state is OrderLoadFinished) {
+          // if (_isCreated) {
+          //   Navigator.pushNamed(context, RouteConstant.shippingMethod,
+          //       arguments: {
+          //         'totalPrice': totalPrice,
+          //         'orderId': state.orderId
+          //       });
+          // }
+          setState(() {
+            _isCreated = true;
+            _orderId = state.orderId;
+          });
+        }
+      },
+      child: Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+            width: double.infinity,
+            child: RaisedButton(
+                padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 14.0),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0)),
+                onPressed: () => 
+                _isCreated
+                    ? Navigator.pushNamed(context, RouteConstant.shippingMethod,
+                        arguments: {
+                            'totalPrice': totalPrice,
+                            'orderId': _orderId
+                          })
+                    : createOrder(lstOrder),
+                color:
+                    _isCreated ? AppColors.paleVioletRed : AppColors.indianRed,
+                child: Text(
+                  'Tiếp tục',
+                  style: whiteText,
+                )),
           )),
     );
   }
@@ -294,5 +358,11 @@ class _CartScreenState extends State<CartScreen> {
 
   splitImageStringToList(String images) {
     return images.split("|");
+  }
+
+  createOrder(List<OrderRequest> lstOrder) {
+    BlocProvider.of<OrderBloc>(context)
+        .add(CreateOrderEvent(lstRequest: lstOrder));
+    setState(() {});
   }
 }

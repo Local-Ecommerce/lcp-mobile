@@ -13,10 +13,7 @@ part 'category_event.dart';
 part 'category_state.dart';
 
 class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
-  DiscoverRepository _discoverRepository;
   StreamSubscription _streamSubscription, _streamSubscriptionChild;
-  // ApiMenuRepository _apiMenuRepository;
-  ApiDiscoverRepository _apiDiscoverRepository;
   ApiProductCategoryRepository _apiProductCategoryRepository;
 
   CategoryBloc()

@@ -561,10 +561,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             product.children.length != 0 ? getDetailProduct() : product));
       } else {
         Fluttertoast.showToast(
-          msg: "Bạn chưa chọn sản phẩm", // message
-          toastLength: Toast.LENGTH_SHORT, // length
+          msg: "Bạn chưa chọn sản phẩm chi tiết", // message
+          toastLength: Toast.LENGTH_LONG, // length
           gravity: ToastGravity.CENTER, // location
-          // duration
         );
       }
     }
