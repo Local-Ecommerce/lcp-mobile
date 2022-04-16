@@ -6,6 +6,8 @@ class POI {
   int status;
   String residentId;
   String apartmentId;
+  String type;
+  String images;
 
   POI(
       {this.poiId,
@@ -14,7 +16,9 @@ class POI {
       this.text,
       this.status,
       this.residentId,
-      this.apartmentId});
+      this.apartmentId,
+      this.type,
+      this.images = ''});
 
   POI.fromJson(Map<String, dynamic> json) {
     poiId = json['PoiId'];
@@ -24,6 +28,8 @@ class POI {
     status = json['Status'];
     residentId = json['ResidentId'];
     apartmentId = json['ApartmentId'];
+    type = json['Type'];
+    images = json['Image'];
   }
 
   Map<String, dynamic> toJson() {
@@ -35,6 +41,8 @@ class POI {
     data['Status'] = this.status;
     data['ResidentId'] = this.residentId;
     data['ApartmentId'] = this.apartmentId;
+    data['Type'] = this.type;
+    data['Image'] = this.images;
     return data;
   }
 }

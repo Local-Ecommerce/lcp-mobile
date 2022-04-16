@@ -161,8 +161,9 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                             context, RouteConstant.productCategory,
                             arguments: {
                               "listProduct": listProduct,
-                              "categoryName":
-                                  listSysCategories[_currentIndexCategory]
+                              "categoryName": _firstLoad
+                                  ? "Tất cả"
+                                  : listSysCategories[_currentIndexCategory]
                                       .sysCategoryName
                             });
                       })
@@ -185,72 +186,74 @@ class _DiscoverScreenState extends State<DiscoverScreen>
   }
 
   Widget _buildTestList() {
-    // return BlocBuilder<CategoryBloc, CategoryState>(builder: (context, state) {
-    //   listSysCategories = [];
+    return BlocBuilder<CategoryBloc, CategoryState>(builder: (context, state) {
+      //   listSysCategories = [];
 
-    //   if (state is CategoryChildLoadFinished) {
-    //     listSysCategories = state.categories;
-    //   }
-    return ListView.builder(
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        itemCount: listSysCategories.length,
-        itemBuilder: (context, index) {
-          var category = listSysCategories[index];
-          _isSelectedCategory = _currentIndexCategory == index;
-          return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: Card(
-                color: Colors.white,
-                child: Container(
-                  width: width * 0.5,
-                  height: width * 0.4,
-                  child: Stack(
-                    children: [
-                      // Align(
-                      //   child: IconButton(
-                      //       icon: Image.asset(
-                      //         R.icon.heartOutline,
-                      //         width: 20,
-                      //         height: 20,
-                      //       ),
-                      //       onPressed: () {}),
-                      //   alignment: Alignment.topRight,
-                      // ),
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            return Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  R.icon.snkr01,
-                                  width: constraints.maxWidth * 0.5,
-                                  height: constraints.maxHeight * 0.5,
-                                ),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      category.sysCategoryName,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            );
-                          },
+      //   if (state is CategoryChildLoadFinished) {
+      //     listSysCategories = state.categories;
+      //   }
+
+      return ListView.builder(
+          shrinkWrap: true,
+          scrollDirection: Axis.horizontal,
+          itemCount: listSysCategories.length,
+          itemBuilder: (context, index) {
+            var category = listSysCategories[index];
+            _isSelectedCategory = _currentIndexCategory == index;
+            return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: Card(
+                  color: Colors.white,
+                  child: Container(
+                    width: width * 0.5,
+                    height: width * 0.4,
+                    child: Stack(
+                      children: [
+                        // Align(
+                        //   child: IconButton(
+                        //       icon: Image.asset(
+                        //         R.icon.heartOutline,
+                        //         width: 20,
+                        //         height: 20,
+                        //       ),
+                        //       onPressed: () {}),
+                        //   alignment: Alignment.topRight,
+                        // ),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              return Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Image.network(
+                                    category.categoryImage,
+                                    // R.icon.snkr01,
+                                    width: constraints.maxWidth * 0.5,
+                                    height: constraints.maxHeight * 0.5,
+                                  ),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        category.sysCategoryName,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ));
-        });
-    // });
+                ));
+          });
+    });
   }
 
   Widget _buildCardBottomNew() {

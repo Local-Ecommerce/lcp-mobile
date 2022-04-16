@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -10,6 +11,7 @@ import 'package:lcp_mobile/resources/colors.dart';
 import 'package:lcp_mobile/route/route_constants.dart';
 import 'package:lcp_mobile/widget/bottom_dialog.dart';
 import 'package:lcp_mobile/widget/loader_widget.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'popup_desc_details.dart';
 
@@ -25,6 +27,7 @@ class ProductDetailsScreen extends StatefulWidget {
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   final formatCurrency =
       NumberFormat.currency(locale: "en_US", symbol: "VNĐ ", decimalDigits: 0);
+
   var _isSelectedSize = false;
   var _isSelectedColor = false;
   var _isSelectedWeight = false;
@@ -32,7 +35,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   var _currentIndexWeight = 0;
   var _currentIndexColor = 0;
   var _currentIndexSize = 0;
-
+  var _price;
   var _imageIndex = 0;
 
   Product product;
@@ -45,6 +48,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   bool isHaveSize = false;
   bool isHaveWeight = false;
   bool isHaveColor = false;
+  bool isFirstLoad = true;
 
   var _isAddedToBag = false;
 
@@ -62,6 +66,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       builder: (context, state) {
         if (state is LoadProductDetailsFinished) {
           product = state.product;
+          if (isFirstLoad == true) _price = product.defaultPrice;
           lstWeight.clear();
           lstSize.clear();
           lstColor.clear();
@@ -75,11 +80,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 isHaveColor = true;
                 if (!lstColor.contains(product.color))
                   lstColor.add(product.color);
-              } else if (product.weight != 0) {
+              }
+              if (product.weight != 0) {
                 isHaveWeight = true;
                 if (!lstWeight.contains(product.weight))
                   lstWeight.add(product.weight);
-              } else if (product.size != null) {
+              }
+              if (product.size != null) {
                 isHaveSize = true;
                 if (!lstSize.contains(product.size)) lstSize.add(product.size);
               }
@@ -196,13 +203,47 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   ),
                 ),
               ),
-              Text(
-                formatCurrency.format(product.defaultPrice),
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
-              ),
+              // Text(
+              //   formatCurrency.format(_price),
+              //   style: TextStyle(
+              //     fontWeight: FontWeight.bold,
+              //     fontSize: 20,
+              //   ),
+              // ),
+              Column(
+                children: [
+                  Text.rich(
+                    TextSpan(
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: formatCurrency.format(_price),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Text.rich(
+                    TextSpan(
+                      children: <TextSpan>[
+                        if (_price != product.defaultPrice) ...[
+                          TextSpan(
+                            text: formatCurrency.format(product.defaultPrice),
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              decoration: TextDecoration.lineThrough,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  )
+                ],
+              )
             ],
           ),
           SizedBox(
@@ -242,51 +283,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           SizedBox(
             height: 26,
           ),
-
-          //   if (product.color != null) ...[
-          //     Row(
-          //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //       children: [
-          //         Text(
-          //           'Size',
-          //           style: TextStyle(
-          //             fontWeight: FontWeight.bold,
-          //             fontSize: 20,
-          //           ),
-          //         ),
-          //         Row(
-          //           children: [
-          //             Text(
-          //               'UK',
-          //               style: TextStyle(
-          //                 color: Colors.grey,
-          //                 fontWeight: FontWeight.bold,
-          //                 fontSize: 20,
-          //               ),
-          //             ),
-          //             SizedBox(
-          //               width: 10,
-          //             ),
-          //             Text(
-          //               'USA',
-          //               style: TextStyle(
-          //                 color: Colors.grey,
-          //                 fontWeight: FontWeight.bold,
-          //                 fontSize: 20,
-          //               ),
-          //             )
-          //           ],
-          //         )
-          //       ],
-          //     ),
-          //     SizedBox(
-          //       height: 16,
-          //     ),
-          //     // SizedBox(height: 60, child: listSize(size)),
-          //     SizedBox(
-          //       height: 100,
-          //     ),
-          //   ],
           if (isHaveColor == true) ...[
             _buildAttributeTitle("Màu sắc"),
             SizedBox(
@@ -304,7 +300,21 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             Padding(padding: EdgeInsets.symmetric(vertical: 16)),
           ],
           if (isHaveWeight == true) ...[
-            _buildAttributeTitle("Khối lượng"),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildAttributeTitle("Khối lượng"),
+                Text(
+                  "(Kg)",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontStyle: FontStyle.italic,
+                    color: Colors.grey,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ),
             SizedBox(
               height: 16,
             ),
@@ -372,7 +382,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 14.0),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0)),
-                onPressed: () => addProductToCart(),
+                onPressed: () => _isAddedToBag
+                    ? Navigator.pushNamed(context, RouteConstant.cart)
+                    : addProductToCart(),
                 color: _isAddedToBag
                     ? AppColors.paleVioletRed
                     : AppColors.indianRed,
@@ -408,13 +420,17 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
         _isSelectedSize = _currentIndexColor == index;
         return GestureDetector(
-          onTap: () => onSelectedIndexColor(index),
+          onTap: () => {onSelectedIndexColor(index), getPrice()},
           child: Container(
             margin: EdgeInsets.symmetric(horizontal: 6.0),
             width: 100,
             height: 50,
             decoration: BoxDecoration(
-                color: _isSelectedSize ? Colors.black : Colors.white,
+                color: isFirstLoad == true
+                    ? Colors.white
+                    : _isSelectedSize
+                        ? Colors.black
+                        : Colors.white,
                 border: Border.all(color: Colors.grey[300]),
                 borderRadius: BorderRadius.all(Radius.circular(8.0))),
             child: Padding(
@@ -423,7 +439,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   child: Text(
                     "$attribute",
                     style: TextStyle(
-                        color: _isSelectedSize ? Colors.white : Colors.black,
+                        color: isFirstLoad == true
+                            ? Colors.black
+                            : _isSelectedSize
+                                ? Colors.white
+                                : Colors.black,
                         fontWeight: FontWeight.bold),
                   ),
                 )),
@@ -442,13 +462,17 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
         _isSelectedSize = _currentIndexSize == index;
         return GestureDetector(
-          onTap: () => onSelectedIndexSize(index),
+          onTap: () => {onSelectedIndexSize(index), getPrice()},
           child: Container(
             margin: EdgeInsets.symmetric(horizontal: 6.0),
             width: 100,
             height: 50,
             decoration: BoxDecoration(
-                color: _isSelectedSize ? Colors.black : Colors.white,
+                color: isFirstLoad == true
+                    ? Colors.white
+                    : _isSelectedSize
+                        ? Colors.black
+                        : Colors.white,
                 border: Border.all(color: Colors.grey[300]),
                 borderRadius: BorderRadius.all(Radius.circular(8.0))),
             child: Padding(
@@ -457,7 +481,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   child: Text(
                     "$attribute",
                     style: TextStyle(
-                        color: _isSelectedSize ? Colors.white : Colors.black,
+                        color: isFirstLoad == true
+                            ? Colors.black
+                            : _isSelectedSize
+                                ? Colors.white
+                                : Colors.black,
                         fontWeight: FontWeight.bold),
                   ),
                 )),
@@ -475,13 +503,17 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         var weight = lstWeight[index];
         _isSelectedSize = _currentIndexWeight == index;
         return GestureDetector(
-          onTap: () => onSelectedIndexWeight(index),
+          onTap: () => {onSelectedIndexWeight(index), getPrice()},
           child: Container(
             margin: EdgeInsets.symmetric(horizontal: 6.0),
             width: 100,
             height: 50,
             decoration: BoxDecoration(
-                color: _isSelectedSize ? Colors.black : Colors.white,
+                color: isFirstLoad == true
+                    ? Colors.white
+                    : _isSelectedSize
+                        ? Colors.black
+                        : Colors.white,
                 border: Border.all(color: Colors.grey[300]),
                 borderRadius: BorderRadius.all(Radius.circular(8.0))),
             child: Padding(
@@ -490,7 +522,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   child: Text(
                     "$weight",
                     style: TextStyle(
-                        color: _isSelectedSize ? Colors.white : Colors.black,
+                        color: isFirstLoad == true
+                            ? Colors.black
+                            : _isSelectedSize
+                                ? Colors.white
+                                : Colors.black,
                         fontWeight: FontWeight.bold),
                   ),
                 )),
@@ -519,10 +555,18 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   }
 
   addProductToCart() {
-    print("productCode:");
-    print(product.productCode);
-    print(product.productId);
-    BlocProvider.of<ProductDetailsBloc>(context).add(AddProductToCart(product));
+    if (isHaveColor || isHaveSize || isHaveWeight) {
+      if (!isFirstLoad) {
+        BlocProvider.of<ProductDetailsBloc>(context).add(AddProductToCart(
+            product.children.length != 0 ? getDetailProduct() : product));
+      } else {
+        Fluttertoast.showToast(
+          msg: "Bạn chưa chọn sản phẩm chi tiết", // message
+          toastLength: Toast.LENGTH_LONG, // length
+          gravity: ToastGravity.CENTER, // location
+        );
+      }
+    }
   }
 
   addToWishlistClick() {
@@ -531,5 +575,37 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
   splitImageStringToList(String images) {
     return images.split("|");
+  }
+
+  Product getDetailProduct() {
+    List<Product> selectedProduct = [];
+    var _color, _size, _weight;
+    lstColor.isNotEmpty ? _color = lstColor[_currentIndexColor] : _color = null;
+    lstSize.isNotEmpty ? _size = lstSize[_currentIndexSize] : _size = null;
+    lstWeight.isNotEmpty
+        ? _weight = lstWeight[_currentIndexWeight]
+        : _weight = 0;
+
+    selectedProduct = relatedProduct
+        .where((product) =>
+            product.size == _size &&
+            product.color == _color &&
+            product.weight == _weight)
+        .toList();
+
+    selectedProduct[0].images = product.images;
+    selectedProduct[0].productName = product.productName;
+
+    print(selectedProduct[0]);
+    return selectedProduct[0];
+  }
+
+  getPrice() {
+    Product _product = getDetailProduct();
+    setState(() {
+      _price = _product.defaultPrice;
+      isFirstLoad = false;
+      _isAddedToBag = false;
+    });
   }
 }

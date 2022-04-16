@@ -7,10 +7,11 @@ class SysCategory {
   String type;
   String belongTo;
   int status;
+  String categoryImage;
   List<dynamic> lstSysCategories;
 
   SysCategory(this.sysCategoryID, this.sysCategoryName, this.categoryLevel,
-      this.belongTo, this.status);
+      this.belongTo, this.status, this.categoryImage);
 
   SysCategory.fromJson(Map<String, dynamic> json)
       : sysCategoryID = json['SystemCategoryId'],
@@ -19,7 +20,8 @@ class SysCategory {
         categoryLevel = json['CategoryLevel'],
         belongTo = json['BelongTo'],
         status = json['Status'],
-        lstSysCategories = json['Children'];
+        lstSysCategories = json['Children'],
+        categoryImage = json['CategoryImage'];
 
   Map<String, dynamic> toMapSql() {
     return {
@@ -28,7 +30,8 @@ class SysCategory {
       'categoryLevel': categoryLevel,
       'belongTo': belongTo,
       'status': status,
-      'Children': lstSysCategories
+      'Children': lstSysCategories,
+      'CategoryImage': categoryImage
     };
   }
 

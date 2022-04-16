@@ -6,6 +6,11 @@ import 'package:intl/intl.dart';
 import 'package:lcp_mobile/route/route_constants.dart';
 
 class ShippingMethodScreen extends StatefulWidget {
+  final double totalPrice;
+  final String orderId;
+
+  const ShippingMethodScreen({Key key, this.totalPrice, this.orderId})
+      : super(key: key);
   @override
   _ShippingMethodScreenState createState() => _ShippingMethodScreenState();
 }
@@ -15,6 +20,7 @@ class _ShippingMethodScreenState extends State<ShippingMethodScreen> {
       NumberFormat.currency(locale: "en_US", symbol: "VNĐ ", decimalDigits: 0);
   var _isSelectedShipMethod = false;
   var _currentIndexShipMethod = 0;
+  var _shippingFee;
 
   @override
   Widget build(BuildContext context) {
@@ -71,11 +77,16 @@ class _ShippingMethodScreenState extends State<ShippingMethodScreen> {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
           onPressed: () {
-            Navigator.pushNamed(context, RouteConstant.checkout);
+            Navigator.pushNamed(context, RouteConstant.checkout, arguments: {
+              'totalPrice': widget.totalPrice,
+              'orderId': widget.orderId,
+              'shippingFee':
+                  AppData.shipMethods[_currentIndexShipMethod].shippingFee,
+            });
           },
           color: AppColors.indianRed,
           child: Text(
-            'Next',
+            'Tiếp tục',
             style: whiteText,
           )),
     );
@@ -106,7 +117,7 @@ class _ShippingMethodScreenState extends State<ShippingMethodScreen> {
                     style: _isSelectedShipMethod ? textMediumWhite : textMedium,
                   ),
                   Text(
-                    formatCurrency.format(shipMethod.price),
+                    formatCurrency.format(shipMethod.shippingFee),
                     style: _isSelectedShipMethod ? textMediumWhite : textMedium,
                   ),
                 ],

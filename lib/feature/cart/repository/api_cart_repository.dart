@@ -86,42 +86,13 @@ class ApiDiscoverRepository {
       _dio.clear();
       return _listProduct;
     } on DioError catch (ex) {
-      // if (ex.response.statusCode == 408 || ex.response.statusCode == 401) {
-      //   _dio.clear();
-      //   // await _apiLoginRepository.updateExpiredToken(
-      //   //     _refreshTokens.token, _refreshTokens.accessToken);
-      //   String url = ApiService.ACCOUNT + '/refresh-token';
-
-      //   TokenRequest tokenRequest = TokenRequest(
-      //       token: _refreshTokens.token,
-      //       accessToken: _refreshTokens.accessToken);
-
-      //   try {
-      //     Response response = await _dio.post(url,
-      //         data: tokenRequest.toJson(),
-      //         options: Options(
-      //             followRedirects: false, validateStatus: (status) => true));
-      //     BaseResponse baseResponse =
-      //         BaseResponse.fromJson(jsonDecode(response.data));
-
-      //     print(response);
-
-      //     TokenPreferences.updateUserToken(baseResponse.data);
-
-      //     _dio.clear();
-      //   } on DioError catch (ex) {
-      //     log(jsonEncode(ex.response));
-      //     _dio.clear();
-      //   }
-      // } else {
-      //   log(jsonEncode(ex.response));
-      // }
       log(jsonEncode(ex.response));
+      _dio.clear();
     }
   }
 
   Future<Product> getProductDetail(String productId) async {
-    String _url = ApiService.PRODUCT + "?id=${productId}&include={related}";
+    String _url = ApiService.PRODUCT + "?id=${productId}";
 
     _refreshTokens = TokenPreferences.getRefreshTokens();
 
@@ -135,8 +106,11 @@ class ApiDiscoverRepository {
           BaseResponse.fromJson(jsonDecode(_response.data));
 
       Data data = Data.fromJson(_baseResponse.data);
+
       List<Product> _listProduct =
           List.from(data.list).map((e) => Product.fromJson(e)).toList();
+
+      // print(_listProduct[0].children);
       _dio.clear();
       return _listProduct[0];
     } on DioError catch (ex) {

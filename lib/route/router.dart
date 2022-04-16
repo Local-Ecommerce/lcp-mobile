@@ -4,9 +4,12 @@ import 'package:lcp_mobile/feature/auth/register/regis_screen.dart';
 import 'package:lcp_mobile/feature/auth/register/update_info_screen.dart';
 import 'package:lcp_mobile/feature/cart/ui/cart_screen.dart';
 import 'package:lcp_mobile/feature/checkout/checkout_screen.dart';
+import 'package:lcp_mobile/feature/checkout/checkout_result_screen.dart';
 import 'package:lcp_mobile/feature/credit_card_details/card_details_screen.dart';
 import 'package:lcp_mobile/feature/discover/model/product.dart';
 import 'package:lcp_mobile/feature/home/home.dart';
+import 'package:lcp_mobile/feature/portal/model/new.dart';
+import 'package:lcp_mobile/feature/portal/model/poi.dart';
 import 'package:lcp_mobile/feature/portal_details/ui/new_detail_screen.dart';
 import 'package:lcp_mobile/feature/portal_details/ui/poi_detail_screen.dart';
 import 'package:lcp_mobile/feature/product_category/product_categorys_screen.dart';
@@ -29,16 +32,22 @@ class AppRouter {
           productId: productId,
         ));
       case RouteConstant.newDetailsRoute:
-        String newId = settings.arguments;
+        New news = settings.arguments;
         return SlideRouteBuilder(
             page: NewDetailScreen(
-          newId: newId,
+          news: news,
         ));
       case RouteConstant.poiDetailsRoute:
-        String poiId = settings.arguments;
+        POI poi = settings.arguments;
         return SlideRouteBuilder(
             page: POIDetailScreen(
-          poiId: poiId,
+          poi: poi,
+        ));
+      case RouteConstant.checkoutResultRoute:
+        String orderId = settings.arguments;
+        return SlideRouteBuilder(
+            page: CheckoutResultScreen(
+          orderId: orderId,
         ));
       case RouteConstant.loginRoute:
         return SlideRouteBuilder(page: LoginScreen());
@@ -49,11 +58,27 @@ class AppRouter {
       case RouteConstant.cart:
         return SlideRouteBuilder(page: CartScreen());
       case RouteConstant.shippingMethod:
-        return SlideRouteBuilder(page: ShippingMethodScreen());
+        final Map arguments = settings.arguments as Map;
+        double totalPrice = arguments['totalPrice'];
+        String orderId = arguments['orderId'];
+        return SlideRouteBuilder(
+            page:
+                ShippingMethodScreen(totalPrice: totalPrice, orderId: orderId));
       case RouteConstant.creditCard:
         return SlideRouteBuilder(page: CreditCardDetailsScreen());
       case RouteConstant.checkout:
-        return SlideRouteBuilder(page: CheckoutScreen());
+        final Map arguments = settings.arguments as Map;
+
+        String orderId = arguments['orderId'];
+        double shippingFee = arguments['shippingFee'];
+        String paymentType = arguments['paymentType'];
+        double totalPrice = arguments['totalPrice'];
+        return SlideRouteBuilder(
+            page: CheckoutScreen(
+                orderId: orderId,
+                totalPrice: totalPrice,
+                paymentType: paymentType,
+                shippingFee: shippingFee));
       case RouteConstant.productCategory:
         final Map arguments = settings.arguments as Map;
 

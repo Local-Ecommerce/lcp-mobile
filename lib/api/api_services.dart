@@ -19,6 +19,7 @@ class ApiService {
   static const PAYMENTMETHOD = "${BASE_URL}/payment-methods";
   static const PRODUCTCATEGORY = "${BASE_URL}/categories-products";
   static const SYSTEMCATEGORY = "${BASE_URL}/categories";
+  static const ORDER = "${BASE_URL}/orders";
 
   Future<dynamic> get(String uri,
       {Map<String, dynamic> params, Map<String, String> headers}) async {

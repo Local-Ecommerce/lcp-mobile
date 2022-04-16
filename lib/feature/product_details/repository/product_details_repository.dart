@@ -16,10 +16,7 @@ class ProductDetailsRepository {
   }
 
   Future<int> insertProductToCart(Product product) async {
-    print("mapSQL");
-    //productCodenull
-    print(product.toMapSql());
-
+    // db.delete(DBProvider.TABLE_CART_ITEMS);
     db.insert(
       DBProvider.TABLE_PRODUCT,
       product.toMapSql(),
@@ -55,7 +52,6 @@ class ProductDetailsRepository {
   }
 
   Future<Product> getProductDetails(String id) async {
-    // var result = await productCollection.doc(id).get();
     Product result = await apiDiscoverRepository.getProductDetail(id);
     return _productListFromSnapshot(result);
   }
@@ -63,19 +59,14 @@ class ProductDetailsRepository {
   Product _productListFromSnapshot(Product doc) {
     return Product(
         productId: doc.productId,
-        // images: List<String>.from(doc.data()['images']),
-        // images: doc.data()['image'],
-        // color: doc.data()['colors'],
-        // productName: doc.data()['title'],
-        // defaultPrice: doc.data()['price'],
-        // isFavorite: doc.data()['isFavourite'],
-        // description: doc.data()['description'],
-        // briefDescription: doc.data()['briefDescription'],
-        // size: doc.data()['remainingSize'],
-        // weight: doc.data()['weight']);
         images: doc.images,
         color: doc.color,
         productName: doc.productName,
+        productCode: doc.productCode,
+        belongTo: doc.belongTo,
+        residentId: doc.residentId,
+        status: doc.status,
+        systemCategoryId: doc.systemCategoryId,
         defaultPrice: doc.defaultPrice,
         isFavorite: doc.isFavorite,
         description: doc.description,
