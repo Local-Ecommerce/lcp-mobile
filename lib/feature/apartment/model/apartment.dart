@@ -30,10 +30,3 @@ class Apartment {
   }
 }
 
-
-
-List<String> lstApartment = [
-  'Chung cư Sky9',
-  'Chung cư Vinhome',
-  'Chung cư Xala'
-];

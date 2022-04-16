@@ -35,7 +35,6 @@ class CreditCardWidget extends StatelessWidget {
   /// Card number, Exp. year and Card holder name
   ///
   Container buildFrontContainer(
-<<<<<<< HEAD
       double width,
       double height,
       BuildContext context,
@@ -48,20 +47,6 @@ class CreditCardWidget extends StatelessWidget {
         fontSize: 16,
       ),
     );
-=======
-    double width,
-    double height,
-    BuildContext context,
-    Orientation orientation,
-  ) {
-    final TextStyle defaultTextStyle = Theme.of(context).textTheme.title.merge(
-          TextStyle(
-            color: Colors.white,
-            fontFamily: 'halter',
-            fontSize: 16,
-          ),
-        );
->>>>>>> origin/master
 
     return Container(
       margin: const EdgeInsets.all(16),

@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:lcp_mobile/feature/apartment/model/apartment.dart';
+import 'package:lcp_mobile/feature/apartment/repository/api_apartment_repository.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:lcp_mobile/feature/auth/helper/validators_transformer.dart';
@@ -14,6 +16,8 @@ part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginRepository _loginRepository;
+  StreamSubscription _streamSubscription;
+  ApiApartmentRepository _apiApartmentRepository;
 
   LoginBloc()
       : _loginRepository = FirebaseLoginRepository(),
@@ -67,10 +71,21 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     try {
       if (await _loginRepository.googleLogin()) {
         yield LoginFinishedState(isSuccess: true);
+      } else {
+        yield UpdateInfoState(isSuccess: true);
       }
     } on Exception catch (e) {
       print(e);
       yield LoginFinishedState(isSuccess: false);
     }
+  }
+
+  Stream<LoginState> _mapLoadCategoryEvent(
+      LoadingApartmentEvent event) async* {
+    _streamSubscription =
+        Stream.fromFuture(_apiApartmentRepository.getAllApartments())
+            .listen((apartments) {
+          add(ApartmentUpdatedEvent(apartments: apartments));
+        });
   }
 }

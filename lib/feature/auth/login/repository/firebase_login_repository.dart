@@ -1,23 +1,19 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:lcp_mobile/api/api_services.dart';
-import 'package:lcp_mobile/api/base_response.dart';
 import 'package:lcp_mobile/feature/auth/login/repository/api_login_repository.dart';
+import 'package:lcp_mobile/feature/auth/login/repository/api_update_user_repository.dart';
 import 'package:lcp_mobile/feature/auth/login/repository/login_repository.dart';
 import 'package:lcp_mobile/feature/auth/model/user_app.dart';
-
-import 'package:dio/dio.dart';
 import 'package:lcp_mobile/references/user_preference.dart';
-import 'package:lcp_mobile/resources/api_strings.dart';
 
 class FirebaseLoginRepository extends LoginRepository {
   FirebaseAuth _auth;
   GoogleSignIn _googleSignIn = GoogleSignIn();
   ApiLoginRepository _apiLoginRepository = new ApiLoginRepository();
+  ApiUpdateUserRepository _apiUpdateUserRepository =
+      new ApiUpdateUserRepository();
   String baseUrl = ApiService.ACCOUNT;
 
   final CollectionReference userCollection =
@@ -45,12 +41,11 @@ class FirebaseLoginRepository extends LoginRepository {
           email: email, password: password);
       var token = await _auth.currentUser.getIdToken();
 
-      // print(result.user.toString());
+      print(result.user.toString());
 
       // print("Token is:");
       // print(token);
       await _apiLoginRepository.apiLogin(token);
-
       return result.user != null;
     } on Exception catch (e) {
       print(e);
@@ -64,7 +59,8 @@ class FirebaseLoginRepository extends LoginRepository {
       'email': userData.email,
       'dob': userData.dob,
       'fullname': userData.fullName,
-      'role': userData.role
+      'role': userData.role,
+      'apartmentId': userData.apartmentId
     });
   }
 
@@ -85,6 +81,34 @@ class FirebaseLoginRepository extends LoginRepository {
     }
   }
 
+  Future<bool> updateProfile(UserData userData) async {
+    FirebaseLoginRepository _authBloc = FirebaseLoginRepository();
+
+    if (_authBloc.isSignedIn() != null) {
+      try {
+        return await _apiUpdateUserRepository.updateUser(userData);
+      } on Exception catch (e) {
+        return false;
+      }
+    } else {
+      try {
+        final idToken = await _auth.currentUser.getIdToken();
+        userData.uid = _auth.currentUser.uid;
+        userData.email = _auth.currentUser.email;
+        userData.fullName = _auth.currentUser.displayName;
+        userData.username = _auth.currentUser.displayName;
+        print("//==============");
+        print(userData.toString());
+        await updateUserData(userData);
+        await _apiLoginRepository.apiLogin(idToken);
+        return true;
+      } on FirebaseAuthException catch (e) {
+        print(e);
+        return false;
+      }
+    }
+  }
+
   Future<bool> googleLogin() async {
     // _googleSignIn.signOut();
 
@@ -98,21 +122,16 @@ class FirebaseLoginRepository extends LoginRepository {
     final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
 
-    await FirebaseAuth.instance.signInWithCredential(credential);
-
-    await _apiLoginRepository.apiLogin(googleAuth.idToken);
-
-    UserData _user = UserData(
-      uid: _auth.currentUser.uid,
-      email: _auth.currentUser.email,
-      fullName: _auth.currentUser.displayName,
-      username: _auth.currentUser.displayName,
-    );
-
-    var userFirebase = await userCollection.doc(_user.uid).get();
+    final _userCredential =
+        await FirebaseAuth.instance.signInWithCredential(credential);
+    print(_auth.currentUser.uid);
+    var userFirebase = await userCollection.doc(_userCredential.user.uid).get();
+    final idToken = await _auth.currentUser.getIdToken();
     try {
       if (userFirebase.data() == null) {
-        await updateUserData(_user);
+        return false;
+      } else {
+        await _apiLoginRepository.apiLogin(idToken);
       }
     } on FirebaseAuthException catch (e) {
       print(e);
