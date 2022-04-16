@@ -6,10 +6,8 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lcp_mobile/api/api_services.dart';
 import 'package:lcp_mobile/api/base_response.dart';
-import 'package:lcp_mobile/feature/apartment/model/apartment.dart';
 import 'package:lcp_mobile/feature/auth/model/user_app.dart';
 
-import 'package:lcp_mobile/feature/discover/model/product.dart';
 import 'package:lcp_mobile/references/user_preference.dart';
 import 'package:lcp_mobile/resources/api_strings.dart';
 
@@ -36,8 +34,6 @@ class ApiLoginRepository {
   Future<bool> apiLogin(String tokenId) async {
     String url = ApiService.ACCOUNT + '/login';
 
-    // print(tokenId);
-
     UserRequest userRequest =
         UserRequest(firebaseToken: tokenId, role: ApiStrings.userRole);
 
@@ -51,9 +47,6 @@ class ApiLoginRepository {
 
       UserDataResponse userDataResponse =
           UserDataResponse.fromJson(baseResponse.data);
-
-      // print(userDataResponse.residents[0]);
-      // print(userDataResponse.refreshTokens[0]);
 
       UserPreferences.updateUser(userDataResponse.residents[0]);
 

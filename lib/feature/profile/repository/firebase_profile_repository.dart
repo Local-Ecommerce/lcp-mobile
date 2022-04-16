@@ -41,6 +41,7 @@ class FirebaseProfileRepository extends ProfileRepository {
   UserData _mapDocumentToUserData(DocumentSnapshot data) {
     return UserData(
       uid: data.data()['uid'],
+      apartmentId: data.data()['apartmentId'],
       email: data.data()['email'],
       fullName: data.data()['fullname'],
       username: data.data()['username'],

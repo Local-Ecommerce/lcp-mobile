@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:lcp_mobile/feature/auth/login/bloc/login_bloc.dart';
+import 'package:lcp_mobile/references/user_preference.dart';
 import 'package:lcp_mobile/resources/R.dart';
 import 'package:lcp_mobile/resources/resources.dart';
 import 'package:lcp_mobile/route/route_constants.dart';
 import 'package:lcp_mobile/widget/appbar.dart';
 import 'package:provider/provider.dart';
+
+import '../model/user_app.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -17,9 +20,13 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
+  UserData _userData;
+
   @override
   void initState() {
     super.initState();
+
+    _userData = UserPreferences.getUser();
   }
 
   @override
@@ -54,14 +61,14 @@ class _LoginScreenState extends State<LoginScreen> {
           SizedBox(
             height: 70,
           ),
-          _SubmitLogin(),
+          _SubmitLogin(userData: _userData),
           SizedBox(
             height: 18.0,
           ),
           Center(
             child: RichText(
                 text: TextSpan(
-                    text: 'Don have account? ',
+                    text: 'Don\'t have account? ',
                     style: minorText,
                     children: [
                   TextSpan(
@@ -225,16 +232,32 @@ class _PasswordInput extends StatelessWidget {
   }
 }
 
-class _SubmitLogin extends StatelessWidget {
+class _SubmitLogin extends StatefulWidget {
+  final UserData userData;
+
+  const _SubmitLogin({Key key, @required this.userData})
+      : super(key: key);
+
+  @override
+  State<_SubmitLogin> createState() => _SubmitLoginState();
+}
+
+class _SubmitLoginState extends State<_SubmitLogin> {
   @override
   Widget build(BuildContext context) {
     return BlocListener(
         bloc: context.bloc<LoginBloc>(),
         listener: (context, state) {
+          print(state);
           if (state is LoginFinishedState) {
             if (state.isSuccess) {
               Navigator.pushNamedAndRemoveUntil(
                   context, RouteConstant.homeRoute, (r) => false);
+            }
+          } else if (state is UpdateInfoState) {
+            if (state.isSuccess) {
+              Navigator.pushNamedAndRemoveUntil(
+                  context, RouteConstant.updateProfileRoute, (r) => false);
             }
           }
         },

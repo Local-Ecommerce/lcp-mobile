@@ -50,4 +50,5 @@ class UpdateInfoState extends LoginState {
 
   @override
   List<Object> get props => [isSuccess];
+
 }

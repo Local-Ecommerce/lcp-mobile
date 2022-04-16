@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:lcp_mobile/resources/R.dart';
+import 'package:intl/intl.dart';
 import 'package:lcp_mobile/resources/resources.dart';
-import 'package:lcp_mobile/route/route_constants.dart';
-import 'package:lcp_mobile/widget/bottom_dialog.dart';
 import 'package:lcp_mobile/widget/loader_widget.dart';
 
+import '../../apartment/model/apartment.dart';
+import '../../apartment/repository/api_apartment_repository.dart';
 import 'register_bloc.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -14,12 +14,26 @@ class RegisterScreen extends StatefulWidget {
 
 RegisterBloc _registerBloc = RegisterBloc();
 
+String _currentSelectedValue = '';
+
 class _RegisterScreenState extends State<RegisterScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  ApiApartmentRepository _apiApartmentRepository;
+
+  List<Apartment> listApartment = [];
+
+  getAllApartment() async {
+    listApartment = await _apiApartmentRepository.getAllApartments();
+    setState(() {});
+    return listApartment;
+  }
 
   @override
   void initState() {
     super.initState();
+    _apiApartmentRepository = new ApiApartmentRepository();
+    getAllApartment();
   }
 
   @override
@@ -42,19 +56,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
-          children: [
-            IntrinsicHeight(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(child: _FullNameInput()),
-                  // SizedBox(
-                  //   width: 10,
-                  // ),
-                  // Expanded(child: _LastNameNameInput()),
-                ],
-              ),
+          children: <Widget>[
+            SizedBox(
+              height: 10,
             ),
+            _ApartmentDropdown(listApartment: listApartment),
+            SizedBox(
+              height: 10,
+            ),
+            _FullNameInput(),
             SizedBox(
               height: 10,
             ),
@@ -85,51 +95,47 @@ class _RegisterScreenState extends State<RegisterScreen> {
 class _SubmitRegister extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<bool>(
-      future: _registerBloc.register(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return LoaderPage();
-        }
-
-        return StreamBuilder<bool>(
-          stream: _registerBloc.validateResult$,
-          builder: (context, snapshot) => RaisedButton(
-            padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 0.0),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0)),
-            onPressed: () async {
-              if (snapshot.data != null && snapshot.data) {
-                showModalBottomSheet(
-                  context: context,
-                  elevation: 30,
-                  backgroundColor: Colors.transparent,
-                  builder: (context) => Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Center(child: LoaderPage())),
+    return StreamBuilder<bool>(
+      stream: _registerBloc.validateResult$,
+      builder: (context, snapshot) => RaisedButton(
+        padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 0.0),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+        onPressed: () async {
+          if (snapshot.data != null && snapshot.data) {
+            showModalBottomSheet(
+              context: context,
+              elevation: 30,
+              backgroundColor: Colors.transparent,
+              builder: (context) => Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Center(child: LoaderPage())),
+            );
+            _registerBloc.register().then((value) {
+              if (value) {
+                //Close modal and pop to login
+                Navigator.of(context)..pop()..pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("Register success"),
+                  ),
                 );
-
-                _registerBloc.register().then((success) {
-                  if (success) {
-                    Navigator.pushReplacementNamed(
-                        context, RouteConstant.loginRoute);
-                  }
-                });
               } else {
-                print('Register failed');
-                Scaffold.of(context).showSnackBar(SnackBar(
-                  content: Text("Register failed"),
-                ));
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("Register failed"),
+                  ),
+                );
               }
-            },
-            color: AppColors.indianRed,
-            child: Text(
-              R.strings.registerTitle,
-              style: whiteText,
-            ),
-          ),
-        );
-      },
+            });
+          }
+        },
+        color: AppColors.indianRed,
+        child: Text(
+          R.strings.registerTitle,
+          style: whiteText,
+        ),
+      ),
     );
   }
 }
@@ -154,27 +160,6 @@ class _FullNameInput extends StatelessWidget {
     );
   }
 }
-
-// class _LastNameNameInput extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return StreamBuilder(
-//       stream: _registerBloc.lastName$,
-//       builder: (context, snapshot) {
-//         return TextFormField(
-//           onChanged: _registerBloc.onLastNameChanged,
-//           decoration: InputDecoration(
-//               labelText: 'LastName',
-//               border: OutlineInputBorder(),
-//               contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-//               errorText: snapshot.data != null && !snapshot.data
-//                   ? 'Required field'
-//                   : null),
-//         );
-//       },
-//     );
-//   }
-// }
 
 class _DobInput extends StatefulWidget {
   @override
@@ -209,17 +194,18 @@ class __DobInputState extends State<_DobInput> {
 
   Future<void> _selectDate(BuildContext context) async {
     DateTime selectedDate = DateTime.now();
-
+    DateFormat _dateFormat = DateFormat("dd/MM/yyyy");
     final DateTime picked = await showDatePicker(
         context: context,
         initialDate: selectedDate,
         firstDate: DateTime(1990),
         lastDate: DateTime(2101));
     if (picked != null && picked != selectedDate) {
+      _registerBloc.onDobChanged(DateFormat("MM/dd/yyyy").format(picked));
       setState(() {
         selectedDate = picked;
         debugPrint('selectedDate: $selectedDate');
-        _dobController.text = selectedDate.toString();
+        _dobController.text = _dateFormat.format(selectedDate);
       });
     }
   }
@@ -284,4 +270,49 @@ class _PasswordInput extends StatelessWidget {
   //     ),
   //   );
   // }
+}
+
+class _ApartmentDropdown extends StatefulWidget {
+  final List<Apartment> listApartment;
+
+  const _ApartmentDropdown({Key key, @required this.listApartment})
+      : super(key: key);
+  @override
+  __ApartmentDropdownState createState() => __ApartmentDropdownState();
+}
+
+class __ApartmentDropdownState extends State<_ApartmentDropdown> {
+  @override
+  Widget build(BuildContext context) {
+    return FormField<String>(
+      builder: (FormFieldState<String> state) {
+        return InputDecorator(
+          decoration: InputDecoration(
+            // errorStyle: TextStyle(color: Colors.redAccent, fontSize: 16.0),
+            border: OutlineInputBorder(),
+            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+          ),
+          isEmpty: _currentSelectedValue == '',
+          child: StreamBuilder<String>(
+              stream: _registerBloc.combobox$,
+              builder: (context, snapshot) {
+                return DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: snapshot.hasData ? snapshot.data : null,
+                    hint: Text("Apartment"),
+                    isDense: true,
+                    onChanged: _registerBloc.onComboboxChanged,
+                    items: widget.listApartment.map((value) {
+                      return DropdownMenuItem<String>(
+                        value: value.apartmentId,
+                        child: Text(value.apartmentName),
+                      );
+                    }).toList(),
+                  ),
+                );
+              }),
+        );
+      },
+    );
+  }
 }

@@ -31,4 +31,10 @@ class LoginService extends LoginRepository {
     // TODO: implement googleLogin
     throw UnimplementedError();
   }
+
+  @override
+  Future<bool> updateProfile(UserData userData) {
+    // TODO: implement updateProfile
+    throw UnimplementedError();
+  }
 }

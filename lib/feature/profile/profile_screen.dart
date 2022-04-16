@@ -110,6 +110,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       case AppSettings.LOGOUT:
         context.bloc<ProfileBloc>().add(LogoutEvent());
         break;
+      case AppSettings.INFO:
+        Navigator.pushNamed(context, RouteConstant.updateProfileRoute);
+        break;
       default:
         break;
     }

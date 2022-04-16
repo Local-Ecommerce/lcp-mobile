@@ -28,7 +28,7 @@ enum AppSettings {
   WEBSITE_STATE,
   MY_DEMO,
   PAYMENT,
-  SETTINGS,
+  INFO,
   LEGAL,
   LOGOUT,
 }
@@ -50,8 +50,8 @@ extension SettingsExtension on AppSettings {
         return "My Demogrphics";
       case AppSettings.PAYMENT:
         return "Payment Details";
-      case AppSettings.SETTINGS:
-        return "Settings";
+      case AppSettings.INFO:
+        return "Your Infomation";
       case AppSettings.LEGAL:
         return "Legal";
       case AppSettings.LOGOUT:

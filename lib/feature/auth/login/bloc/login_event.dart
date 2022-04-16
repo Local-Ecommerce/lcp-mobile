@@ -37,6 +37,24 @@ class GoogleLogin extends LoginEvent {
   GoogleLogin();
 }
 
+class LoadingApartmentEvent extends LoginEvent {
+  final List<Apartment> apartments;
+
+  LoadingApartmentEvent({this.apartments});
+
+  @override
+  List<Object> get props => [apartments];
+}
+
+class ApartmentUpdatedEvent extends LoginEvent {
+  final List<Apartment> apartments;
+
+  ApartmentUpdatedEvent({this.apartments});
+
+  @override
+  List<Object> get props => [apartments];
+}
+
 // class SignInCheck extends LoginEvent {
 //   SignInCheck();
 // }
