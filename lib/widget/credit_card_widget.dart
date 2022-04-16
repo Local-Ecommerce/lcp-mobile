@@ -40,7 +40,7 @@ class CreditCardWidget extends StatelessWidget {
       BuildContext context,
       Orientation orientation,
       ) {
-    final TextStyle defaultTextStyle = Theme.of(context).textTheme.title.merge(
+    final TextStyle defaultTextStyle = Theme.of(context).textTheme.bodyMedium.merge(
       TextStyle(
         color: Colors.white,
         fontFamily: 'halter',

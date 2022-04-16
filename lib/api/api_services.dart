@@ -4,10 +4,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
-  static const BASE_URL =
-      "https://localcommercialplatform-api.azurewebsites.net/api";
-  // static const BASE_URL = "https://192.168.0.3:5001/api";
+  // static const BASE_URL ="https://localcommercialplatform-api.azurewebsites.net/api";
+  static const BASE_URL = "https://192.168.0.3:5001/api";
   static const ACCOUNT = "${BASE_URL}/accounts";
+  static const RESIDENT = "${BASE_URL}/residents";
   static const PRODUCT = "${BASE_URL}/products";
   static const APARTMENT = "${BASE_URL}/apartments";
   static const COLLECTION = "${BASE_URL}/collection";
