@@ -37,7 +37,7 @@ void main() async {
       : RouteConstant.loginRoute;
 
   runApp(MyApp(
-    // initialRoute: RouteConstant.homeRoute,
+    // initialRoute: RouteConstant.orderHistoryRoute,
     initialRoute: _initialRoute,
   ));
 }

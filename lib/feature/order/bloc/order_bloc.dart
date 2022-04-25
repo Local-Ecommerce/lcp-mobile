@@ -32,6 +32,10 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       yield* _mapOrderUpdatedEventToState(event);
     } else if (event is CreateOrderEvent) {
       yield* _createOrderEventToState(event);
+    } else if (event is LoadingListOrderEvent) {
+      yield* _loadingListOrderEventToState(event);
+    } else if (event is OrderListUpdateEvent) {
+      yield* _mapOrderListUpdatedEventToState(event);
     }
   }
 
@@ -53,19 +57,38 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       OrderUpdatedEvent event) async* {
     yield OrderLoadFinished(
         orderId: event.order.orderId, order: event.order, isSuccess: true);
-    // yield CategoryLoadFinished(categories: categories, isSuccess: true);
   }
 
   Stream<OrderState> _createOrderEventToState(CreateOrderEvent event) async* {
-    // _streamSubscription =
-    //     Stream.fromFuture(_apiOrderRepository.createOrder(event.lstRequest))
-    //         .listen((order) async* {
-    //   yield OrderCreateFinished(order: order);
-    // });
     _streamSubscription =
         Stream.fromFuture(_apiOrderRepository.createOrder(event.lstRequest))
             .listen((order) {
       add(OrderUpdatedEvent(order: order));
     });
+  }
+
+  Stream<OrderState> _loadingListOrderEventToState(
+      LoadingListOrderEvent event) async* {
+    // _streamSubscription = Stream.fromFuture(_apiOrderRepository.getListOrder())
+    //     .listen((lstOrder) async* {
+    //   yield OrderListLoadFinished(isSuccess: true, lstOrder: lstOrder);
+    // });
+    _streamSubscription = Stream.fromFuture(_apiOrderRepository.getListOrder())
+        .listen((lstOrder) {
+      add(OrderListUpdateEvent(lstOrder: lstOrder, status: event.status));
+    });
+  }
+
+  Stream<OrderState> _mapOrderListUpdatedEventToState(
+      OrderListUpdateEvent event) async* {
+    var filterList;
+    if (event.status != null) {
+      filterList = event.lstOrder.where((element) {
+        return element.status == event.status;
+      }).toList();
+    } else {
+      filterList = event.lstOrder;
+    }
+    yield OrderListLoadFinished(lstOrder: filterList, isSuccess: true);
   }
 }

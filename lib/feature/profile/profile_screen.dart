@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:lcp_mobile/feature/auth/model/user_app.dart';
+import 'package:lcp_mobile/feature/order/bloc/order_bloc.dart';
 import 'package:lcp_mobile/feature/profile/bloc/profile_bloc.dart';
 import 'package:lcp_mobile/resources/app_data.dart';
 import 'package:lcp_mobile/resources/resources.dart';
@@ -107,6 +108,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   actionSettings(AppSettings settings) {
     switch (settings) {
+      case AppSettings.MY_ORDER:
+        context.bloc<OrderBloc>().add(LoadingListOrderEvent());
+        Navigator.pushNamed(context, RouteConstant.orderHistoryRoute);
+        break;
       case AppSettings.LOGOUT:
         context.bloc<ProfileBloc>().add(LogoutEvent());
         break;

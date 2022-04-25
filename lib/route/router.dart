@@ -8,6 +8,9 @@ import 'package:lcp_mobile/feature/checkout/checkout_result_screen.dart';
 import 'package:lcp_mobile/feature/credit_card_details/card_details_screen.dart';
 import 'package:lcp_mobile/feature/discover/model/product.dart';
 import 'package:lcp_mobile/feature/home/home.dart';
+import 'package:lcp_mobile/feature/order/model/order.dart';
+import 'package:lcp_mobile/feature/order/ui/order_detail_screen.dart';
+import 'package:lcp_mobile/feature/order/ui/order_screen.dart';
 import 'package:lcp_mobile/feature/portal/model/new.dart';
 import 'package:lcp_mobile/feature/portal/model/poi.dart';
 import 'package:lcp_mobile/feature/portal_details/ui/new_detail_screen.dart';
@@ -75,10 +78,12 @@ class AppRouter {
         double totalPrice = arguments['totalPrice'];
         return SlideRouteBuilder(
             page: CheckoutScreen(
-                orderId: orderId,
-                totalPrice: totalPrice,
-                paymentType: paymentType,
-                shippingFee: shippingFee));
+          orderId: orderId,
+          totalPrice: totalPrice,
+          paymentType: paymentType,
+        )
+            // shippingFee: shippingFee),
+            );
       case RouteConstant.productCategory:
         final Map arguments = settings.arguments as Map;
 
@@ -90,6 +95,11 @@ class AppRouter {
           listProduct: listProduct,
           categoryName: categoryName,
         ));
+      case RouteConstant.orderHistoryRoute:
+        return SlideRouteBuilder(page: MyOrdersView());
+      case RouteConstant.orderDetail:
+        Order order = settings.arguments;
+        return SlideRouteBuilder(page: MyOrderDetailsView(order: order));
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(

@@ -5,19 +5,19 @@ class OrderDetails {
   int quantity;
   String orderDate;
   int finalAmount;
-  int discount;
+  // int discount;
   int unitPrice;
   int status;
   String orderId;
   String productInMenuId;
-  Product product;
+  dynamic product;
 
   OrderDetails(
       {this.orderDetailId,
       this.quantity,
       this.orderDate,
       this.finalAmount,
-      this.discount,
+      // this.discount,
       this.unitPrice,
       this.status,
       this.orderId,
@@ -29,12 +29,12 @@ class OrderDetails {
     quantity = json['Quantity'];
     orderDate = json['OrderDate'];
     finalAmount = json['FinalAmount'];
-    discount = json['Discount'];
+    // discount = json['Discount'];
     unitPrice = json['UnitPrice'];
     status = json['Status'];
     orderId = json['OrderId'];
     productInMenuId = json['ProductInMenuId'];
-    // product = json['Product'];
+    product = json['Product'];
   }
 
   Map<String, dynamic> toJson() {
@@ -43,12 +43,17 @@ class OrderDetails {
     data['Quantity'] = this.quantity;
     data['OrderDate'] = this.orderDate;
     data['FinalAmount'] = this.finalAmount;
-    data['Discount'] = this.discount;
+    // data['Discount'] = this.discount;
     data['UnitPrice'] = this.unitPrice;
     data['Status'] = this.status;
     data['OrderId'] = this.orderId;
     data['ProductInMenuId'] = this.productInMenuId;
     data['Product'] = this.product;
     return data;
+  }
+
+  @override
+  String toString() {
+    return 'OrderDetail{quantity: $quantity, product: $product, unitPrice: $unitPrice}';
   }
 }

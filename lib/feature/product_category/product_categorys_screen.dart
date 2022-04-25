@@ -99,6 +99,8 @@ class _ProductCategoryScreenState extends State<ProductCategoryScreen> {
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: Text(
                   product.productName,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 3,
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),

@@ -36,6 +36,21 @@ class OrderCreateFinished extends OrderState {
 
   @override
   String toString() {
-    return 'OrderCreateFinished{cateChild: $order}';
+    return 'OrderCreateFinished{order: $order}';
+  }
+}
+
+class OrderListLoadFinished extends OrderState {
+  final bool isSuccess;
+  final List<Order> lstOrder;
+
+  OrderListLoadFinished({this.isSuccess, this.lstOrder});
+
+  @override
+  List<Object> get props => [lstOrder, isSuccess];
+
+  @override
+  String toString() {
+    return 'OrderListLoadFinished{lstOrder: $lstOrder}';
   }
 }

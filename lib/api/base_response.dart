@@ -188,30 +188,3 @@ class ChildrenDataResponse {
     return data;
   }
 }
-
-class PaymentResponse {
-  String _payUrl;
-  String _deeplink;
-
-  PaymentResponse({String payUrl, String deeplink}) {
-    this._payUrl = payUrl;
-    this._deeplink = deeplink;
-  }
-
-  String get payUrl => _payUrl;
-  set payUrl(String payUrl) => _payUrl = payUrl;
-  String get deeplink => _deeplink;
-  set deeplink(String deeplink) => _deeplink = deeplink;
-
-  PaymentResponse.fromJson(Map<String, dynamic> json) {
-    _payUrl = json['PayUrl'];
-    _deeplink = json['Deeplink'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['PayUrl'] = this._payUrl;
-    data['Deeplink'] = this._deeplink;
-    return data;
-  }
-}

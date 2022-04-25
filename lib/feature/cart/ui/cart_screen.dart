@@ -50,7 +50,7 @@ class _CartScreenState extends State<CartScreen> {
                   orderRequest.productId =
                       cart.listCartItem[i].product.productId;
                   orderRequest.quantity = cart.listCartItem[i].quantity;
-                  orderRequest.discount = 0;
+                  // orderRequest.discount = 0;
                   lstOrder.add(orderRequest);
                   orderRequest = new OrderRequest();
                 }
@@ -142,29 +142,29 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Widget _nextButton(double totalPrice) {
-    return BlocBuilder<OrderBloc, OrderState>(builder: (context, state) {
-      return Container(
-        margin: EdgeInsets.symmetric(horizontal: 20),
-        child: RaisedButton(
-            padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 14.0),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0)),
-            onPressed: () async {
-              await createOrder(lstOrder);
-              if (state is OrderLoadFinished) {
-                Navigator.pushNamed(context, RouteConstant.shippingMethod,
-                    arguments: {'totalPrice': totalPrice});
-              }
-            },
-            color: AppColors.indianRed,
-            child: Text(
-              'Tiếp tục',
-              style: whiteText,
-            )),
-      );
-    });
-  }
+  // Widget _nextButton(double totalPrice) {
+  //   return BlocBuilder<OrderBloc, OrderState>(builder: (context, state) {
+  //     return Container(
+  //       margin: EdgeInsets.symmetric(horizontal: 20),
+  //       child: RaisedButton(
+  //           padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 14.0),
+  //           shape: RoundedRectangleBorder(
+  //               borderRadius: BorderRadius.circular(8.0)),
+  //           onPressed: () async {
+  //             await createOrder(lstOrder);
+  //             if (state is OrderLoadFinished) {
+  //               Navigator.pushNamed(context, RouteConstant.checkout,
+  //                   arguments: {'totalPrice': totalPrice});
+  //             }
+  //           },
+  //           color: AppColors.indianRed,
+  //           child: Text(
+  //             'Tiếp tục',
+  //             style: whiteText,
+  //           )),
+  //     );
+  //   });
+  // }
 
   Widget _buttonAddToBag(double totalPrice) {
     return BlocListener(
@@ -187,15 +187,14 @@ class _CartScreenState extends State<CartScreen> {
       child: Align(
           alignment: Alignment.bottomCenter,
           child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+            margin: EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
             width: double.infinity,
             child: RaisedButton(
                 padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 14.0),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0)),
-                onPressed: () => 
-                _isCreated
-                    ? Navigator.pushNamed(context, RouteConstant.shippingMethod,
+                onPressed: () => _isCreated
+                    ? Navigator.pushNamed(context, RouteConstant.checkout,
                         arguments: {
                             'totalPrice': totalPrice,
                             'orderId': _orderId
@@ -345,9 +344,9 @@ class _CartScreenState extends State<CartScreen> {
     if (cartItem.quantity <= 1) {
       showAlertDialog(
           context,
-          "Remove cart items?",
+          "Xoá sản phẩm",
           ""
-              "Are you sure to remove ${product.productName} from the shopping cart",
+              "Bạn có muốn xoá ${product.productName} ra khỏi giỏ hàng không?",
           () =>
               BlocProvider.of<CartBloc>(context).add(RemoveCartItem(cartItem)));
     } else {
