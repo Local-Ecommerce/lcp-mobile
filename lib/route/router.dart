@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lcp_mobile/feature/auth/login/login_screen.dart';
-import 'package:lcp_mobile/feature/auth/register/regis_screen.dart';
-import 'package:lcp_mobile/feature/auth/register/update_info_screen.dart';
+import 'package:lcp_mobile/feature/auth/register/ui/regis_screen.dart';
+import 'package:lcp_mobile/feature/auth/register/ui/update_info_screen.dart';
 import 'package:lcp_mobile/feature/cart/ui/cart_screen.dart';
 import 'package:lcp_mobile/feature/checkout/checkout_screen.dart';
 import 'package:lcp_mobile/feature/checkout/checkout_result_screen.dart';
