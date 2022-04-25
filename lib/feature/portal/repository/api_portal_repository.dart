@@ -43,7 +43,7 @@ class ApiPortalRepository {
   }
 
   Future<POI> getPOIDetail(String poiId) async {
-    String _url = ApiService.POIS + "?id=${poiId}";
+    String _url = ApiService.POIS + "?id=${poiId}&status=7001";
 
     _refreshTokens = TokenPreferences.getRefreshTokens();
 
@@ -70,7 +70,7 @@ class ApiPortalRepository {
 
   Future<List> getAllNewsByApartmentId(String apartmentId, String type) async {
     String _url = type == null
-        ? ApiService.NEWS + "?apartmentid=${apartmentId}"
+        ? ApiService.NEWS + "?apartmentid=${apartmentId}&status=7001"
         : ApiService.NEWS + "?apartmentid=${apartmentId}&type=${type}";
 
     _refreshTokens = TokenPreferences.getRefreshTokens();

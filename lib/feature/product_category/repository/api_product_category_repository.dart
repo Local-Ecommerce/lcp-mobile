@@ -10,13 +10,15 @@ import 'package:lcp_mobile/feature/apartment/model/apartment.dart';
 import 'package:lcp_mobile/feature/auth/model/user_app.dart';
 import 'package:lcp_mobile/feature/product_category/model/product_category.dart';
 import 'package:lcp_mobile/feature/product_category/model/system_category.dart';
+import 'package:lcp_mobile/feature/profile/repository/profile_repository.dart';
 import 'package:lcp_mobile/references/user_preference.dart';
 import 'package:lcp_mobile/resources/api_strings.dart';
+import 'package:lcp_mobile/widget/alert_dialog.dart';
 
 class ApiProductCategoryRepository {
   final Dio _dio = new Dio();
   FirebaseAuth _auth = FirebaseAuth.instance;
-
+  ProfileRepository _profileRepository;
   RefreshTokens _refreshTokens;
 
   Future<List<SysCategory>> getAllCategories() async {
@@ -65,6 +67,11 @@ class ApiProductCategoryRepository {
         TokenPreferences.updateUserToken(_token);
 
         _dio.clear();
+      } else if (ex.response.statusCode == 401) {
+        showLogout(
+            "Hết hạn đăng nhập",
+            "Phiên đăng nhập đã hết hạn bạn vui lòng đăng nhập lại",
+            () => _profileRepository.logout());
       } else {
         log(jsonEncode(ex.response));
       }

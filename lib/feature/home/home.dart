@@ -74,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     text: 'Trang chủ',
                   ),
                   GButton(
-                    icon: Ionicons.ios_heart,
+                    icon: Ionicons.ios_book,
                     text: 'Tin tức',
                   ),
                   GButton(

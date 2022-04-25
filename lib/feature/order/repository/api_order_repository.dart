@@ -68,4 +68,56 @@ class ApiOrderRepository {
       _dio.clear();
     }
   }
+
+  Future<List<Order>> getListOrderByStatus(String status) async {
+    String _url = ApiService.ORDER + '?status=${status}&include=product';
+
+    _refreshTokens = TokenPreferences.getRefreshTokens();
+
+    _dio.options.headers["Authorization"] =
+        "Bearer ${_refreshTokens.accessToken}";
+
+    try {
+      Response _response = await _dio.get(_url);
+      BaseResponse _baseResponse =
+          BaseResponse.fromJson(jsonDecode(_response.data));
+
+      // Data data = Data.fromJson(_baseResponse.data);
+
+      List<Order> _lstOrder =
+          List.from(_baseResponse.data).map((e) => Order.fromJson(e)).toList();
+
+      _dio.clear();
+      return _lstOrder;
+    } on DioError catch (ex) {
+      log(jsonEncode(ex.response));
+      _dio.clear();
+    }
+  }
+
+  Future<List<Order>> getListOrder() async {
+    String _url = ApiService.ORDER + '?include=product';
+
+    _refreshTokens = TokenPreferences.getRefreshTokens();
+
+    _dio.options.headers["Authorization"] =
+        "Bearer ${_refreshTokens.accessToken}";
+
+    try {
+      Response _response = await _dio.get(_url);
+      BaseResponse _baseResponse =
+          BaseResponse.fromJson(jsonDecode(_response.data));
+
+      Data data = Data.fromJson(_baseResponse.data);
+
+      List<Order> _lstOrder =
+          List.from(data.list).map((e) => Order.fromJson(e)).toList();
+
+      _dio.clear();
+      return _lstOrder;
+    } on DioError catch (ex) {
+      log(jsonEncode(ex.response));
+      _dio.clear();
+    }
+  }
 }

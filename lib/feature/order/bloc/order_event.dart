@@ -11,7 +11,7 @@ class OrderUpdatedEvent extends OrderEvent {
   OrderUpdatedEvent({this.order});
 
   @override
-  List<Object> get props => [order];
+  List<Object> get props => [this.order];
 }
 
 class LoadingOrderEvent extends OrderEvent {
@@ -21,7 +21,7 @@ class LoadingOrderEvent extends OrderEvent {
   LoadingOrderEvent({this.order, this.orderId});
 
   @override
-  List<Object> get props => [order];
+  List<Object> get props => [this.order];
 }
 
 class CreateOrderEvent extends OrderEvent {
@@ -30,5 +30,24 @@ class CreateOrderEvent extends OrderEvent {
   CreateOrderEvent({this.lstRequest});
 
   @override
-  List<Object> get props => [lstRequest];
+  List<Object> get props => [this.lstRequest];
+}
+
+class LoadingListOrderEvent extends OrderEvent {
+  final status;
+
+  LoadingListOrderEvent({this.status});
+
+  @override
+  List<Object> get props => [this.status];
+}
+
+class OrderListUpdateEvent extends OrderEvent {
+  final List<Order> lstOrder;
+  final status;
+
+  OrderListUpdateEvent({this.lstOrder, this.status});
+
+  @override
+  List<Object> get props => [this.lstOrder];
 }

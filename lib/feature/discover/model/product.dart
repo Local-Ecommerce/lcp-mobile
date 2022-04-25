@@ -61,7 +61,7 @@ class Product {
       'size': size,
       'color': color,
       'weight': weight,
-      'isFavorite': isFavorite,
+      // 'isFavorite': isFavorite,
       'belongTo': belongTo,
       'residentId': residentId,
       'relatedProducts': children,
@@ -83,7 +83,7 @@ class Product {
       size: map['size'],
       color: map['color'],
       weight: map['weight'],
-      isFavorite: map['isFavorite'],
+      // isFavorite: map['isFavorite'],
       belongTo: map['belongTo'],
       residentId: map['residentId'],
       children: map['relatedProducts'],
@@ -103,7 +103,7 @@ class Product {
       'size': size,
       'color': color,
       'weight': weight,
-      'isFavorite': isFavorite,
+      // 'isFavorite': isFavorite,
       'belongTo': belongTo,
       'residentId': residentId,
       // 'RelatedProducts': children,
@@ -130,7 +130,7 @@ class Product {
     size = json['Size'];
     color = json['Color'];
     weight = json['Weight'];
-    isFavorite = json['IsFavorite'];
+    // isFavorite = json['IsFavorite'];
     belongTo = json['belongTo'];
     residentId = json['residentId'];
   }
@@ -152,7 +152,7 @@ class Product {
     data['Size'] = this.size;
     data['Color'] = this.color;
     data['Weight'] = this.weight;
-    data['IsFavorite'] = this.isFavorite;
+    // data['IsFavorite'] = this.isFavorite;
     data['BelongTo'] = this.belongTo;
     data['ResidentId'] = this.residentId;
     return data;
@@ -161,6 +161,184 @@ class Product {
   @override
   String toString() {
     return 'Product{id: $productId, productName: $productName, briefDescription: $briefDescription, description: $description, images: $images, colors: $color, defaultPrice: $defaultPrice, isFavorite: $isFavorite, remainingSize: $size, weight: $weight}';
+  }
+}
+
+class ProductRequest {
+  BaseProduct baseProduct;
+  String productId;
+  String productCode;
+  String productName;
+  String briefDescription;
+  String description;
+  int defaultPrice;
+  String image;
+  int status;
+  String createdDate;
+  String updatedDate;
+  String approveBy;
+  String size;
+  String color;
+  double weight;
+  int isFavorite;
+  String belongTo;
+  String residentId;
+  String systemCategoryId;
+
+  ProductRequest(
+      {this.baseProduct,
+      this.productId,
+      this.productCode,
+      this.productName,
+      this.briefDescription,
+      this.description,
+      this.defaultPrice,
+      this.image,
+      this.status,
+      this.createdDate,
+      this.updatedDate,
+      this.approveBy,
+      this.size,
+      this.color,
+      this.weight,
+      this.isFavorite,
+      this.belongTo,
+      this.residentId,
+      this.systemCategoryId});
+
+  ProductRequest.fromJson(Map<String, dynamic> json) {
+    baseProduct = json['BaseProduct'] != null
+        ? new BaseProduct.fromJson(json['BaseProduct'])
+        : null;
+    productId = json['ProductId'];
+    productCode = json['ProductCode'];
+    productName = json['ProductName'];
+    briefDescription = json['BriefDescription'];
+    description = json['Description'];
+    defaultPrice = json['DefaultPrice'];
+    image = json['Image'];
+    status = json['Status'];
+    createdDate = json['CreatedDate'];
+    updatedDate = json['UpdatedDate'];
+    approveBy = json['ApproveBy'];
+    size = json['Size'];
+    color = json['Color'];
+    weight = json['Weight'];
+    // isFavorite = json['IsFavorite'];
+    belongTo = json['BelongTo'];
+    residentId = json['ResidentId'];
+    systemCategoryId = json['SystemCategoryId'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.baseProduct != null) {
+      data['BaseProduct'] = this.baseProduct.toJson();
+    }
+    data['ProductId'] = this.productId;
+    data['ProductCode'] = this.productCode;
+    data['ProductName'] = this.productName;
+    data['BriefDescription'] = this.briefDescription;
+    data['Description'] = this.description;
+    data['DefaultPrice'] = this.defaultPrice;
+    data['Image'] = this.image;
+    data['Status'] = this.status;
+    data['CreatedDate'] = this.createdDate;
+    data['UpdatedDate'] = this.updatedDate;
+    data['ApproveBy'] = this.approveBy;
+    data['Size'] = this.size;
+    data['Color'] = this.color;
+    data['Weight'] = this.weight;
+    // data['IsFavorite'] = this.isFavorite;
+    data['BelongTo'] = this.belongTo;
+    data['ResidentId'] = this.residentId;
+    data['SystemCategoryId'] = this.systemCategoryId;
+    return data;
+  }
+}
+
+class BaseProduct {
+  String productId;
+  String productCode;
+  String productName;
+  String briefDescription;
+  String description;
+  int defaultPrice;
+  String image;
+  int status;
+  String createdDate;
+  String updatedDate;
+  String approveBy;
+  Null size;
+  Null color;
+  int weight;
+  int isFavorite;
+  Null belongTo;
+  String residentId;
+  String systemCategoryId;
+
+  BaseProduct(
+      {this.productId,
+      this.productCode,
+      this.productName,
+      this.briefDescription,
+      this.description,
+      this.defaultPrice,
+      this.image,
+      this.status,
+      this.createdDate,
+      this.updatedDate,
+      this.approveBy,
+      this.size,
+      this.color,
+      this.weight,
+      this.isFavorite,
+      this.belongTo,
+      this.residentId,
+      this.systemCategoryId});
+
+  BaseProduct.fromJson(Map<String, dynamic> json) {
+    productId = json['ProductId'];
+    productCode = json['ProductCode'];
+    productName = json['ProductName'];
+    briefDescription = json['BriefDescription'];
+    description = json['Description'];
+    defaultPrice = json['DefaultPrice'];
+    image = json['Image'];
+    status = json['Status'];
+    createdDate = json['CreatedDate'];
+    updatedDate = json['UpdatedDate'];
+    approveBy = json['ApproveBy'];
+    size = json['Size'];
+    color = json['Color'];
+    weight = json['Weight'];
+    // isFavorite = json['IsFavorite'];
+    belongTo = json['BelongTo'];
+    residentId = json['ResidentId'];
+    systemCategoryId = json['SystemCategoryId'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['ProductId'] = this.productId;
+    data['ProductCode'] = this.productCode;
+    data['ProductName'] = this.productName;
+    data['BriefDescription'] = this.briefDescription;
+    data['Description'] = this.description;
+    data['DefaultPrice'] = this.defaultPrice;
+    data['Image'] = this.image;
+    data['Status'] = this.status;
+    data['CreatedDate'] = this.createdDate;
+    data['UpdatedDate'] = this.updatedDate;
+    data['ApproveBy'] = this.approveBy;
+    data['Size'] = this.size;
+    data['Color'] = this.color;
+    data['Weight'] = this.weight;
+    // data['IsFavorite'] = this.isFavorite;
+    data['BelongTo'] = this.belongTo;
+    data['ResidentId'] = this.residentId;
+    data['SystemCategoryId'] = this.systemCategoryId;
+    return data;
   }
 }
 

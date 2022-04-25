@@ -29,8 +29,9 @@ class _CheckoutResultScreenState extends State<CheckoutResultScreen> {
   @override
   void initState() {
     super.initState();
-    db = DBProvider.instance.database;
     _userData = UserPreferences.getUser();
+    db = DBProvider.instance.database;
+
     context.bloc<OrderBloc>().add(LoadingOrderEvent(orderId: widget.orderId));
   }
 

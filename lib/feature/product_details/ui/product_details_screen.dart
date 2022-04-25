@@ -389,7 +389,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     ? AppColors.paleVioletRed
                     : AppColors.indianRed,
                 child: Text(
-                  _isAddedToBag ? 'GO TO BAG' : 'ADD TO BAG',
+                  _isAddedToBag ? 'ĐI ĐẾN GIỎ HÀNG' : 'THÊM VÀO GIỎ',
                   style: whiteText,
                 )),
           )),

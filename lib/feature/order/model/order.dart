@@ -96,6 +96,8 @@
 
 import 'package:lcp_mobile/feature/order/model/order_detail.dart';
 
+enum OrderStatus { InProgress, New, Paid, Sent, Delivered }
+
 class Order {
   List<OrderDetails> orderDetails;
   String orderId;
@@ -103,7 +105,7 @@ class Order {
   String updatedDate;
   double totalAmount;
   int status;
-  int discount;
+  // int discount;
   String residentId;
   String merchantStoreId;
   String payType;
@@ -116,7 +118,7 @@ class Order {
       this.updatedDate,
       this.totalAmount,
       this.status,
-      this.discount,
+      // this.discount,
       this.residentId,
       this.merchantStoreId,
       this.payType,
@@ -134,7 +136,7 @@ class Order {
     updatedDate = json['UpdatedDate'];
     totalAmount = json['TotalAmount'].toDouble();
     status = json['Status'];
-    discount = json['Discount'];
+    // discount = json['Discount'];
     residentId = json['ResidentId'];
     merchantStoreId = json['MerchantStoreId'];
   }
@@ -159,7 +161,7 @@ class Order {
     data['UpdatedDate'] = this.updatedDate;
     data['TotalAmount'] = this.totalAmount;
     data['Status'] = this.status;
-    data['Discount'] = this.discount;
+    // data['Discount'] = this.discount;
     data['ResidentId'] = this.residentId;
     data['MerchantStoreId'] = this.merchantStoreId;
     return data;
@@ -187,21 +189,21 @@ class Order {
 class OrderRequest {
   String productId;
   int quantity;
-  num discount;
+  // num discount;
 
   OrderRequest({this.productId, this.quantity});
 
   OrderRequest.fromJson(Map<String, dynamic> json) {
     productId = json['productId'];
     quantity = json['quantity'];
-    discount = json['discount'];
+    // discount = json['discount'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['productId'] = this.productId;
     data['quantity'] = this.quantity;
-    data['discount'] = this.discount;
+    // data['discount'] = this.discount;
     return data;
   }
 }

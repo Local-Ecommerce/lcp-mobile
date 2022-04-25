@@ -139,7 +139,7 @@ class PortalCard extends StatelessWidget {
                         if (image != null) ...[
                           Container(
                               alignment: Alignment.topRight,
-                              height: width * 0.2,
+                              height: width * 0.16,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.vertical(
                                     top: Radius.circular(8)),
