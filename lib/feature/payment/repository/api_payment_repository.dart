@@ -13,10 +13,16 @@ class ApiPaymentRepository {
 
   RefreshTokens _refreshTokens;
 
-  Future<PaymentResponses> createPayment(PaymentRequest paymentRequest) async {
+  Future<PaymentResponses> createPayment(
+      PaymentRequest paymentRequest, String paymentMethod) async {
     // paymentRequest.redirectUrl = "lcp-mobile://";
     paymentRequest.redirectUrl = "https://lcpmobile.page.link";
-    paymentRequest.paymentMethodId = "PM_MOMO";
+    print(paymentRequest.orderId);
+    if (paymentMethod == "momo") {
+      paymentRequest.paymentMethodId = "PM_MOMO";
+    } else {
+      paymentRequest.paymentMethodId = "PM_CASH";
+    }
 
     String jsonRequest = jsonEncode(paymentRequest);
     String _url = ApiService.PAYMENT;
@@ -31,17 +37,17 @@ class ApiPaymentRepository {
       BaseResponse _baseResponse =
           BaseResponse.fromJson(jsonDecode(_response.data));
 
-      Data data = Data.fromJson(_baseResponse.data);
+      // Data data = Data.fromJson(_baseResponse.data);
 
       // List<PaymentResponses> _lstPayment = List.from(_baseResponse.data)
       //     .map((e) => PaymentResponses.fromJson(e))
       //     .toList();
-
-      PaymentResponses paymentResponse =
-          PaymentResponses.fromJson(_baseResponse.data);
+      PaymentResponses paymentResponse;
+      _baseResponse.data != null
+          ? paymentResponse = PaymentResponses.fromJson(_baseResponse.data)
+          : paymentResponse = null;
 
       _dio.clear();
-      print(paymentResponse.toString());
       return paymentResponse;
     } on DioError catch (ex) {
       log(jsonEncode(ex.response));

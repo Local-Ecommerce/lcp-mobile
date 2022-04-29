@@ -36,6 +36,8 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       yield* _loadingListOrderEventToState(event);
     } else if (event is OrderListUpdateEvent) {
       yield* _mapOrderListUpdatedEventToState(event);
+    } else if (event is OrderCancelEvent) {
+      yield* _cancelOrderEventToState(event);
     }
   }
 
@@ -46,11 +48,19 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
   }
 
   Stream<OrderState> _mapLoadOrderEvent(LoadingOrderEvent event) async* {
-    _streamSubscription =
-        Stream.fromFuture(_apiOrderRepository.getOrderById(event.orderId))
-            .listen((order) {
-      add(OrderUpdatedEvent(order: order));
-    });
+    if (!event.isHavePayment) {
+      _streamSubscription = Stream.fromFuture(
+              _apiOrderRepository.getOrderById(event.orderId, false))
+          .listen((order) {
+        add(OrderUpdatedEvent(order: order));
+      });
+    } else {
+      _streamSubscription = Stream.fromFuture(
+              _apiOrderRepository.getOrderById(event.orderId, true))
+          .listen((order) {
+        add(OrderUpdatedEvent(order: order));
+      });
+    }
   }
 
   Stream<OrderState> _mapOrderUpdatedEventToState(
@@ -90,5 +100,13 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       filterList = event.lstOrder;
     }
     yield OrderListLoadFinished(lstOrder: filterList, isSuccess: true);
+  }
+
+  Stream<OrderState> _cancelOrderEventToState(OrderCancelEvent event) async* {
+    _streamSubscription =
+        Stream.fromFuture(_apiOrderRepository.cancelOrder(event.orderId))
+            .listen((order) {
+      add(LoadingListOrderEvent());
+    });
   }
 }

@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lcp_mobile/feature/cart/models/cart_item.dart';
 import 'package:lcp_mobile/feature/discover/model/product.dart';
+import 'package:lcp_mobile/feature/feedback/repository/api_feedback_repository.dart';
+import 'package:lcp_mobile/feature/order/repository/api_order_repository.dart';
 import 'package:lcp_mobile/resources/resources.dart';
+import 'package:lcp_mobile/route/route_constants.dart';
 
 class OpenFlutterCartTile extends StatefulWidget {
   final int quantity;
@@ -67,6 +70,49 @@ class _OpenFlutterCartTileState extends State<OpenFlutterCartTile> {
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
+                            // ElevatedButton(
+                            //   padding: EdgeInsets.only(
+                            //       left: 4, right: 4, top: 1, bottom: 1),
+                            //   color: AppColors.white,
+                            //   onPressed: () {
+                            //     // ApiFeedBackRepository apiFeedBackRepository =
+                            //     //     new ApiFeedBackRepository();
+                            //     // apiFeedBackRepository.createFeedback(feedback);
+                            //   },
+                            //   shape: RoundedRectangleBorder(
+                            //       borderRadius: BorderRadius.circular(30),
+                            //       side: BorderSide(
+                            //           color: AppColors.red, width: 1)),
+                            //   child: Text(
+                            //     'Báo cáo',
+                            //     style: TextStyle(
+                            //         color: AppColors.red, fontSize: 5),
+                            //   ),
+                            // ),
+                            Container(
+                              padding: EdgeInsets.only(right: 8),
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Colors.white,
+                                      onPrimary: Colors.red,
+                                      shadowColor: Colors.redAccent,
+                                      elevation: 3,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(32.0)),
+                                      minimumSize: Size(70, 35),
+                                      padding: EdgeInsets.all(8)),
+                                  onPressed: () {
+                                    Navigator.pushNamed(
+                                        context, RouteConstant.feedback,
+                                        arguments: widget.product['ProductId']);
+                                  },
+                                  child: Text('Báo cáo'),
+                                ),
+                              ),
+                            ),
                             Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: <Widget>[

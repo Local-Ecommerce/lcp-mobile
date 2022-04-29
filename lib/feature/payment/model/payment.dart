@@ -1,3 +1,40 @@
+class Payments {
+  String paymentId;
+  int paymentAmount;
+  String dateTime;
+  String orderId;
+  String paymentMethodId;
+  int status;
+
+  Payments(
+      {this.paymentId,
+      this.paymentAmount,
+      this.dateTime,
+      this.orderId,
+      this.paymentMethodId,
+      this.status});
+
+  Payments.fromJson(Map<String, dynamic> json) {
+    paymentId = json['PaymentId'];
+    paymentAmount = json['PaymentAmount'];
+    dateTime = json['DateTime'];
+    orderId = json['OrderId'];
+    paymentMethodId = json['PaymentMethodId'];
+    status = json['Status'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['PaymentId'] = this.paymentId;
+    data['PaymentAmount'] = this.paymentAmount;
+    data['DateTime'] = this.dateTime;
+    data['OrderId'] = this.orderId;
+    data['PaymentMethodId'] = this.paymentMethodId;
+    data['Status'] = this.status;
+    return data;
+  }
+}
+
 class PaymentRequest {
   double paymentAmount;
   String orderId;
@@ -42,7 +79,7 @@ class PaymentResponses {
   // set deeplink(String deeplink) => _deeplink = deeplink;
 
   PaymentResponses.fromJson(Map<String, dynamic> json) {
-    _payUrl = json['PayUrl'];
+    _payUrl = json['PayUrl'] != null ? json['PayUrl'] : '';
     // _deeplink = json['Deeplink'] != null ? json['Deeplink'] : '';
   }
 

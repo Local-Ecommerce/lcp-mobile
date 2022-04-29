@@ -141,9 +141,15 @@ class _MyOrderDetailsViewState extends State<MyOrderDetailsView> {
                 SizedBox(
                   height: AppSizes.sidePadding,
                 ),
-                //TODO
                 buildSummaryLine(
-                    'Phương thức thanh toán:', 'Momo', _theme, width),
+                    'Phương thức thanh toán:',
+                    widget.order.payments.length == 0
+                        ? ""
+                        : widget.order.payments[0].paymentMethodId == "PM_CASH"
+                            ? "Tiền mặt"
+                            : "Momo",
+                    _theme,
+                    width),
                 SizedBox(
                   height: AppSizes.sidePadding,
                 ),

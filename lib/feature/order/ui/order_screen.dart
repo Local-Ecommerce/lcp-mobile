@@ -120,14 +120,16 @@ class _MyOrdersViewState extends State<MyOrdersView> {
         itemCount: tmpLst.length,
         itemBuilder: (context, index) {
           return OpenFlutterOrderTile(
-            order: tmpLst[index],
-            onClick: ((String orderId) => {
-                  // bloc..add(LoadingOrderEvent(orderId: orderId)),
-                  // widget.changeView(changeType: ViewChangeType.Exact, index: 7)
-                  Navigator.pushNamed(context, RouteConstant.orderDetail,
-                      arguments: tmpLst[index])
-                }),
-          );
+              order: tmpLst[index],
+              onClick: ((String orderId) => {
+                    // bloc..add(LoadingOrderEvent(orderId: orderId)),
+                    // widget.changeView(changeType: ViewChangeType.Exact, index: 7)
+                    Navigator.pushNamed(context, RouteConstant.orderDetail,
+                        arguments: tmpLst[index])
+                  }),
+              onCancel: () => context
+                  .bloc<OrderBloc>()
+                  .add(OrderCancelEvent(orderId: tmpLst[index].orderId)));
         });
   }
 }

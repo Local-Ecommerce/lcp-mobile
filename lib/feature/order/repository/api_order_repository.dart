@@ -15,8 +15,13 @@ class ApiOrderRepository {
 
   RefreshTokens _refreshTokens;
 
-  Future<Order> getOrderById(String orderId) async {
-    String _url = ApiService.ORDER + "?id=${orderId}&include=product";
+  Future<Order> getOrderById(String orderId, bool isHavePayemt) async {
+    String _url;
+
+    isHavePayemt
+        ? _url =
+            ApiService.ORDER + "?id=${orderId}&include=product&include=payment"
+        : _url = ApiService.ORDER + "?id=${orderId}&include=product";
 
     _refreshTokens = TokenPreferences.getRefreshTokens();
 
@@ -96,7 +101,7 @@ class ApiOrderRepository {
   }
 
   Future<List<Order>> getListOrder() async {
-    String _url = ApiService.ORDER + '?include=product';
+    String _url = ApiService.ORDER + '?include=product&include=payment';
 
     _refreshTokens = TokenPreferences.getRefreshTokens();
 
@@ -115,6 +120,24 @@ class ApiOrderRepository {
 
       _dio.clear();
       return _lstOrder;
+    } on DioError catch (ex) {
+      log(jsonEncode(ex.response));
+      _dio.clear();
+    }
+  }
+
+  Future<bool> cancelOrder(String id) async {
+    String _url = ApiService.ORDER + '?id=${id}&status=5002';
+
+    _refreshTokens = TokenPreferences.getRefreshTokens();
+
+    _dio.options.headers["Authorization"] =
+        "Bearer ${_refreshTokens.accessToken}";
+
+    try {
+      Response _response = await _dio.put(_url);
+      _dio.clear();
+      return true;
     } on DioError catch (ex) {
       log(jsonEncode(ex.response));
       _dio.clear();

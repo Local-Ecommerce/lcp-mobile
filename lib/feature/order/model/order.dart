@@ -95,11 +95,13 @@
 // }
 
 import 'package:lcp_mobile/feature/order/model/order_detail.dart';
+import 'package:lcp_mobile/feature/payment/model/payment.dart';
 
 enum OrderStatus { InProgress, New, Paid, Sent, Delivered }
 
 class Order {
   List<OrderDetails> orderDetails;
+  List<Payments> payments;
   String orderId;
   String createdDate;
   String updatedDate;
@@ -113,6 +115,7 @@ class Order {
 
   Order(
       {this.orderDetails,
+      this.payments,
       this.orderId,
       this.createdDate,
       this.updatedDate,
@@ -129,6 +132,12 @@ class Order {
       orderDetails = <OrderDetails>[];
       json['OrderDetails'].forEach((v) {
         orderDetails.add(new OrderDetails.fromJson(v));
+      });
+    }
+    if (json['Payments'] != null) {
+      payments = <Payments>[];
+      json['Payments'].forEach((v) {
+        payments.add(new Payments.fromJson(v));
       });
     }
     orderId = json['OrderId'];
@@ -155,6 +164,9 @@ class Order {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.orderDetails != null) {
       data['OrderDetails'] = this.orderDetails.map((v) => v.toJson()).toList();
+    }
+    if (this.payments != null) {
+      data['Payments'] = this.payments.map((v) => v.toJson()).toList();
     }
     data['OrderId'] = this.orderId;
     data['CreatedDate'] = this.createdDate;

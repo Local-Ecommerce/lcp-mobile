@@ -7,6 +7,7 @@ import 'package:lcp_mobile/feature/checkout/checkout_screen.dart';
 import 'package:lcp_mobile/feature/checkout/checkout_result_screen.dart';
 import 'package:lcp_mobile/feature/credit_card_details/card_details_screen.dart';
 import 'package:lcp_mobile/feature/discover/model/product.dart';
+import 'package:lcp_mobile/feature/feedback/ui/feedback_screen.dart';
 import 'package:lcp_mobile/feature/home/home.dart';
 import 'package:lcp_mobile/feature/order/model/order.dart';
 import 'package:lcp_mobile/feature/order/ui/order_detail_screen.dart';
@@ -100,6 +101,9 @@ class AppRouter {
       case RouteConstant.orderDetail:
         Order order = settings.arguments;
         return SlideRouteBuilder(page: MyOrderDetailsView(order: order));
+      case RouteConstant.feedback:
+        String productId = settings.arguments;
+        return SlideRouteBuilder(page: FeedbackScreen(productId: productId));
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(

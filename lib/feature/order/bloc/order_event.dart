@@ -17,8 +17,9 @@ class OrderUpdatedEvent extends OrderEvent {
 class LoadingOrderEvent extends OrderEvent {
   final Order order;
   final String orderId;
+  final bool isHavePayment;
 
-  LoadingOrderEvent({this.order, this.orderId});
+  LoadingOrderEvent({this.order, this.orderId, this.isHavePayment});
 
   @override
   List<Object> get props => [this.order];
@@ -50,4 +51,13 @@ class OrderListUpdateEvent extends OrderEvent {
 
   @override
   List<Object> get props => [this.lstOrder];
+}
+
+class OrderCancelEvent extends OrderEvent {
+  final String orderId;
+
+  OrderCancelEvent({this.orderId});
+
+  @override
+  List<Object> get props => [this.orderId];
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lcp_mobile/feature/cart/bloc/cart_bloc.dart';
 import 'package:lcp_mobile/feature/cart/models/cart.dart';
 import 'package:lcp_mobile/feature/cart/models/cart_item.dart';
@@ -101,7 +102,8 @@ class _CartScreenState extends State<CartScreen> {
                             color: Colors.white,
                             width: MediaQuery.of(context).size.width,
                             height: 120,
-                            child: _resultCart(cart.getTotalPrice()))),
+                            child: _resultCart(cart.getTotalPrice(),
+                                cart.listCartItem.length))),
                   ],
                 );
               }
@@ -112,7 +114,7 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Widget _resultCart(double totalPrice) {
+  Widget _resultCart(double totalPrice, int items) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -137,7 +139,7 @@ class _CartScreenState extends State<CartScreen> {
             ],
           ),
         ),
-        _buttonAddToBag(totalPrice)
+        _buttonAddToBag(totalPrice, items)
       ],
     );
   }
@@ -166,20 +168,19 @@ class _CartScreenState extends State<CartScreen> {
   //   });
   // }
 
-  Widget _buttonAddToBag(double totalPrice) {
+  Widget _buttonAddToBag(double totalPrice, int items) {
     return BlocListener(
       bloc: context.bloc<OrderBloc>(),
       listener: (context, state) {
         if (state is OrderLoadFinished) {
-          // if (_isCreated) {
-          //   Navigator.pushNamed(context, RouteConstant.shippingMethod,
-          //       arguments: {
-          //         'totalPrice': totalPrice,
-          //         'orderId': state.orderId
-          //       });
-          // }
+          if (_isCreated) {
+            Navigator.pushNamed(context, RouteConstant.checkout, arguments: {
+              'totalPrice': totalPrice,
+              'orderId': state.orderId
+            });
+          }
           setState(() {
-            _isCreated = true;
+            _isCreated = false;
             _orderId = state.orderId;
           });
         }
@@ -193,13 +194,20 @@ class _CartScreenState extends State<CartScreen> {
                 padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 14.0),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0)),
-                onPressed: () => _isCreated
-                    ? Navigator.pushNamed(context, RouteConstant.checkout,
-                        arguments: {
-                            'totalPrice': totalPrice,
-                            'orderId': _orderId
-                          })
-                    : createOrder(lstOrder),
+                onPressed: () => items == 0
+                    ? Fluttertoast.showToast(
+                        msg: "Không có sản phẩm nào trong giỏ hàng", // message
+                        toastLength: Toast.LENGTH_LONG, // length
+                        gravity: ToastGravity.CENTER, // location
+                      )
+                    : _isCreated
+                        // ? Navigator.pushNamed(context, RouteConstant.checkout,
+                        //     arguments: {
+                        //         'totalPrice': totalPrice,
+                        //         'orderId': _orderId
+                        //       })
+                        ? null
+                        : createOrder(lstOrder),
                 color:
                     _isCreated ? AppColors.paleVioletRed : AppColors.indianRed,
                 child: Text(
@@ -360,6 +368,7 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   createOrder(List<OrderRequest> lstOrder) {
+    _isCreated = true;
     BlocProvider.of<OrderBloc>(context)
         .add(CreateOrderEvent(lstRequest: lstOrder));
     setState(() {});

@@ -32,7 +32,9 @@ class _CheckoutResultScreenState extends State<CheckoutResultScreen> {
     _userData = UserPreferences.getUser();
     db = DBProvider.instance.database;
 
-    context.bloc<OrderBloc>().add(LoadingOrderEvent(orderId: widget.orderId));
+    context
+        .bloc<OrderBloc>()
+        .add(LoadingOrderEvent(orderId: widget.orderId, isHavePayment: true));
   }
 
   _convertDonateTime(String value) {
@@ -49,6 +51,8 @@ class _CheckoutResultScreenState extends State<CheckoutResultScreen> {
     return BlocBuilder<OrderBloc, OrderState>(builder: (context, state) {
       if (state is OrderLoadFinished) {
         order = state.order;
+        print("object");
+        print(order.payments.length);
       }
 
       return Scaffold(
@@ -166,7 +170,12 @@ class _CheckoutResultScreenState extends State<CheckoutResultScreen> {
                             //     textAlign: TextAlign.end,
                             //   )
                             Text(
-                              "Tiền mặt",
+                              order.payments.length == 0
+                                  ? ""
+                                  : order.payments[0].paymentMethodId ==
+                                          "PM_CASH"
+                                      ? "Thanh toán bằng tiền mặt"
+                                      : "Thanh toán bằng momo",
                               textAlign: TextAlign.end,
                             )
                           ],

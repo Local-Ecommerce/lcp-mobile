@@ -23,4 +23,5 @@ class ApiStrings {
           "," "deeplinkWebInApp" +
           ":" +
           "https://test-payment.momo.vn/v2/gateway/waiting//momo//?action=payment&amount=465453&cashInId=&cashInIdPay=&createdAt=1626633242284&deeplinkCallback=&description=hjfg&extra=&extraData=&extras=&gatewayMerchantCode=MOMOE0IX20210530&gatewaySessionId=TU9NT0UwSVgyMDIxMDUzMHxEbnRfZWhlVERXWER1VkhBaUs1OA==&gatewayVersion=3.0&giftIds=&isScanQR=false&language=vi&merchantcode=MOMOE0IX20210530&merchantname=WeSpread&merchantnamelabel=Nh%C3%A0+cung+c%E1%BA%A5p&orderId=Dnt_eheTDWXDuVHAiK58&orderLabel=M%C3%A3+%C4%91%C6%A1n+h%C3%A0ng&partnerCode=MOMOE0IX20210530&partnerName=WeSpread&prepaidIds=&requestId=1626633241&requestType=payment&serviceType=webInApp&signature=d64c090cb38c02186f71deafff72946d680585efe5696dc053d76c4375c15f9c&storeId=MOMOE0IX20210530&storeName=WeSpread&type=webinapp&urlSubmitToken=https%3A%2F%2Fmomo.vn";
+  static String feedback = "Báo cáo sản phẩm";
 }

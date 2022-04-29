@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lcp_mobile/feature/auth/model/user_app.dart';
 import 'package:lcp_mobile/feature/order/bloc/order_bloc.dart';
 import 'package:lcp_mobile/feature/order/model/order.dart';
@@ -13,14 +11,14 @@ import 'package:lcp_mobile/feature/payment/model/payment.dart';
 import 'package:lcp_mobile/feature/payment/repository/api_payment_repository.dart';
 import 'package:lcp_mobile/references/user_preference.dart';
 import 'package:lcp_mobile/resources/R.dart';
-import 'package:lcp_mobile/resources/api_strings.dart';
 import 'package:lcp_mobile/resources/resources.dart';
 import 'package:lcp_mobile/route/route_constants.dart';
 import 'package:intl/intl.dart';
-import 'package:lcp_mobile/widget/loader_widget.dart';
+import 'package:lcp_mobile/widget/alert_dialog.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:confirm_dialog/confirm_dialog.dart';
 
 class CheckoutScreen extends StatefulWidget {
   // final double shippingFee;
@@ -55,6 +53,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   Uri _latestUri;
   int countdown;
   Order order;
+  bool _isConfirm = false;
 
   // DatabaseReference _ref;
   // DatabaseReference _orderRef = FirebaseDatabase.instance.reference();
@@ -75,7 +74,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     // });
 
     //Loading order info
-    context.bloc<OrderBloc>().add(LoadingOrderEvent(orderId: widget.orderId));
+    context
+        .bloc<OrderBloc>()
+        .add(LoadingOrderEvent(orderId: widget.orderId, isHavePayment: false));
   }
 
   @override
@@ -302,7 +303,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
           onPressed: () async {
-            order.orderDetails.forEach((orderDetail) async {
+            order.orderDetails.forEach((orderDetail) {
               // _database = FirebaseDatabase.instance
               //     .reference()
               //     .child("Notification/" + orderDetail.product["ResidentId"]);
@@ -371,14 +372,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               // });
             });
 
-            if (_formKey.currentState.validate()) {
-              ApiPaymentRepository paymentService = new ApiPaymentRepository();
-              paymentService
-                  .createPayment(_paymentRequest)
-                  .then((value) => {print(value), _launchURL(value.payUrl)});
-              // Navigator.popAndPushNamed(
-              //     context, RouteConstant.checkoutResultRoute,
-              //     arguments: widget.orderId);
+            if (await confirm(context,
+                title: const Text("Xác nhận đơn hàng"),
+                content: const Text("Bạn có muốn xác nhận đặt hàng không?"),
+                textOK: const Text("Đồng ý"),
+                textCancel: const Text("Trở về"))) {
+              return createPayment();
+            } else {
+              print('pressedCancel');
             }
           },
           color: AppColors.indianRed,
@@ -428,5 +429,32 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       // _paymentRequest.payType = resultCreditCard.type;
       setState(() {});
     });
+  }
+
+  changeStatus() {
+    setState(() {
+      _isConfirm = true;
+    });
+  }
+
+  createPayment() {
+    ApiPaymentRepository paymentService = new ApiPaymentRepository();
+    if (resultCreditCard.type == "momo") {
+      if (_formKey.currentState.validate()) {
+        paymentService
+            .createPayment(_paymentRequest, resultCreditCard.type)
+            .then((value) => {_launchURL(value.payUrl)});
+        // Navigator.popAndPushNamed(
+        //     context, RouteConstant.checkoutResultRoute,
+        //     arguments: widget.orderId);
+      }
+    } else {
+      paymentService
+          .createPayment(_paymentRequest, resultCreditCard.type)
+          .then((value) => {
+                Navigator.pushNamed(context, RouteConstant.checkoutResultRoute,
+                    arguments: order.orderId)
+              });
+    }
   }
 }
