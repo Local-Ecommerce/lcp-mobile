@@ -62,6 +62,7 @@ dependencies:
   bubble_tab_indicator: ^0.1.6
   firebase_storage: ^5.0.1
   image_picker: ^0.6.7+22
+  confirm_dialog: ^1.0.1
 
 dev_dependencies:
   flutter_test:

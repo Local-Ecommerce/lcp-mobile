@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:confirm_dialog/confirm_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lcp_mobile/api/api_services.dart';
 import 'package:lcp_mobile/api/base_response.dart';
 import 'package:lcp_mobile/feature/apartment/model/apartment.dart';
@@ -68,15 +70,20 @@ class ApiProductCategoryRepository {
 
         _dio.clear();
       } else if (ex.response.statusCode == 401) {
-        showLogout(
-            "Hết hạn đăng nhập",
-            "Phiên đăng nhập đã hết hạn bạn vui lòng đăng nhập lại",
-            () => _profileRepository.logout());
+        // confirm(context)(
+        //     "Hết hạn đăng nhập",
+        //     "Phiên đăng nhập đã hết hạn bạn vui lòng đăng nhập lại",
+        //     () => _profileRepository.logout();
+        // Fluttertoast.showToast(
+        //   msg:
+        //       "Phiên đăng nhập đã hết hạn bạn vui lòng đăng nhập lại", // message
+        //   toastLength: Toast.LENGTH_LONG, // length
+        //   gravity: ToastGravity.CENTER, // location
+        // );
+        _profileRepository.logout();
       } else {
         log(jsonEncode(ex.response));
       }
-      // log(jsonEncode(ex.response));
-      // _dio.clear();
     }
   }
 

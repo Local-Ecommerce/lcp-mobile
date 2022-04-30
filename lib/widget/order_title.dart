@@ -1,3 +1,4 @@
+import 'package:confirm_dialog/confirm_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:intl/intl.dart';
@@ -7,9 +8,10 @@ import 'package:lcp_mobile/resources/resources.dart';
 class OpenFlutterOrderTile extends StatelessWidget {
   final Order order;
   final Function(String) onClick;
+  final Function onCancel;
 
   const OpenFlutterOrderTile(
-      {Key key, @required this.order, @required this.onClick})
+      {Key key, @required this.order, @required this.onClick, this.onCancel})
       : super(key: key);
 
   @override
@@ -149,6 +151,33 @@ class OpenFlutterOrderTile extends StatelessWidget {
                         style: _theme.textTheme.bodyText1,
                       ),
                     ),
+
+                    if (order.status == 5001) ...[
+                      RaisedButton(
+                        padding: EdgeInsets.only(
+                            left: 24, right: 24, top: 10, bottom: 10),
+                        color: AppColors.white,
+                        onPressed: () async {
+                          if (await confirm(context,
+                              title: const Text("Huỷ đơn hàng"),
+                              content: const Text(
+                                  "Bạn có chắc muốn huỷ bỏ đơn hàng này không?"),
+                              textOK: const Text("Đồng ý"),
+                              textCancel: const Text("Trở về"))) {
+                            return onCancel();
+                          } else {
+                            print('pressedCancel');
+                          }
+                        },
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            side: BorderSide(color: AppColors.black, width: 2)),
+                        child: Text(
+                          'Huỷ đơn',
+                          style: _theme.textTheme.bodyText1,
+                        ),
+                      ),
+                    ],
                     // Text(order.status.toString().split('.')[1],
                     _buildOrderStatus(order.status),
                   ],
