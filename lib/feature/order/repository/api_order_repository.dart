@@ -46,7 +46,7 @@ class ApiOrderRepository {
     }
   }
 
-  Future<Order> createOrder(List<OrderRequest> lstOrder) async {
+  Future<List<Order>> createOrder(List<OrderRequest> lstOrder) async {
     String _url = ApiService.ORDER;
 
     _refreshTokens = TokenPreferences.getRefreshTokens();
@@ -67,7 +67,7 @@ class ApiOrderRepository {
           List.from(_baseResponse.data).map((e) => Order.fromJson(e)).toList();
 
       _dio.clear();
-      return _lstOrder[0];
+      return _lstOrder;
     } on DioError catch (ex) {
       log(jsonEncode(ex.response));
       _dio.clear();

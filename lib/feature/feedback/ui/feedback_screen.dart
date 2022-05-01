@@ -42,7 +42,9 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     final pickedFile = await picker.getImage(source: ImageSource.camera);
 
     setState(() {
-      _imageFile = File(pickedFile.path);
+      pickedFile.path != null
+          ? _imageFile = File(pickedFile.path)
+          : _imageFile = null;
       _lstImage.add(_imageFile);
       // String base64Image =
       //     "data:image/jpg;base64," + base64Encode(_imageFile.readAsBytesSync());

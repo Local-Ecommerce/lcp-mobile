@@ -7,6 +7,8 @@ class Icon {
   String ex02 = 'assets/icon/ex02.png';
   String momo = 'assets/icon/momo.png';
   String cash = 'assets/icon/cash.png';
+  String lcpLogo = 'assets/icon/lcp.png';
+  String lcpIcon = 'assets/icon/lcp_icon.png';
   String zalopay = 'assets/icon/zalopay.png';
   String success = 'assets/icon/success.png';
 

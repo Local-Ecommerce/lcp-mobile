@@ -12,6 +12,7 @@ import 'package:lcp_mobile/resources/colors.dart';
 import 'package:lcp_mobile/route/route_constants.dart';
 import 'package:lcp_mobile/widget/alert_dialog.dart';
 import 'package:intl/intl.dart';
+import 'package:lcp_mobile/widget/loader_widget.dart';
 
 class CartScreen extends StatefulWidget {
   @override
@@ -25,7 +26,6 @@ class _CartScreenState extends State<CartScreen> {
   List<OrderRequest> lstOrder = [];
   OrderRequest orderRequest;
   bool _isCreated = false;
-  String _orderId;
 
   @override
   void initState() {
@@ -172,16 +172,16 @@ class _CartScreenState extends State<CartScreen> {
     return BlocListener(
       bloc: context.bloc<OrderBloc>(),
       listener: (context, state) {
-        if (state is OrderLoadFinished) {
+        if (state is OrderListLoadFinished) {
           if (_isCreated) {
             Navigator.pushNamed(context, RouteConstant.checkout, arguments: {
               'totalPrice': totalPrice,
-              'orderId': state.orderId
+              'orderId': state.lstOrder[0].orderId,
+              'lstOrder': state.lstOrder
             });
           }
           setState(() {
             _isCreated = false;
-            _orderId = state.orderId;
           });
         }
       },
