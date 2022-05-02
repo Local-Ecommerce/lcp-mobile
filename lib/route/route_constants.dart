@@ -7,6 +7,7 @@ class RouteConstant {
   static const String registerRoute = '/register';
   static const String changePasswordRoute = '/change_password';
   static const String forgotPasswordRoute = '/forgot_password';
+  static const String becomeMerchantRoute = '/become_merchant';
   static const String updateProfileRoute = '/update_profile';
   static const String productDetailsRoute = '/product_details';
   static const String cart = '/cart';

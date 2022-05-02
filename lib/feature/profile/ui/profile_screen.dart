@@ -37,7 +37,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       },
       builder: (context, state) {
         return Scaffold(
-            appBar: CommonAppBar(title: 'Thông tin cá nhân'), body: listFeature(state));
+            appBar: CommonAppBar(title: 'Thông tin cá nhân'),
+            body: listFeature(state));
       },
     );
   }
@@ -130,8 +131,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         Navigator.pushNamed(context, RouteConstant.updateProfileRoute);
         break;
       case AppSettings.CHANGE_PASSWORD:
-      Navigator.pushNamed(context, RouteConstant.changePasswordRoute);
-      break;
+        Navigator.pushNamed(context, RouteConstant.changePasswordRoute);
+        break;
+      case AppSettings.CONNECT_WITH_US:
+        Navigator.pushNamed(context, RouteConstant.becomeMerchantRoute);
+        break;
       default:
         break;
     }

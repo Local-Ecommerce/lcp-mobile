@@ -22,48 +22,50 @@ class CardProduct extends StatelessWidget {
       child: Stack(
         children: [
           Container(
-            margin: EdgeInsets.symmetric(vertical: 0, horizontal: 25),
+            margin: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
             width: width * 0.5,
             height: height * 0.4,
-            decoration: BoxDecoration(
-                color: Colors.blueAccent,
-                borderRadius: BorderRadius.all(Radius.circular(20))),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Flexible(
-                  Text(
-                    '${product.productName}',
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 3,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 22),
-                  ),
-                  // ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    getPriceRange(),
-                    style: TextStyle(
-                        fontWeight: FontWeight.normal,
-                        color: Colors.white,
-                        fontSize: 18),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  // Text('130', style: TextStyle(color: Colors.white)),
-                ],
+            child: Card(
+              elevation: 16,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Flexible(
+                    Text(
+                      '${product.productName}',
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 3,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                        fontSize: 18,
+                      ),
+                    ),
+                    // ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      getPriceRange(),
+                      style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          color: Colors.white,
+                          fontSize: 18),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+
+                    // Text('130', style: TextStyle(color: Colors.white)),
+                  ],
+                ),
               ),
             ),
           ),
           Positioned(
-            right: 50,
+            right: 20,
             bottom: 40,
             child: Align(
               alignment: Alignment.center,
@@ -86,7 +88,7 @@ class CardProduct extends StatelessWidget {
               child: IconButton(
                   icon: Image.asset(
                     R.icon.rightArrow,
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
                   onPressed: () {}))
         ],

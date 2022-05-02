@@ -30,7 +30,7 @@ class ProfileTabView extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: Ink.image(
-          image: appUser.profileImage != null ? NetworkImage(appUser.profileImage) : imageDefault,
+          image: appUser.profileImage.isNotEmpty ? NetworkImage(appUser.profileImage) : imageDefault,
           fit: BoxFit.cover,
           width: 128,
           height: 128,
