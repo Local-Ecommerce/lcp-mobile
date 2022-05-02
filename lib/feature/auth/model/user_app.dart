@@ -17,6 +17,7 @@ class UserData {
   String deliveryAddress;
   int status;
   String type;
+  String profileImage;
 
   UserData(
       {this.uid,
@@ -30,7 +31,9 @@ class UserData {
       this.role,
       this.apartmentId,
       this.residentId,
-      this.type});
+      this.type,
+      this.tokenId,
+      this.profileImage});
 
   UserData.fromJson(Map<String, dynamic> json)
       : uid = json['AccountId'],
@@ -43,7 +46,8 @@ class UserData {
         status = json['Status'],
         deliveryAddress = json['DeliveryAddress'],
         residentId = json['ResidentId'],
-        apartmentId = json['ApartmentId'];
+        apartmentId = json['ApartmentId'],
+        profileImage = json['ProfileImage'];
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
@@ -57,12 +61,13 @@ class UserData {
     data['Type'] = this.type;
     data['AccountId'] = this.uid;
     data['ApartmentId'] = this.apartmentId;
+    data['ProfileImage'] = this.profileImage;
     return data;
   }
 
   @override
   String toString() {
-    return 'UserData{uid: $uid, username: $username, email: $email, dob: $dob, lastname: $fullName, firstname: $tokenId, apartment: $apartmentId, }';
+    return 'UserData{uid: $uid, username: $username, email: $email, dob: $dob, fullName: $fullName, apartment: $apartmentId, status: $status}';
   }
 }
 
@@ -134,6 +139,47 @@ class UserRequest {
       'UserRequest{ firebaseToken: $firebaseToken, role: $role}';
 }
 
+class UserUpdateRequest {
+  String dob;
+  String fullName;
+  String phoneNumber;
+  String gender;
+  String profileImage;
+  String deliveryAddress;
+
+  UserUpdateRequest(
+      {this.dob,
+      this.fullName,
+      this.phoneNumber,
+      this.deliveryAddress,
+      this.profileImage,
+      this.gender});
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['profileImage'] = this.profileImage;
+    data['dateOfBirth'] = this.dob;
+    data['deliveryAddress'] = this.deliveryAddress;
+    data['residentName'] = this.fullName;
+    data['gender'] = this.gender;
+    data['phoneNumber'] = this.phoneNumber;
+    return data;
+  }
+
+  UserUpdateRequest.fromJson(Map<String, dynamic> json) {
+    dob = json['dateOfBirth'];
+    profileImage = json['profileImage'];
+    deliveryAddress = json['deliveryAddress'];
+    phoneNumber = json['phoneNumber'];
+    fullName = json['residentName'];
+    gender = json['gender'];
+  }
+
+  @override
+  String toString() =>
+      'UserRequest{ dob: $dob, deliveryAddress: $deliveryAddress, phoneNumber: $phoneNumber, gender: $gender, fullName: $fullName, profileImage: $profileImage}';
+}
+
 class TokenRequest {
   String token;
   String accessToken;
@@ -154,3 +200,4 @@ class TokenRequest {
     accessToken = json['accessToken'];
   }
 }
+

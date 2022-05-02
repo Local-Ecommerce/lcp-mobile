@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:lcp_mobile/feature/auth/login/bloc/login_bloc.dart';
+import 'package:lcp_mobile/feature/auth/register/bloc/register_bloc.dart';
 import 'package:lcp_mobile/feature/menu/bloc/category_bloc.dart';
 import 'package:lcp_mobile/feature/order/bloc/order_bloc.dart';
 import 'package:lcp_mobile/feature/portal/bloc/portal_bloc.dart';
@@ -34,6 +35,7 @@ class _MyAppState extends State<MyApp> {
   final portalBloc = PortalBloc();
   final portalDetailBloc = PortalDetailsBloc();
   final orderBloc = OrderBloc();
+  final regisBloc = RegisterBloc();
 
   @override
   void didChangeDependencies() {
@@ -83,7 +85,12 @@ class _MyAppState extends State<MyApp> {
             create: (context) {
               return orderBloc;
             },
-          )
+          ),
+          BlocProvider(
+            create: (context) {
+              return regisBloc;
+            },
+          ),
         ],
         child: MaterialApp(
             initialRoute: widget.initialRoute,
@@ -119,6 +126,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void dispose() {
     discoverBloc.close();
+    regisBloc.close();
     cartBloc.close();
     productDetailsBloc.close();
     profileBloc.close();

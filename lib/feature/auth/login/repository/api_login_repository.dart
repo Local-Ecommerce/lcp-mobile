@@ -37,6 +37,8 @@ class ApiLoginRepository {
     UserRequest userRequest =
         UserRequest(firebaseToken: tokenId, role: ApiStrings.userRole);
 
+    print(userRequest.toJson());
+
     try {
       Response response = await _dio.post(
         url,
@@ -48,7 +50,15 @@ class ApiLoginRepository {
       UserDataResponse userDataResponse =
           UserDataResponse.fromJson(baseResponse.data);
 
-      UserPreferences.updateUser(userDataResponse.residents[0]);
+      UserData userData = UserData();
+
+      userData = userDataResponse.residents[0];
+
+      userData.profileImage = userDataResponse.profileImage;
+
+      UserPreferences.updateUser(userData);
+
+      print(userDataResponse.residents[0].toString());
 
       TokenPreferences.updateUserToken(userDataResponse.refreshTokens[0]);
 

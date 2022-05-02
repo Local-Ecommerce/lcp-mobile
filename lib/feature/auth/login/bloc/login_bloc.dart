@@ -5,7 +5,6 @@ import 'package:equatable/equatable.dart';
 import 'package:lcp_mobile/feature/apartment/model/apartment.dart';
 import 'package:lcp_mobile/feature/apartment/repository/api_apartment_repository.dart';
 import 'package:meta/meta.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:lcp_mobile/feature/auth/helper/validators_transformer.dart';
 import 'package:lcp_mobile/feature/auth/login/repository/repository.dart';
 import 'package:lcp_mobile/feature/auth/model/user_app.dart';
@@ -27,14 +26,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Stream<LoginState> mapEventToState(
     LoginEvent event,
   ) async* {
-    if (event is EmailChanged) {
+    if (event is EmailLoginChanged) {
       yield* _mapEmailChangedToState(event.email);
-    } else if (event is PasswordChanged) {
+    } else if (event is PasswordLoginChanged) {
       yield* _mapPasswordChangedToState(event.password);
     } else if (event is Submitted) {
       yield* _mapSubmittedLoginToState();
     } else if (event is GoogleLogin) {
       yield* _mapGoogleLoginToState();
+    } else if (event is ResetPassSubmitted) {
+      yield* _mapSubmittedResetPassToState();
     }
   }
 
@@ -48,6 +49,23 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     yield state.copyWith(
         password: password,
         isPasswordInvalid: !ValidatorsTransformer.isValidPassword(password));
+  }
+
+  Stream<LoginState> _mapSubmittedResetPassToState() async* {
+    if(state.isEmailInvalid == false){
+      try {
+        if (await _loginRepository.resetPassword(state.email)) {
+          yield ForgotFinishedState(isSuccess: true);
+        } else {
+          yield ForgotFinishedState(isSuccess: false);
+        }
+      } on Exception catch (e) {
+        print(e);
+        yield ForgotFinishedState(isSuccess: false);
+      }
+    } else {
+      yield ForgotFinishedState(isSuccess: false);
+    }
   }
 
   Stream<LoginState> _mapSubmittedLoginToState() async* {

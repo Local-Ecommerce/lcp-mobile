@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:lcp_mobile/references/user_preference.dart';
 import 'package:meta/meta.dart';
 import 'package:lcp_mobile/feature/auth/model/user_app.dart';
 import 'package:lcp_mobile/feature/profile/repository/profile_repository.dart';

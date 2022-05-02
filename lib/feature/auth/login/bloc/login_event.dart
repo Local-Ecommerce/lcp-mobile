@@ -5,10 +5,10 @@ abstract class LoginEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class EmailChanged extends LoginEvent {
+class EmailLoginChanged extends LoginEvent {
   final String email;
 
-  EmailChanged({@required this.email});
+  EmailLoginChanged({@required this.email});
 
   @override
   String toString() => 'EmailChanged { email :$email }';
@@ -17,13 +17,13 @@ class EmailChanged extends LoginEvent {
   List<Object> get props => [email];
 }
 
-class PasswordChanged extends LoginEvent {
+class PasswordLoginChanged extends LoginEvent {
   final String password;
 
-  PasswordChanged({@required this.password});
+  PasswordLoginChanged({@required this.password});
 
   @override
-  String toString() => 'EmailChanged { email :$password }';
+  String toString() => 'PasswordChanged { password :$password }';
 
   @override
   List<Object> get props => [password];
@@ -31,6 +31,10 @@ class PasswordChanged extends LoginEvent {
 
 class Submitted extends LoginEvent {
   Submitted();
+}
+
+class ResetPassSubmitted extends LoginEvent {
+  ResetPassSubmitted();
 }
 
 class GoogleLogin extends LoginEvent {

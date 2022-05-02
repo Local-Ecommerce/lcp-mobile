@@ -43,8 +43,6 @@ class FirebaseLoginRepository extends LoginRepository {
 
       print(result.user.toString());
 
-      // print("Token is:");
-      // print(token);
       await _apiLoginRepository.apiLogin(token);
       return result.user != null;
     } on Exception catch (e) {
@@ -60,6 +58,22 @@ class FirebaseLoginRepository extends LoginRepository {
       'dob': userData.dob,
       'fullname': userData.fullName,
       'role': userData.role,
+      'gender': userData.gender,
+      'phoneNumber': userData.phoneNumber,
+      'deliveryAddress': userData.deliveryAddress,
+      'apartmentId': userData.apartmentId
+    });
+  }
+
+  Future<void> updateUserDataRegister(UserData userData) async {
+    return await userCollection.doc(userData.uid).set({
+      'username': userData.username,
+      'email': userData.email,
+      'fullname': userData.fullName,
+      'role': userData.role,
+      'gender': userData.gender,
+      'phoneNumber': userData.phoneNumber,
+      'deliveryAddress': userData.deliveryAddress,
       'apartmentId': userData.apartmentId
     });
   }
@@ -73,7 +87,7 @@ class FirebaseLoginRepository extends LoginRepository {
       userData.uid = result.user.uid;
       print("//==============================");
       print(userData.toString());
-      await updateUserData(userData);
+      await updateUserDataRegister(userData);
       return result.user != null;
     } on FirebaseAuthException catch (e) {
       print(e);
@@ -88,6 +102,7 @@ class FirebaseLoginRepository extends LoginRepository {
       try {
         return await _apiUpdateUserRepository.updateUser(userData);
       } on Exception catch (e) {
+        print(e);
         return false;
       }
     } else {
@@ -139,4 +154,38 @@ class FirebaseLoginRepository extends LoginRepository {
     }
     return _googleUser != null;
   }
+
+  @override
+  Future<bool> resetPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      return true;
+    } on Exception catch (e) {
+      print(e);
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> changePassword(String password, String newPassword) async {
+    bool signIn = await isSignedIn();
+    if (signIn == true) {
+      try {
+        await _auth.signInWithEmailAndPassword(
+            email: _auth.currentUser.email, password: password);
+      } on Exception catch (e) {
+        print(e);
+        return false;
+      }
+      try {
+        _auth.currentUser.updatePassword(newPassword);
+        return true;
+      } on Exception catch (e) {
+        print(e);
+        return false;
+      }
+    }
+    return false;
+  }
+  
 }

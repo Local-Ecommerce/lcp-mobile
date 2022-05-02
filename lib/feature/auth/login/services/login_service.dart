@@ -37,4 +37,16 @@ class LoginService extends LoginRepository {
     // TODO: implement updateProfile
     throw UnimplementedError();
   }
+
+  @override
+  Future<bool> resetPassword(String email) {
+    // TODO: implement ResetPassword
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> changePassword(String password, String newPassword) {
+    // TODO: implement changePassword
+    throw UnimplementedError();
+  }
 }

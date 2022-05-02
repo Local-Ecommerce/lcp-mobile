@@ -9,6 +9,7 @@ import 'package:lcp_mobile/resources/resources.dart';
 import 'package:lcp_mobile/route/route_constants.dart';
 import 'package:lcp_mobile/widget/appbar.dart';
 import 'package:lcp_mobile/widget/loader_widget.dart';
+import 'package:lcp_mobile/widget/profile_tab_view.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -36,7 +37,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       },
       builder: (context, state) {
         return Scaffold(
-            appBar: CommonAppBar(title: 'Profile'), body: listFeature(state));
+            appBar: CommonAppBar(title: 'Thông tin cá nhân'), body: listFeature(state));
       },
     );
   }
@@ -51,12 +52,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
       children: [
         Container(
           height: height * 0.3,
-          color: Colors.blue,
+          color: Colors.lightBlueAccent,
           child: userData == null
               ? LoaderPage()
               : Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    ProfileTabView(
+                        appUser: userData,
+                        isEdit: false,
+                        onClicked: userData != null
+                            ? () async {
+                                await Navigator.pushNamed(
+                                    context, RouteConstant.updateProfileRoute);
+                                setState(() {});
+                              }
+                            : () {}),
                     Text(
                       userData.fullName,
                       style: headingTextWhite,
@@ -118,6 +129,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       case AppSettings.INFO:
         Navigator.pushNamed(context, RouteConstant.updateProfileRoute);
         break;
+      case AppSettings.CHANGE_PASSWORD:
+      Navigator.pushNamed(context, RouteConstant.changePasswordRoute);
+      break;
       default:
         break;
     }

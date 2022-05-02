@@ -3,7 +3,9 @@ class RouteConstant {
 
   static const String homeRoute = '/';
   static const String loginRoute = '/login';
+  static const String profileRoute = '/profile';
   static const String registerRoute = '/register';
+  static const String changePasswordRoute = '/change_password';
   static const String forgotPasswordRoute = '/forgot_password';
   static const String updateProfileRoute = '/update_profile';
   static const String productDetailsRoute = '/product_details';
