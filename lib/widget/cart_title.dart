@@ -11,6 +11,7 @@ class OpenFlutterCartTile extends StatefulWidget {
   final int quantity;
   final dynamic product;
   final int unitPrice;
+  final int status;
   final Function(int quantity) onChangeQuantity;
   final Function() onAddToFav;
   final Function() onRemoveFromCart;
@@ -24,6 +25,7 @@ class OpenFlutterCartTile extends StatefulWidget {
       @required this.onChangeQuantity,
       @required this.onAddToFav,
       @required this.onRemoveFromCart,
+      @required this.status,
       this.orderComplete = false})
       : super(key: key);
 
@@ -40,8 +42,6 @@ class _OpenFlutterCartTileState extends State<OpenFlutterCartTile> {
         locale: "en_US", symbol: "VNĐ ", decimalDigits: 0);
     var _theme = Theme.of(context);
     var width = MediaQuery.of(context).size.width;
-
-    print(widget.product['BaseProduct']['ProductName']);
     return Padding(
         padding: EdgeInsets.only(bottom: AppSizes.sidePadding),
         child: Container(
@@ -89,30 +89,33 @@ class _OpenFlutterCartTileState extends State<OpenFlutterCartTile> {
                             //         color: AppColors.red, fontSize: 5),
                             //   ),
                             // ),
-                            Container(
-                              padding: EdgeInsets.only(right: 8),
-                              child: Align(
-                                alignment: Alignment.centerRight,
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      primary: Colors.white,
-                                      onPrimary: Colors.red,
-                                      shadowColor: Colors.redAccent,
-                                      elevation: 3,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(32.0)),
-                                      minimumSize: Size(70, 35),
-                                      padding: EdgeInsets.all(8)),
-                                  onPressed: () {
-                                    Navigator.pushNamed(
-                                        context, RouteConstant.feedback,
-                                        arguments: widget.product['ProductId']);
-                                  },
-                                  child: Text('Báo cáo'),
+                            if (widget.status == 5007) ...[
+                              Container(
+                                padding: EdgeInsets.only(right: 8),
+                                child: Align(
+                                  alignment: Alignment.centerRight,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        primary: Colors.white,
+                                        onPrimary: Colors.red,
+                                        shadowColor: Colors.redAccent,
+                                        elevation: 3,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(32.0)),
+                                        minimumSize: Size(70, 35),
+                                        padding: EdgeInsets.all(8)),
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                          context, RouteConstant.feedback,
+                                          arguments:
+                                              widget.product['ProductId']);
+                                    },
+                                    child: Text('Báo cáo'),
+                                  ),
                                 ),
                               ),
-                            ),
+                            ],
                             Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: <Widget>[

@@ -52,12 +52,14 @@ class DiscoverBloc extends Bloc<DiscoverEvent, DiscoverState> {
 
   Stream<DiscoverState> _mapLoadDiscoverEvent(
       LoadingDiscoverEvent event) async* {
-    print(event.category);
     if (event.category != "") {
       _streamSubscription = Stream.fromFuture(_apiDiscoverRepository
               .getProductByApartmentCategory(event.apartmentId, event.category))
           .listen((products) {
-        add(DiscoverUpdatedEvent(products: products, category: event.category));
+        add(DiscoverUpdatedEvent(
+            products: products,
+            category: event.category,
+            lstChildCategory: event.lstChildCategory));
       });
     } else {
       _streamSubscription = Stream.fromFuture(_apiDiscoverRepository
@@ -72,9 +74,17 @@ class DiscoverBloc extends Bloc<DiscoverEvent, DiscoverState> {
 Stream<DiscoverState> _mapDiscoverUpdatedEventToState(
     DiscoverUpdatedEvent event) async* {
   var filterList;
+
   if (event.category != "") {
-    filterList = event.products.where((element) {
-      return element.systemCategoryId == event.category;
+    filterList = event.products.where((product) {
+      var _isChildValid = false;
+      event.lstChildCategory.forEach((childCate) {
+        if (product.systemCategoryId == childCate['SystemCategoryId'] ||
+            product.systemCategoryId == event.category)
+          return _isChildValid = true;
+      });
+      return _isChildValid == true ||
+          product.systemCategoryId == event.category;
     }).toList();
   } else {
     filterList = event.products;

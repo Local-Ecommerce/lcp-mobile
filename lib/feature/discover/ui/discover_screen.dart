@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:lcp_mobile/feature/auth/model/user_app.dart';
 import 'package:lcp_mobile/feature/discover/bloc/discover_bloc.dart';
 import 'package:lcp_mobile/feature/discover/model/product.dart';
@@ -27,6 +28,7 @@ class DiscoverScreen extends StatefulWidget {
 class _DiscoverScreenState extends State<DiscoverScreen>
     with TickerProviderStateMixin {
   bool _firstLoad = true;
+  bool _firstChildCateLoad = true;
 
   var _isSelectedCategory = false;
   var _currentIndexCategory = 0;
@@ -88,59 +90,30 @@ class _DiscoverScreenState extends State<DiscoverScreen>
     height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-        appBar: AppBar(
-          toolbarHeight: height * 0.13,
-          backgroundColor: Colors.grey.withOpacity(0.2),
-          bottom: PreferredSize(
-            preferredSize: Size.fromHeight(0),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  CommonAppBar(title: 'LCP'),
-                  // Padding(padding: EdgeInsets.only(bottom: 50)),
-                  Flexible(
-                    flex: 1,
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: SearchField(hintText: "Tìm sản phẩm"),
-                    ),
-                  ),
-                  // TabBar(
-                  //   controller: _tabController,
-                  //   indicatorColor: AppColors.indianRed,
-                  //   tabs: const <Widget>[
-                  //     Tab(
-                  //       text: "FRESH",
-                  //     ),
-                  //     Tab(
-                  //       text: "OTHER",
-                  //     )
-                  //   ],
-                  // ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        // body: TabBarView(
-        //     controller: _tabController,
-        //     children: <Widget>[_freshItemScreen, _otherItemScreen]),
+        appBar: _appBar(AppBar().preferredSize.height),
         body: ListView(
+          padding: EdgeInsets.only(top: 1.0),
           scrollDirection: Axis.vertical,
           children: [
-            Container(height: 70, child: _buildListCategory()),
+            Container(height: height * 0.05, child: _buildListCategory()),
+            if (!_firstLoad) ...[
+              Container(
+                  height: height * 0.05, child: _buildListCategoryChild()),
+            ],
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                    width: width * 0.1,
-                    height: height * 0.40,
-                    child: _buildListCategoryChild()),
-                Container(
-                    width: width * 0.9,
-                    height: height * 0.40,
-                    child: _buildListProduct()),
+                // Container(
+                //     width: width * 0.1,
+                //     height: height * 0.40,
+                //     child: _buildListCategoryChild()),
+                Padding(
+                  padding: const EdgeInsets.only(left: 4),
+                  child: Container(
+                      width: width * 0.9,
+                      height: height * 0.40,
+                      child: _buildListProduct()),
+                ),
               ],
             ),
             Padding(
@@ -399,10 +372,10 @@ class _DiscoverScreenState extends State<DiscoverScreen>
             var category = listSysCategories[index];
             _isSelectedCategory = _currentIndexCategory == index;
             return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: FlatButton(
                   onPressed: () => {
-                        _onClickFilterCategory(index, category.sysCategoryID),
+                        _onClickFilterCategory(index, category),
                       },
                   child: Text(
                     category.sysCategoryName,
@@ -425,34 +398,113 @@ class _DiscoverScreenState extends State<DiscoverScreen>
         listChildCategories = state.cateChild;
       }
       return ListView.builder(
-          // shrinkWrap: true,
-          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          scrollDirection: Axis.horizontal,
           itemCount: listChildCategories.length,
           itemBuilder: (context, index) {
             var category = listChildCategories[index];
             _isSelectedCategoryChild = _currentIndexCategoryChild == index;
             return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: RotatedBox(
-                quarterTurns: -1,
-                child: FlatButton(
-                    onPressed: () => {
-                          _onClickFilterCategoryChild(
-                              index, category.sysCategoryID),
-                        },
-                    child: Text(
-                      category.sysCategoryName,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: _isSelectedCategoryChild && !_firstLoad
-                              ? Colors.black
-                              : Colors.grey),
-                    )),
-              ),
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: FlatButton(
+                  onPressed: () => {
+                        _onClickFilterCategoryChild(index, category),
+                      },
+                  child: Text(
+                    category.sysCategoryName,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: _isSelectedCategoryChild &&
+                                !_firstLoad &&
+                                !_firstChildCateLoad
+                            ? Colors.black
+                            : Colors.grey),
+                  )),
             );
           });
     });
   }
+
+  _appBar(height) => PreferredSize(
+        preferredSize: Size(MediaQuery.of(context).size.width, height + 60),
+        child: Stack(
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.fromLTRB(20, 5, 20, 0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Center(
+                      child: Image(
+                    alignment: Alignment.center,
+                    image: AssetImage(R.icon.lcpLogo),
+                    width: 100,
+                    height: 150,
+                  )),
+                  Container(
+                    width: width * 0.6,
+                    height: 50,
+                    alignment: Alignment.center,
+                    // decoration: BoxDecoration(
+                    //     borderRadius: BorderRadius.circular(8),
+                    //     color: Colors.white.withOpacity(0.8)),
+                    child: Row(
+                      children: [
+                        Icon(FontAwesome5Solid.location_arrow,
+                            color: AppColors.aliceBlue, size: 16),
+                        Padding(padding: EdgeInsets.only(left: 5)),
+                        Flexible(
+                          child: Text(
+                            // "${_userData.apartmentId}",
+                            "Chung cư Vinhomes Grand Park quận 9",
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 3,
+                            style: TextStyle(
+                                fontSize: 15.0,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              color: Theme.of(context).primaryColor,
+              height: height + 75,
+              width: MediaQuery.of(context).size.width,
+            ),
+
+            Container(), // Required some widget in between to float AppBar
+
+            Positioned(
+              // To take AppBar Size only
+              top: 100.0,
+              left: 20.0,
+              right: 20.0,
+              child: AppBar(
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0)),
+                primary: false,
+                title: TextField(
+                    decoration: InputDecoration(
+                        hintText: "Tìm sản phẩm",
+                        border: InputBorder.none,
+                        hintStyle: TextStyle(color: Colors.grey))),
+                actions: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.search,
+                        color: Theme.of(context).primaryColor),
+                    onPressed: () {},
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      );
 
   _onClickFilterProductType(int index, String type) {
     setState(() {
@@ -460,38 +512,51 @@ class _DiscoverScreenState extends State<DiscoverScreen>
     });
     _currentProductType = type;
 
-    BlocProvider.of<DiscoverBloc>(context).add(LoadingDiscoverEvent(
-        category: _currentCategory, apartmentId: _userData.apartmentId));
-
     BlocProvider.of<CategoryBloc>(context)
         .add(LoadingCategoryChildEvent(category: _currentCategory));
+
+    BlocProvider.of<DiscoverBloc>(context).add(LoadingDiscoverEvent(
+        category: _currentCategory,
+        apartmentId: _userData.apartmentId,
+        lstChildCategory: listChildCategories));
   }
 
-  _onClickFilterCategory(int index, String category) {
+  _onClickFilterCategory(int index, SysCategory category) {
     setState(() {
       _currentIndexCategory = index;
       _firstLoad = false;
+      _firstChildCateLoad = true;
     });
 
-    _currentCategory = category;
+    _currentCategory = category.sysCategoryID;
 
     BlocProvider.of<CategoryBloc>(context).add(LoadingCategoryChildEvent(
         category: _currentCategory, categories: listSysCategories));
 
-    // BlocProvider.of<DiscoverBloc>(context).add(LoadingDiscoverEvent(
-    //     category: _currentCategory, apartmentId: _userData.apartmentId));
-    _currentIndexCategoryChild = ApiStrings.zero;
-    _onClickFilterCategoryChild(ApiStrings.zero, category);
-  }
+    // if (_firstChildCateLoad) {
 
-  _onClickFilterCategoryChild(int index, String category) {
-    setState(() {
-      _currentIndexCategoryChild = index;
-    });
-
-    _currentCategoryChild = category;
+    // }
 
     BlocProvider.of<DiscoverBloc>(context).add(LoadingDiscoverEvent(
-        category: _currentCategoryChild, apartmentId: _userData.apartmentId));
+        category: _currentCategory,
+        apartmentId: _userData.apartmentId,
+        lstChildCategory: category.lstSysCategories));
+
+    _currentIndexCategoryChild = ApiStrings.zero;
+    // _onClickFilterCategoryChild(ApiStrings.zero, category);
+  }
+
+  _onClickFilterCategoryChild(int index, SysCategory category) {
+    setState(() {
+      _currentIndexCategoryChild = index;
+      _firstChildCateLoad = false;
+    });
+
+    _currentCategoryChild = category.sysCategoryID;
+
+    BlocProvider.of<DiscoverBloc>(context).add(LoadingDiscoverEvent(
+        category: _currentCategoryChild,
+        apartmentId: _userData.apartmentId,
+        lstChildCategory: category.lstSysCategories));
   }
 }

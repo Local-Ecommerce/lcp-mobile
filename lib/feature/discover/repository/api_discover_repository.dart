@@ -10,6 +10,7 @@ import 'package:lcp_mobile/feature/auth/login/repository/api_login_repository.da
 import 'package:lcp_mobile/feature/auth/model/user_app.dart';
 
 import 'package:lcp_mobile/feature/discover/model/product.dart';
+import 'package:lcp_mobile/feature/store/model/store.dart';
 import 'package:lcp_mobile/references/user_preference.dart';
 import 'package:lcp_mobile/resources/api_strings.dart';
 
@@ -109,6 +110,31 @@ class ApiDiscoverRepository {
           List.from(data.list).map((e) => Product.fromJson(e)).toList();
       _dio.clear();
       return _listProduct[0];
+    } on DioError catch (ex) {
+      log(jsonEncode(ex.response));
+      _dio.clear();
+    }
+  }
+
+  Future<Store> getStoreNameByResidentId(String id) async {
+    String _url = ApiService.STORE + "?residendid=${id}&status=6001";
+
+    _refreshTokens = TokenPreferences.getRefreshTokens();
+
+    _dio.options.headers["Authorization"] =
+        "Bearer ${_refreshTokens.accessToken}";
+    // _dio.options.headers["Authorization"] = "Bearer ${ApiStrings.token}";
+
+    try {
+      Response _response = await _dio.get(_url);
+      BaseResponse _baseResponse =
+          BaseResponse.fromJson(jsonDecode(_response.data));
+
+      Data data = Data.fromJson(_baseResponse.data);
+      List<Store> _listStore =
+          List.from(data.list).map((e) => Store.fromJson(e)).toList();
+      _dio.clear();
+      return _listStore[0];
     } on DioError catch (ex) {
       log(jsonEncode(ex.response));
       _dio.clear();

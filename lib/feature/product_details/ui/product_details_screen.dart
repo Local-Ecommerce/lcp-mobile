@@ -4,7 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:lcp_mobile/feature/discover/model/product.dart';
+import 'package:lcp_mobile/feature/discover/repository/api_discover_repository.dart';
 import 'package:lcp_mobile/feature/product_details/bloc/product_details_bloc.dart';
+import 'package:lcp_mobile/feature/store/model/store.dart';
 import 'package:lcp_mobile/resources/api_strings.dart';
 import 'package:lcp_mobile/resources/app_theme.dart';
 import 'package:lcp_mobile/resources/colors.dart';
@@ -39,6 +41,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   var _imageIndex = 0;
 
   Product product;
+  Store store;
   List<Product> relatedProduct;
 
   List<String> lstSize = [];
@@ -50,14 +53,22 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   bool isHaveColor = false;
   bool isFirstLoad = true;
 
+  ApiDiscoverRepository _apiDiscoverRepository;
+
   var _isAddedToBag = false;
 
   @override
   void initState() {
     super.initState();
+    _apiDiscoverRepository = new ApiDiscoverRepository();
     context
         .bloc<ProductDetailsBloc>()
         .add(LoadProductDetails(widget.productId));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -186,6 +197,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   }
 
   Widget bodyContentDetails() {
+    getShopName();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
@@ -249,6 +261,17 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           SizedBox(
             height: 20,
           ),
+          if (store != null) ...[
+            Text(
+              store.storeName,
+              style:
+                  TextStyle(color: Colors.black54, fontStyle: FontStyle.italic),
+              maxLines: 2,
+            ),
+          ],
+          SizedBox(
+            height: 20,
+          ),
           Text(
             product.description,
             style: TextStyle(color: Colors.black54),
@@ -273,7 +296,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               );
             },
             child: Text(
-              'MORE DETAILS',
+              'XEM CHI TIẾT',
               style: TextStyle(
                   color: Colors.black,
                   decoration: TextDecoration.underline,
@@ -555,7 +578,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   }
 
   addProductToCart() {
-    if (isHaveColor || isHaveSize || isHaveWeight) {
+    if (!isHaveColor && !isHaveSize && !isHaveWeight) {
+      BlocProvider.of<ProductDetailsBloc>(context)
+          .add(AddProductToCart(product));
+    } else if (isHaveColor || isHaveSize || isHaveWeight) {
       if (!isFirstLoad) {
         BlocProvider.of<ProductDetailsBloc>(context).add(AddProductToCart(
             product.children.length != 0 ? getDetailProduct() : product));
@@ -607,5 +633,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       isFirstLoad = false;
       _isAddedToBag = false;
     });
+  }
+
+  getShopName() async {
+    store = await _apiDiscoverRepository
+        .getStoreNameByResidentId(product.residentId);
+    // setState(() {});
   }
 }

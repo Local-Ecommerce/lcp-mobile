@@ -2,7 +2,7 @@ class Payments {
   String paymentId;
   int paymentAmount;
   String dateTime;
-  String orderId;
+  String orderIds;
   String paymentMethodId;
   int status;
 
@@ -10,7 +10,7 @@ class Payments {
       {this.paymentId,
       this.paymentAmount,
       this.dateTime,
-      this.orderId,
+      this.orderIds,
       this.paymentMethodId,
       this.status});
 
@@ -18,7 +18,7 @@ class Payments {
     paymentId = json['PaymentId'];
     paymentAmount = json['PaymentAmount'];
     dateTime = json['DateTime'];
-    orderId = json['OrderId'];
+    orderIds = json['OrderIds'];
     paymentMethodId = json['PaymentMethodId'];
     status = json['Status'];
   }
@@ -28,7 +28,7 @@ class Payments {
     data['PaymentId'] = this.paymentId;
     data['PaymentAmount'] = this.paymentAmount;
     data['DateTime'] = this.dateTime;
-    data['OrderId'] = this.orderId;
+    data['OrderIds'] = this.orderIds;
     data['PaymentMethodId'] = this.paymentMethodId;
     data['Status'] = this.status;
     return data;
@@ -37,19 +37,19 @@ class Payments {
 
 class PaymentRequest {
   double paymentAmount;
-  String orderId;
+  List<String> orderIds;
   String paymentMethodId;
   String redirectUrl;
 
   PaymentRequest(
       {this.paymentAmount,
-      this.orderId,
+      this.orderIds,
       this.paymentMethodId,
       this.redirectUrl});
 
   PaymentRequest.fromJson(Map<String, dynamic> json) {
     paymentAmount = json['paymentAmount'];
-    orderId = json['orderId'];
+    orderIds = json['orderIds'];
     paymentMethodId = json['paymentMethodId'];
     redirectUrl = json['redirectUrl'];
   }
@@ -57,7 +57,7 @@ class PaymentRequest {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['paymentAmount'] = this.paymentAmount;
-    data['orderId'] = this.orderId;
+    data['orderIds'] = this.orderIds;
     data['paymentMethodId'] = this.paymentMethodId;
     data['redirectUrl'] = this.redirectUrl;
     return data;

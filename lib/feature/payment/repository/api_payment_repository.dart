@@ -17,7 +17,7 @@ class ApiPaymentRepository {
       PaymentRequest paymentRequest, String paymentMethod) async {
     // paymentRequest.redirectUrl = "lcp-mobile://";
     paymentRequest.redirectUrl = "https://lcpmobile.page.link";
-    print(paymentRequest.orderId);
+    print(paymentRequest.orderIds);
     if (paymentMethod == "momo") {
       paymentRequest.paymentMethodId = "PM_MOMO";
     } else {
@@ -25,6 +25,7 @@ class ApiPaymentRepository {
     }
 
     String jsonRequest = jsonEncode(paymentRequest);
+    print(jsonRequest);
     String _url = ApiService.PAYMENT;
 
     _refreshTokens = TokenPreferences.getRefreshTokens();

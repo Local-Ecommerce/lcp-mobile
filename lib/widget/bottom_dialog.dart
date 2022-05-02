@@ -33,13 +33,16 @@ class BottomDialog extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               child: Row(
                 children: [
-                  Text(
-                    title ?? '',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
+                  Flexible(
+                    flex: 4,
+                    child: Text(
+                      title ?? '',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    overflow: TextOverflow.ellipsis,
                   ),
                   Spacer(),
                   IconButton(
@@ -66,7 +69,6 @@ class BottomDialog extends StatelessWidget {
                 ),
               ),
             ),
-
           ],
         ),
       ),

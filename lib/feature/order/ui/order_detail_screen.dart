@@ -194,7 +194,7 @@ class _MyOrderDetailsViewState extends State<MyOrderDetailsView> {
               ],
             ),
           )),
-      bottomNavigationBar: _reportButton(),
+      // bottomNavigationBar: _reportButton(),
     );
   }
   //   return Container();
@@ -202,14 +202,13 @@ class _MyOrderDetailsViewState extends State<MyOrderDetailsView> {
 }
 
 List<Widget> _buildCartProductItems(Order order) {
-  print(order.orderId);
-
   return <Widget>[
     for (OrderDetails orderDetail in order.orderDetails)
       OpenFlutterCartTile(
         unitPrice: orderDetail.unitPrice,
         quantity: orderDetail.quantity,
         product: orderDetail.product,
+        status: order.status,
         onAddToFav: (() => {}),
         onChangeQuantity: ((int quantity) => {}),
         onRemoveFromCart: (() => {}),

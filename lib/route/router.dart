@@ -83,15 +83,16 @@ class AppRouter {
         final Map arguments = settings.arguments as Map;
 
         String orderId = arguments['orderId'];
-        double shippingFee = arguments['shippingFee'];
+        // double shippingFee = arguments['shippingFee'];
+        List<Order> lstOrder = arguments['lstOrder'];
         String paymentType = arguments['paymentType'];
         double totalPrice = arguments['totalPrice'];
         return SlideRouteBuilder(
             page: CheckoutScreen(
-          orderId: orderId,
-          totalPrice: totalPrice,
-          paymentType: paymentType,
-        )
+                orderId: orderId,
+                totalPrice: totalPrice,
+                paymentType: paymentType,
+                lstOrder: lstOrder)
             // shippingFee: shippingFee),
             );
       case RouteConstant.productCategory:

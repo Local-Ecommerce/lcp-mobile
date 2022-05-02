@@ -73,7 +73,8 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     _streamSubscription =
         Stream.fromFuture(_apiOrderRepository.createOrder(event.lstRequest))
             .listen((order) {
-      add(OrderUpdatedEvent(order: order));
+      // add(OrderUpdatedEvent(order: order));
+      add(OrderListUpdateEvent(lstOrder: order));
     });
   }
 

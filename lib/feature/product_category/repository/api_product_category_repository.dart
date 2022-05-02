@@ -24,7 +24,7 @@ class ApiProductCategoryRepository {
   RefreshTokens _refreshTokens;
 
   Future<List<SysCategory>> getAllCategories() async {
-    String _url = ApiService.SYSTEMCATEGORY;
+    String _url = ApiService.SYSTEMCATEGORY + "?status=3001";
 
     _refreshTokens = TokenPreferences.getRefreshTokens();
 
@@ -34,7 +34,7 @@ class ApiProductCategoryRepository {
     }
 
     try {
-      Response response = await _dio.get(ApiService.SYSTEMCATEGORY);
+      Response response = await _dio.get(_url);
       BaseResponse baseResponse =
           BaseResponse.fromJson(jsonDecode(response.data));
 
@@ -88,7 +88,8 @@ class ApiProductCategoryRepository {
   }
 
   Future<List<SysCategory>> getCategoryByType(String productType) async {
-    String _url = ApiService.SYSTEMCATEGORY + "?type=${productType}";
+    String _url =
+        ApiService.SYSTEMCATEGORY + "?type=${productType}&status=3001";
 
     _refreshTokens = TokenPreferences.getRefreshTokens();
     _dio.options.headers["Authorization"] =
@@ -112,7 +113,7 @@ class ApiProductCategoryRepository {
   }
 
   Future<List<SysCategory>> getChildListCategory(String categoryId) async {
-    String _url = ApiService.SYSTEMCATEGORY + "?id=${categoryId}";
+    String _url = ApiService.SYSTEMCATEGORY + "?id=${categoryId}&status=3001";
 
     _refreshTokens = TokenPreferences.getRefreshTokens();
 
