@@ -4,7 +4,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:lcp_mobile/feature/cart/ui/cart_screen.dart';
 import 'package:lcp_mobile/feature/discover/ui/discover_screen.dart';
 import 'package:lcp_mobile/feature/portal/ui/portal_screen.dart';
-import 'package:lcp_mobile/feature/profile/profile_screen.dart';
+import 'package:lcp_mobile/feature/profile/ui/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);

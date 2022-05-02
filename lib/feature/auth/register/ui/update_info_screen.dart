@@ -23,6 +23,8 @@ class UpdateProfileScreen extends StatefulWidget {
 
 String _currentSelectedValue = '';
 
+String _currentGenderValue = '';
+
 class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -125,29 +127,25 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         child: ListView(
           children: [
             _buildAccountStatus(_userData.status),
-            image == null
-                ? ClipOval(
-                    child: Material(
-                      color: Colors.transparent,
-                      child: Ink.image(
-                        image: _userData.profileImage != null
+            Center(
+              child: ClipOval(
+                child: Material(
+                  color: Colors.transparent,
+                  child: Ink.image(
+                    image: image == null
+                        ? _userData.profileImage.isNotEmpty
                             ? NetworkImage(_userData.profileImage)
                             : AssetImage(
-                                "assets/images/default-user-image.png"),
-                        fit: BoxFit.cover,
-                        width: 200,
-                        height: 300,
-                      ),
-                    ),
-                  )
-                : ClipOval(
-                    child: Image.file(
-                      image,
-                      width: 200,
-                      height: 300,
-                      fit: BoxFit.cover,
-                    ),
+                                "assets/images/default-user-image.png",
+                              )
+                        : FileImage(image),
+                    fit: BoxFit.cover,
+                    width: 128,
+                    height: 128,
                   ),
+                ),
+              ),
+            ),
             SizedBox(height: 5),
             buildButton(),
             SizedBox(
@@ -250,7 +248,8 @@ class _SubmitUpdate extends StatelessWidget {
               );
             } else {
               String faildMessage = 'Cập nhật thất bại!';
-              Navigator.pushReplacementNamed(context, RouteConstant.updateProfileRoute);
+              Navigator.pushReplacementNamed(
+                  context, RouteConstant.updateProfileRoute);
               Fluttertoast.showToast(
                 msg: faildMessage, // message
                 toastLength: Toast.LENGTH_LONG, // length
@@ -321,10 +320,13 @@ class _FullNameInputState extends State<_FullNameInput> {
 
   @override
   void initState() {
-    context
-        .bloc<RegisterBloc>()
-        .add(FullnameChanged(fullname: widget.data.fullName));
-    _fullNameController.text = widget.data.fullName;
+    if (widget.data.fullName != null) {
+      context
+          .bloc<RegisterBloc>()
+          .add(FullnameChanged(fullname: widget.data.fullName));
+      _fullNameController.text =
+          widget.data.fullName != null ? widget.data.fullName : '';
+    }
     super.initState();
   }
 
@@ -372,9 +374,11 @@ class _DeliveryAddressInputState extends State<_DeliveryAddressInput> {
 
   @override
   void initState() {
-    _deliveryController.text = widget.data.deliveryAddress;
-    context.bloc<RegisterBloc>().add(
-        DeliveryAddressChanged(deliveryAddress: widget.data.deliveryAddress));
+    if (widget.data.deliveryAddress != null) {
+      _deliveryController.text = widget.data.deliveryAddress;
+      context.bloc<RegisterBloc>().add(
+          DeliveryAddressChanged(deliveryAddress: widget.data.deliveryAddress));
+    }
     super.initState();
   }
 
@@ -417,10 +421,12 @@ class _PhoneNumberInputState extends State<_PhoneNumberInput> {
 
   @override
   void initState() {
-    _phoneNumberController.text = widget.data.phoneNumber;
-    context
-        .bloc<RegisterBloc>()
-        .add(PhoneNumberChanged(phonenum: widget.data.phoneNumber));
+    if (widget.data.phoneNumber != null) {
+      _phoneNumberController.text = widget.data.phoneNumber;
+      context
+          .bloc<RegisterBloc>()
+          .add(PhoneNumberChanged(phonenum: widget.data.phoneNumber));
+    }
     super.initState();
   }
 
@@ -468,33 +474,50 @@ class _GenderInputState extends State<_GenderInput> {
 
   @override
   void initState() {
-    _genderController.text = widget.data.gender;
-    context.bloc<RegisterBloc>().add(GenderChanged(gender: widget.data.gender));
+    if (widget.data.gender != null) {
+      _currentGenderValue = widget.data.gender;
+      context
+          .bloc<RegisterBloc>()
+          .add(GenderChanged(gender: widget.data.gender));
+    }
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RegisterBloc, RegisterState>(
-      buildWhen: (previous, current) {
-        return previous.gender != current.gender;
-      },
-      builder: (context, state) {
-        return TextFormField(
-          controller: _genderController,
-          onChanged: (value) =>
-              context.bloc<RegisterBloc>().add(GenderChanged(gender: value)),
-          keyboardType: TextInputType.name,
-          inputFormatters: <TextInputFormatter>[
-            FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z ]')),
-          ],
+    return FormField<String>(
+      builder: (FormFieldState<String> state) {
+        return InputDecorator(
           decoration: InputDecoration(
-              labelText: 'Giới Tính',
-              contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-              border: OutlineInputBorder(),
-              errorText: state.isGenderInvalid != null && state.isGenderInvalid
-                  ? 'Giới tính không được trống'
-                  : null),
+            labelText: 'Giới tính',
+            border: OutlineInputBorder(),
+            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+          ),
+          isEmpty: _currentSelectedValue.isEmpty,
+          child: BlocBuilder<RegisterBloc, RegisterState>(
+              builder: (context, state) {
+            return DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                value: _currentGenderValue,
+                hint: Text("Giới tính"),
+                isDense: true,
+                onChanged: (value) => {
+                  context
+                      .bloc<RegisterBloc>()
+                      .add(GenderChanged(gender: value)),
+                  setState(() {
+                    _currentGenderValue = value;
+                  })
+                },
+                items: genderList.map((value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+            );
+          }),
         );
       },
     );
@@ -515,11 +538,13 @@ class _ApartmentDropdown extends StatefulWidget {
 class __ApartmentDropdownState extends State<_ApartmentDropdown> {
   @override
   void initState() {
-    context
-        .bloc<RegisterBloc>()
-        .add(ApartmentChanged(apartment: widget.userData.apartmentId));
+    if (widget.userData.apartmentId != null) {
+      _currentSelectedValue = widget.userData.apartmentId;
+      context
+          .bloc<RegisterBloc>()
+          .add(ApartmentChanged(apartment: widget.userData.apartmentId));
+    }
     super.initState();
-    _currentSelectedValue = widget.userData.apartmentId;
   }
 
   @override
@@ -528,6 +553,7 @@ class __ApartmentDropdownState extends State<_ApartmentDropdown> {
       builder: (FormFieldState<String> state) {
         return InputDecorator(
           decoration: InputDecoration(
+            labelText: 'Chung cư',
             border: OutlineInputBorder(),
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
           ),
@@ -565,7 +591,6 @@ class __ApartmentDropdownState extends State<_ApartmentDropdown> {
   }
 }
 
-
 class _DobInput extends StatefulWidget {
   final UserData data;
 
@@ -580,9 +605,11 @@ class __DobInputState extends State<_DobInput> {
 
   @override
   void initState() {
-    _dobController.text =
-        DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.data.dob));
-    context.bloc<RegisterBloc>().add(DobChanged(dob: widget.data.dob));
+    if (widget.data.dob != null) {
+      _dobController.text =
+          DateFormat('dd/MM/yyyy').format(DateTime.parse(widget.data.dob));
+      context.bloc<RegisterBloc>().add(DobChanged(dob: widget.data.dob));
+    }
     super.initState();
   }
 
@@ -626,5 +653,3 @@ class __DobInputState extends State<_DobInput> {
     }
   }
 }
-
-

@@ -24,6 +24,7 @@ enum AppSettings {
   MY_ORDER,
   INFO,
   CHANGE_PASSWORD,
+  CONNECT_WITH_US,
   LOGOUT,
 }
 
@@ -36,6 +37,8 @@ extension SettingsExtension on AppSettings {
         return "Đổi mật khẩu";
       case AppSettings.INFO:
         return "Cập nhật thông tin";
+      case AppSettings.CONNECT_WITH_US:
+        return "Trở thành người bán hàng";
       case AppSettings.LOGOUT:
         return "Đăng xuất";
     }

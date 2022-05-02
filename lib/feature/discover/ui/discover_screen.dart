@@ -426,7 +426,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
   }
 
   _appBar(height) => PreferredSize(
-        preferredSize: Size(MediaQuery.of(context).size.width, height + 60),
+        preferredSize: Size(MediaQuery.of(context).size.width, height + 70),
         child: Stack(
           children: <Widget>[
             Container(
