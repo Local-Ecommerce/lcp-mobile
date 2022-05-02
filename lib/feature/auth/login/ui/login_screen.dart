@@ -2,15 +2,17 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lcp_mobile/feature/auth/login/bloc/login_bloc.dart';
 import 'package:lcp_mobile/references/user_preference.dart';
 import 'package:lcp_mobile/resources/R.dart';
 import 'package:lcp_mobile/resources/resources.dart';
 import 'package:lcp_mobile/route/route_constants.dart';
 import 'package:lcp_mobile/widget/appbar.dart';
+import 'package:lcp_mobile/widget/loader_widget.dart';
 import 'package:provider/provider.dart';
 
-import '../model/user_app.dart';
+import '../../model/user_app.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -25,7 +27,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-
     _userData = UserPreferences.getUser();
   }
 
@@ -56,10 +57,25 @@ class _LoginScreenState extends State<LoginScreen> {
             height: 20,
           ),
           Align(
-              alignment: Alignment.topRight,
-              child: Text(R.strings.forgotPassword)),
+            alignment: Alignment.topRight,
+            child: RichText(
+                text: TextSpan(children: [
+              TextSpan(
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      Navigator.pushNamed(
+                          context, RouteConstant.forgotPasswordRoute);
+                    },
+                  text: R.strings.forgotPassword,
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline,
+                      fontSize: 16))
+            ])),
+          ),
           SizedBox(
-            height: 70,
+            height: 50,
           ),
           _SubmitLogin(userData: _userData),
           SizedBox(
@@ -101,34 +117,6 @@ class _LoginScreenState extends State<LoginScreen> {
     return Row(
       children: [
         Expanded(
-          child: RaisedButton(
-            padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 0.0),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0)),
-            onPressed: () {},
-            color: AppColors.cornflowerBlue,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Ionicons.logo_facebook,
-                  color: Colors.white,
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Text(
-                  R.strings.facebook,
-                  style: whiteText,
-                ),
-              ],
-            ),
-          ),
-        ),
-        SizedBox(
-          width: 16.0,
-        ),
-        Expanded(
             child: BlocListener(
           bloc: context.bloc<LoginBloc>(),
           listener: (context, state) {
@@ -144,9 +132,6 @@ class _LoginScreenState extends State<LoginScreen> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0)),
             onPressed: () {
-              // final provider =
-              //     Provider.of<GoogleSignInProvider>(context, listen: false);
-              // provider.googleLogin();
               context.bloc<LoginBloc>().add(GoogleLogin());
             },
             color: AppColors.indianRed,
@@ -181,6 +166,7 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 class _EmailInput extends StatelessWidget {
+  final _emailController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(
@@ -188,17 +174,20 @@ class _EmailInput extends StatelessWidget {
         return previous.email != current.email;
       },
       builder: (context, state) {
+        if (state is LoginFinishedState) {
+          _emailController.clear();
+        }
         return TextFormField(
-          initialValue: state.email,
+          controller: _emailController,
           onChanged: (value) =>
-              context.bloc<LoginBloc>().add(EmailChanged(email: value)),
+              context.bloc<LoginBloc>().add(EmailLoginChanged(email: value.trim())),
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
               labelText: 'Email',
               helperText: '',
               icon: const Icon(Icons.email),
               errorText: state.isEmailInvalid != null && state.isEmailInvalid
-                  ? 'invalid email'
+                  ? 'Email không hợp lệ'
                   : null),
         );
       },
@@ -207,23 +196,28 @@ class _EmailInput extends StatelessWidget {
 }
 
 class _PasswordInput extends StatelessWidget {
+  final _passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(
       buildWhen: (previous, current) => previous.password != current.password,
       builder: (context, state) {
+        if (state is LoginFinishedState) {
+          _passwordController.clear();
+        }
         return TextFormField(
-          initialValue: state.password,
-          onChanged: (value) =>
-              context.bloc<LoginBloc>().add(PasswordChanged(password: value)),
+          controller: _passwordController,
+          onChanged: (value) => context
+              .bloc<LoginBloc>()
+              .add(PasswordLoginChanged(password: value)),
           obscureText: true,
           decoration: InputDecoration(
-            labelText: 'Password',
+            labelText: 'Mật Khẩu',
             helperText: '',
             icon: const Icon(Icons.lock),
             errorText:
                 state.isPasswordInvalid != null && state.isPasswordInvalid
-                    ? 'invalid password'
+                    ? 'Mật khẩu ít nhất 6 chữ số'
                     : null,
           ),
         );
@@ -235,24 +229,34 @@ class _PasswordInput extends StatelessWidget {
 class _SubmitLogin extends StatefulWidget {
   final UserData userData;
 
-  const _SubmitLogin({Key key, @required this.userData})
-      : super(key: key);
+  const _SubmitLogin({Key key, @required this.userData}) : super(key: key);
 
   @override
   State<_SubmitLogin> createState() => _SubmitLoginState();
 }
 
 class _SubmitLoginState extends State<_SubmitLogin> {
+  bool isSuccess = true;
   @override
   Widget build(BuildContext context) {
     return BlocListener(
         bloc: context.bloc<LoginBloc>(),
         listener: (context, state) {
-          print(state);
           if (state is LoginFinishedState) {
             if (state.isSuccess) {
               Navigator.pushNamedAndRemoveUntil(
                   context, RouteConstant.homeRoute, (r) => false);
+              Fluttertoast.showToast(
+                msg: "Đăng nhập thành công!", // message
+                toastLength: Toast.LENGTH_LONG, // length
+                gravity: ToastGravity.CENTER, // location
+              );
+            } else {
+              Fluttertoast.showToast(
+                msg: "Đăng nhập thất bại!", // message
+                toastLength: Toast.LENGTH_LONG, // length
+                gravity: ToastGravity.CENTER, // location
+              );
             }
           } else if (state is UpdateInfoState) {
             if (state.isSuccess) {
@@ -267,6 +271,7 @@ class _SubmitLoginState extends State<_SubmitLogin> {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
           onPressed: () {
             context.bloc<LoginBloc>().add(Submitted());
+            setState(() {});
           },
           color: AppColors.indianRed,
           child: Text(

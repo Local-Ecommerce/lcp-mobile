@@ -22,14 +22,8 @@ class AppData {
 
 enum AppSettings {
   MY_ORDER,
-  MY_FAVORITE,
-  MY_WISHLIST,
-  TRANSACTION,
-  WEBSITE_STATE,
-  MY_DEMO,
-  PAYMENT,
   INFO,
-  LEGAL,
+  CHANGE_PASSWORD,
   LOGOUT,
 }
 
@@ -37,25 +31,13 @@ extension SettingsExtension on AppSettings {
   String get name {
     switch (this) {
       case AppSettings.MY_ORDER:
-        return "My Order";
-      case AppSettings.MY_FAVORITE:
-        return "My Favorites";
-      case AppSettings.MY_WISHLIST:
-        return "My Wishlist";
-      case AppSettings.TRANSACTION:
-        return "Transaction";
-      case AppSettings.WEBSITE_STATE:
-        return "Website State";
-      case AppSettings.MY_DEMO:
-        return "My Demogrphics";
-      case AppSettings.PAYMENT:
-        return "Payment Details";
+        return "Đơn hàng của tôi";
+      case AppSettings.CHANGE_PASSWORD:
+        return "Đổi mật khẩu";
       case AppSettings.INFO:
-        return "Your Infomation";
-      case AppSettings.LEGAL:
-        return "Legal";
+        return "Cập nhật thông tin";
       case AppSettings.LOGOUT:
-        return "Logout";
+        return "Đăng xuất";
     }
   }
 }

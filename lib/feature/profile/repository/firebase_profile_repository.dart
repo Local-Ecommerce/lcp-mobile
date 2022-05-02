@@ -33,9 +33,16 @@ class FirebaseProfileRepository extends ProfileRepository {
     if (_auth.currentUser == null) return null;
     print(_auth.currentUser.toString());
 
+    print('User là');
+    print(UserPreferences.getUser());
+
     var userFirebase = await userCollection.doc(_auth.currentUser.uid).get();
 
-    return _mapDocumentToUserData(userFirebase);
+    UserData data = UserPreferences.getUser();
+
+    data.email = userFirebase.data()['email'];
+
+    return data;
   }
 
   UserData _mapDocumentToUserData(DocumentSnapshot data) {

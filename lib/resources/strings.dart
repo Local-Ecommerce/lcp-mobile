@@ -12,6 +12,8 @@ class Strings {
 
   String forgotPassword = AppLocalization.instance.text('forgotPassword');
 
+  String changePassword = AppLocalization.instance.text('changePassword');
+
   var registerTitle = AppLocalization.instance.text('registerTitle');
 
   var updateInfoTitle = AppLocalization.instance.text('updateInfoTitle');
@@ -30,6 +32,5 @@ class Strings {
   String loginTitle = AppLocalization.instance.text('loginTitle');
   String facebook = AppLocalization.instance.text('facebook');
   String google = AppLocalization.instance.text('google');
-
   String appName = AppLocalization.instance.text('appName');
 }

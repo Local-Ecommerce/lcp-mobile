@@ -21,9 +21,8 @@ class ApiApartmentRepository {
 
       Data data = Data.fromJson(baseResponse.data);
 
-      apartments = List.from(data.list)
-            .map((e) => Apartment.fromJson(e))
-            .toList();
+      apartments =
+          List.from(data.list).map((e) => Apartment.fromJson(e)).toList();
       print('Response là');
       print(apartments);
       _dio.clear();
@@ -35,25 +34,27 @@ class ApiApartmentRepository {
     return apartments;
   }
 
-  Future<Apartment> getApartmentById(String id) async {
-    String _url = ApiService.APARTMENT + "?id=${id}";
+  Future<List<Apartment>> getApartmentById(String id) async {
+    List<Apartment> apartments;
+    String _url = ApiService.APARTMENT + "?id=$id";
 
     try {
       Response response = await _dio.get(_url);
       BaseResponse baseResponse =
-        BaseResponse.fromJson(jsonDecode(response.data));
+          BaseResponse.fromJson(jsonDecode(response.data));
 
       Data data = Data.fromJson(baseResponse.data);
 
-      Apartment apartment = Apartment.fromJson(data.list[0]);
+      apartments =
+          List.from(data.list).map((e) => Apartment.fromJson(e)).toList();
       print('Response là');
-      print(apartment);
+      print(apartments);
       _dio.clear();
-
+      return apartments;
     } on DioError catch (ex) {
       log(jsonEncode(ex.response));
       _dio.clear();
     }
+    return apartments;
   }
-
 }

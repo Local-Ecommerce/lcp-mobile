@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:lcp_mobile/feature/auth/login/login_screen.dart';
-import 'package:lcp_mobile/feature/auth/register/regis_screen.dart';
-import 'package:lcp_mobile/feature/auth/register/update_info_screen.dart';
+import 'package:lcp_mobile/feature/auth/password/ui/change_password_screen.dart';
+import 'package:lcp_mobile/feature/auth/password/ui/forgot_password_screen.dart';
+import 'package:lcp_mobile/feature/auth/login/ui/login_screen.dart';
+import 'package:lcp_mobile/feature/auth/register/ui/regis_screen.dart';
+import 'package:lcp_mobile/feature/auth/register/ui/update_info_screen.dart';
 import 'package:lcp_mobile/feature/cart/ui/cart_screen.dart';
 import 'package:lcp_mobile/feature/checkout/checkout_screen.dart';
 import 'package:lcp_mobile/feature/checkout/checkout_result_screen.dart';
@@ -18,6 +20,7 @@ import 'package:lcp_mobile/feature/portal_details/ui/new_detail_screen.dart';
 import 'package:lcp_mobile/feature/portal_details/ui/poi_detail_screen.dart';
 import 'package:lcp_mobile/feature/product_category/product_categorys_screen.dart';
 import 'package:lcp_mobile/feature/product_details/ui/product_details_screen.dart';
+import 'package:lcp_mobile/feature/profile/profile_screen.dart';
 import 'package:lcp_mobile/feature/shipping/shipping_method_screen.dart';
 import 'package:lcp_mobile/route/route_constants.dart';
 import 'package:lcp_mobile/route/slide_route_builder.dart';
@@ -29,6 +32,10 @@ class AppRouter {
     switch (settings.name) {
       case RouteConstant.homeRoute:
         return SlideRouteBuilder(page: HomeScreen());
+      case RouteConstant.profileRoute:
+        return SlideRouteBuilder(page: ProfileScreen());
+      case RouteConstant.changePasswordRoute:
+        return SlideRouteBuilder(page: ChangePasswordScreen());
       case RouteConstant.productDetailsRoute:
         String productId = settings.arguments;
         return SlideRouteBuilder(
@@ -57,6 +64,8 @@ class AppRouter {
         return SlideRouteBuilder(page: LoginScreen());
       case RouteConstant.registerRoute:
         return SlideRouteBuilder(page: RegisterScreen());
+      case RouteConstant.forgotPasswordRoute:
+        return SlideRouteBuilder(page: ForgotPasswordScreen());
       case RouteConstant.updateProfileRoute:
         return SlideRouteBuilder(page: UpdateProfileScreen());
       case RouteConstant.cart:

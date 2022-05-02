@@ -150,7 +150,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                   // Flexible(flex: 2, child: _buildCardBottomNew()),
                   // Flexible(flex: 2, child: _buildCardBottomNew()),
                   Container(
-                      height: 150, width: width * 0.92, child: _buildTestList())
+                      height: 150, width: width * 0.917, child: _buildTestList())
                 ],
               ),
             )

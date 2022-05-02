@@ -50,5 +50,12 @@ class UpdateInfoState extends LoginState {
 
   @override
   List<Object> get props => [isSuccess];
+}
 
+class ForgotFinishedState extends LoginState {
+  final bool isSuccess;
+  ForgotFinishedState({this.isSuccess});
+
+  @override
+  List<Object> get props => [isSuccess];
 }

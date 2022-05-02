@@ -30,3 +30,5 @@ class Apartment {
   }
 }
 
+List<String> genderList = ['Nam', 'Nữ', 'Khác'];
+
