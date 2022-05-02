@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lcp_mobile/feature/auth/password/ui/change_password_screen.dart';
-import 'package:lcp_mobile/feature/auth/password/ui/forgot_password_screen.dart';
+import 'package:lcp_mobile/feature/auth/password/change_password_screen.dart';
+import 'package:lcp_mobile/feature/auth/password/forgot_password_screen.dart';
 import 'package:lcp_mobile/feature/auth/login/ui/login_screen.dart';
 import 'package:lcp_mobile/feature/auth/register/ui/regis_screen.dart';
 import 'package:lcp_mobile/feature/auth/register/ui/update_info_screen.dart';
