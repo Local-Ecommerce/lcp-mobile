@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:lcp_mobile/feature/auth/register/register_bloc.dart';
+import 'package:lcp_mobile/feature/auth/register/bloc/register_bloc.dart';
 import 'package:lcp_mobile/feature/feedback/model/feedback.dart';
 import 'package:lcp_mobile/feature/feedback/repository/api_feedback_repository.dart';
 import 'package:lcp_mobile/resources/api_strings.dart';
