@@ -16,6 +16,8 @@ import 'package:lcp_mobile/feature/order/ui/order_detail_screen.dart';
 import 'package:lcp_mobile/feature/order/ui/order_screen.dart';
 import 'package:lcp_mobile/feature/portal/model/new.dart';
 import 'package:lcp_mobile/feature/portal/model/poi.dart';
+import 'package:lcp_mobile/feature/portal/ui/type_news_screen.dart';
+import 'package:lcp_mobile/feature/portal/ui/type_poi_screen.dart';
 import 'package:lcp_mobile/feature/portal_details/ui/new_detail_screen.dart';
 import 'package:lcp_mobile/feature/portal_details/ui/poi_detail_screen.dart';
 import 'package:lcp_mobile/feature/product_category/product_categorys_screen.dart';
@@ -115,6 +117,18 @@ class AppRouter {
           listProduct: listProduct,
           categoryName: categoryName,
         ));
+      case RouteConstant.typePoisRoute:
+        final Map arguments = settings.arguments as Map;
+        List<POI> listPoi = arguments['listPoi'];
+        String poiType = arguments['poiType'];
+        return SlideRouteBuilder(
+            page: TypePoiScreen(listPoi: listPoi, poiType: poiType));
+      case RouteConstant.typeNewsRoute:
+        final Map arguments = settings.arguments as Map;
+        List<New> listNew = arguments['listNew'];
+        String newType = arguments['newType'];
+        return SlideRouteBuilder(
+            page: TypeNewScreen(listNew: listNew, newType: newType));
       case RouteConstant.orderHistoryRoute:
         return SlideRouteBuilder(page: MyOrdersView());
       case RouteConstant.orderDetail:

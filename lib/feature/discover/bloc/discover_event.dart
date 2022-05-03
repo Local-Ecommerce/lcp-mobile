@@ -33,6 +33,23 @@ class LoadingDiscoverEvent extends DiscoverEvent {
       [category, productType, apartmentId, lstChildCategory];
 }
 
+class LoadingCategoryFoodEvent extends DiscoverEvent {
+  final Object category;
+  final List<dynamic> lstChildCategory;
+  final String productType;
+  final String apartmentId;
+
+  LoadingCategoryFoodEvent(
+      {this.category,
+      this.productType,
+      this.apartmentId,
+      this.lstChildCategory});
+
+  @override
+  List<Object> get props =>
+      [category, productType, apartmentId, lstChildCategory];
+}
+
 class LoadingWishlistEvent extends DiscoverEvent {}
 
 class WishlistUpdatedEvent extends DiscoverEvent {

@@ -24,10 +24,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         iconTheme: IconThemeData(
           color: Colors.black, //change your color here
         ),
-        title: Center(
-          child: Text(
-            R.strings.changePassword,
-            style: TextStyle(color: Colors.black),
+        title: Padding(
+          padding: const EdgeInsets.only(right: 40),
+          child: Center(
+            child: Text(
+              R.strings.changePassword,
+              style: TextStyle(color: Colors.black),
+            ),
           ),
         ),
       ),
@@ -140,7 +143,7 @@ class _ConfirmPasswordInput extends StatelessWidget {
               ConfirmNewPasswordChanged(confirm: value)),
           obscureText: true,
           decoration: InputDecoration(
-            labelText: 'Xác nhận mật khẩu',
+            labelText: 'Xác Nhận Mật Khẩu',
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             border: OutlineInputBorder(),
             errorText: state.isConfirmPasswordInvalid != null &&

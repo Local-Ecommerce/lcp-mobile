@@ -12,14 +12,8 @@ class DiscoverLoading extends DiscoverState {}
 class DiscoverLoadFinished extends DiscoverState {
   final bool isSuccess;
   final List<Product> products;
-  // final List<Menu> menus;
-  // final List<SysCategory> categories;
 
-  DiscoverLoadFinished(
-      {
-      // this.menus = const [],
-      this.products = const [],
-      this.isSuccess = false});
+  DiscoverLoadFinished({this.products = const [], this.isSuccess = false});
 
   @override
   List<Object> get props => [products.hashCode, isSuccess];

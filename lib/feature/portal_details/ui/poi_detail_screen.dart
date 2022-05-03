@@ -1,9 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:lcp_mobile/feature/portal/model/new.dart';
 import 'package:lcp_mobile/feature/portal/model/poi.dart';
 import 'package:lcp_mobile/feature/portal_details/bloc/portal_detail_bloc.dart';
+import 'package:lcp_mobile/resources/R.dart';
 import 'package:lcp_mobile/widget/loader_widget.dart';
 
 class POIDetailScreen extends StatefulWidget {
@@ -60,14 +63,21 @@ class _POIDetailScreenState extends State<POIDetailScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (image != null) ...[
-                      SizedBox(
-                        height: 250,
-                        width: size.width,
-                        child: Image.network(
-                          image,
-                          fit: BoxFit.cover,
+                      if (splitImageStringToList(widget.poi.images).length >
+                          2) ...[
+                        buildListCarouse(),
+                      ],
+                      if (splitImageStringToList(widget.poi.images).length <=
+                          2) ...[
+                        SizedBox(
+                          height: 250,
+                          width: size.width,
+                          child: Image.network(
+                            image,
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                      )
+                      ]
                     ],
                     Padding(
                       padding: const EdgeInsets.all(15.0),
@@ -80,30 +90,6 @@ class _POIDetailScreenState extends State<POIDetailScreen> {
                       padding: const EdgeInsets.only(left: 15.0, right: 15),
                       child: Text(widget.poi.text),
                     ),
-                    // InkWell(
-                    //   // onTap: () async {
-                    //   //   if (connected) {
-                    //   //     await launch(widget.news.residentId);
-                    //   //   }
-                    //   // },
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.only(
-                    //         top: 15.0, left: 15.0, right: 15),
-                    //     child: Row(
-                    //       children: const [
-                    //         // Text(
-                    //         //   "See full story ",
-                    //         //   style: TextStyle(
-                    //         //     fontSize: 15,
-                    //         //     color: Color(0xff0C54BE),
-                    //         //   ),
-                    //         // ),
-                    //         // Icon(Icons.arrow_forward_ios,
-                    //         //     color: Color(0xff0C54BE), size: 12)
-                    //       ],
-                    //     ),
-                    //   ),
-                    // )
                   ],
                 ),
               ),
@@ -113,5 +99,39 @@ class _POIDetailScreenState extends State<POIDetailScreen> {
 
   splitImageStringToList(String images) {
     return images.split("|");
+  }
+
+  Widget buildListCarouse() {
+    var mediaQuery = MediaQuery.of(context);
+    return CarouselSlider(
+      items: List.generate(splitImageStringToList(widget.poi.images).length - 1,
+          (index) {
+        String image = splitImageStringToList(widget.poi.images)[index];
+        return Container(
+          child: ClipRRect(
+            child: CachedNetworkImage(
+              imageUrl: image,
+              height: 192.0,
+              width: mediaQuery.size.width,
+              fit: BoxFit.cover,
+              errorWidget: (context, url, error) => Image.asset(
+                R.icon.snkr01,
+                fit: BoxFit.cover,
+              ),
+            ),
+            borderRadius: BorderRadius.all(
+              Radius.circular(8.0),
+            ),
+          ),
+        );
+      }).toList(),
+      options: CarouselOptions(
+          height: height * 0.25,
+          scrollDirection: Axis.horizontal,
+          autoPlayAnimationDuration: Duration(milliseconds: 2000),
+          autoPlayCurve: Curves.fastOutSlowIn,
+          autoPlay: true,
+          onPageChanged: (index, reason) {}),
+    );
   }
 }

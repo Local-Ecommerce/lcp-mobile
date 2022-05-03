@@ -80,7 +80,6 @@ class ApiUpdateUserRepository extends UpdateRepository {
 
       userDataResponse = UserDataResponse.fromJson(_baseResponse.data);
 
-      // print(_listProduct[0].children);
       _dio.clear();
       return userDataResponse;
     } on Exception catch (e) {
@@ -111,7 +110,6 @@ class ApiUpdateUserRepository extends UpdateRepository {
 
       userData = _listResident[0];
 
-      // print(_listProduct[0].children);
       _dio.clear();
       return userData;
     } on Exception catch (e) {

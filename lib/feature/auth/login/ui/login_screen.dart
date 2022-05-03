@@ -84,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
           Center(
             child: RichText(
                 text: TextSpan(
-                    text: 'Don\'t have account? ',
+                    text: 'Không có tài khoản/ ',
                     style: minorText,
                     children: [
                   TextSpan(
@@ -93,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Navigator.pushNamed(
                               context, RouteConstant.registerRoute);
                         },
-                      text: 'Register',
+                      text: 'Đăng ký',
                       style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.bold,
@@ -103,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
           SizedBox(
             height: 50.0,
           ),
-          Center(child: Text('Or Login with')),
+          Center(child: Text('Hoặc đăng nhập với')),
           SizedBox(
             height: 30.0,
           ),
