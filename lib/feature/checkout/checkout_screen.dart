@@ -402,7 +402,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           .createPayment(_paymentRequest, resultCreditCard.type)
           .then((value) => {
                 Navigator.pushNamed(context, RouteConstant.checkoutResultRoute,
-                    arguments: order.orderId)
+                    arguments: _lstOrderId[0])
               });
     }
   }
