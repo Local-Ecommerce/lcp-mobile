@@ -66,7 +66,14 @@ class _NewsScreenState extends State<NewsScreen> {
                             fontWeight: FontWeight.bold),
                       ),
                       FlatButton(
-                          onPressed: () async => null,
+                          onPressed: () {
+                            Navigator.pushNamed(
+                                context, RouteConstant.typeNewsRoute,
+                                arguments: {
+                                  "listNew": lstHotNews,
+                                  "newType": lstHotNews[0].type
+                                });
+                          },
                           child: Text(
                             'Xem thêm',
                             style: TextStyle(color: Colors.orange),
@@ -88,7 +95,14 @@ class _NewsScreenState extends State<NewsScreen> {
                             fontWeight: FontWeight.bold),
                       ),
                       FlatButton(
-                          onPressed: () async => null,
+                          onPressed: () {
+                            Navigator.pushNamed(
+                                context, RouteConstant.typeNewsRoute,
+                                arguments: {
+                                  "listNew": lstPopularNews,
+                                  "newType": lstPopularNews[0].type
+                                });
+                          },
                           child: Text(
                             'Xem thêm',
                             style: TextStyle(color: Colors.orange),
@@ -105,7 +119,6 @@ class _NewsScreenState extends State<NewsScreen> {
 
   Widget buildListCarouse() {
     return BlocBuilder<PortalBloc, PortalState>(builder: (context, state) {
-
       lstNewsImage = [];
 
       if (state is NewsLoadFinished) {
@@ -203,7 +216,6 @@ class _NewsScreenState extends State<NewsScreen> {
       }
 
       lstNews.forEach((news) {
-        // print(news.type);
         news.type == "Popular"
             ? lstPopularNews.add(news)
             : lstHotNews.add(news);

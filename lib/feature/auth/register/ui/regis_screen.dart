@@ -385,7 +385,7 @@ class __ApartmentDropdownState extends State<_ApartmentDropdown> {
         return InputDecorator(
           decoration: InputDecoration(
             border: OutlineInputBorder(),
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 10.0, 15.0),
           ),
           isEmpty: _currentSelectedValue.isEmpty,
           child: BlocBuilder<RegisterBloc, RegisterState>(

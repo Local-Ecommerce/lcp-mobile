@@ -83,6 +83,7 @@ class ApiProductCategoryRepository {
         _profileRepository.logout();
       } else {
         log(jsonEncode(ex.response));
+        _profileRepository.logout();
       }
     }
   }

@@ -23,11 +23,6 @@ class UserPreferences {
     return json == null ? null : UserData.fromJson(jsonDecode(json));
   }
 
-  static Future setUser(Map<String, dynamic> data) async {
-    final json = jsonEncode(data);
-    await _preferences.setString(_keyUser, json);
-  }
-
   static void clearUser() async {
     await _preferences.clear();
   }

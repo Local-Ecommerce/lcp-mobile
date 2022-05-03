@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lcp_mobile/feature/cart/bloc/cart_bloc.dart';
 import 'package:lcp_mobile/feature/cart/models/cart.dart';
 import 'package:lcp_mobile/feature/cart/models/cart_item.dart';
+import 'package:lcp_mobile/feature/cart/repository/api_cart_repository.dart';
 import 'package:lcp_mobile/feature/discover/model/product.dart';
 import 'package:lcp_mobile/feature/order/bloc/order_bloc.dart';
 import 'package:lcp_mobile/feature/order/model/order.dart';
@@ -26,12 +27,22 @@ class _CartScreenState extends State<CartScreen> {
   List<OrderRequest> lstOrder = [];
   OrderRequest orderRequest;
   bool _isCreated = false;
+  bool _isValidToBuy = true;
+  bool _isOutOfStock = false;
+  List<int> _lstIndex = [];
+  List<int> _lstMaxBuy = [];
+  List<bool> _lstValid = [];
+  List<bool> _lstStock = [];
+  List<Product> _lstProduct = [];
+
+  ApiDiscoverRepository _apiDiscoverRepository;
 
   @override
   void initState() {
     super.initState();
     BlocProvider.of<CartBloc>(context).add(CartLoadingEvent());
     orderRequest = new OrderRequest();
+    _apiDiscoverRepository = new ApiDiscoverRepository();
   }
 
   @override
@@ -43,6 +54,10 @@ class _CartScreenState extends State<CartScreen> {
             builder: (context, state) {
               Cart cart;
               lstOrder = [];
+              _lstIndex = [];
+              _lstMaxBuy = [];
+              _lstValid = [];
+              _lstStock = [];
               if (state is CartLoadFinished) {
                 cart = state.cart;
               }
@@ -51,8 +66,41 @@ class _CartScreenState extends State<CartScreen> {
                   orderRequest.productId =
                       cart.listCartItem[i].product.productId;
                   orderRequest.quantity = cart.listCartItem[i].quantity;
-                  // orderRequest.discount = 0;
+
+                  //getOrderRequest
                   lstOrder.add(orderRequest);
+                  //MaxBuy
+                  if (orderRequest.quantity >
+                      cart.listCartItem[i].product.maxBuy) {
+                    // _isValidToBuy = false;
+                    _lstValid.add(false);
+                    _lstIndex.add(i + 1);
+                    _lstMaxBuy.add(cart.listCartItem[i].product.maxBuy);
+                  } else {
+                    // _isValidToBuy = true;
+                    _lstValid.add(true);
+                  }
+
+                  _lstValid.contains(false)
+                      ? _isValidToBuy = false
+                      : _isValidToBuy = true;
+
+                  //check again product is out of stock or not
+                  //TODO
+                  // lstOrder.forEach((order) {
+                  //   _lstProduct
+                  //       .where((product) => product.productId == order.productId
+                  //           ? product.quantity < order.quantity
+                  //               ? _isOutOfStock == true
+                  //               : _isOutOfStock == false
+                  //           : null);
+                  //   _lstStock.add(_isOutOfStock);
+                  // });
+
+                  // _lstStock.contains(true)
+                  //     ? _isOutOfStock = true
+                  //     : _isOutOfStock = false;
+
                   orderRequest = new OrderRequest();
                 }
                 return Stack(
@@ -103,7 +151,7 @@ class _CartScreenState extends State<CartScreen> {
                             width: MediaQuery.of(context).size.width,
                             height: 120,
                             child: _resultCart(cart.getTotalPrice(),
-                                cart.listCartItem.length))),
+                                cart.listCartItem.length, cart))),
                   ],
                 );
               }
@@ -114,7 +162,7 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  Widget _resultCart(double totalPrice, int items) {
+  Widget _resultCart(double totalPrice, int items, Cart cart) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -139,36 +187,12 @@ class _CartScreenState extends State<CartScreen> {
             ],
           ),
         ),
-        _buttonAddToBag(totalPrice, items)
+        _buttonAddToBag(totalPrice, items, cart)
       ],
     );
   }
 
-  // Widget _nextButton(double totalPrice) {
-  //   return BlocBuilder<OrderBloc, OrderState>(builder: (context, state) {
-  //     return Container(
-  //       margin: EdgeInsets.symmetric(horizontal: 20),
-  //       child: RaisedButton(
-  //           padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 14.0),
-  //           shape: RoundedRectangleBorder(
-  //               borderRadius: BorderRadius.circular(8.0)),
-  //           onPressed: () async {
-  //             await createOrder(lstOrder);
-  //             if (state is OrderLoadFinished) {
-  //               Navigator.pushNamed(context, RouteConstant.checkout,
-  //                   arguments: {'totalPrice': totalPrice});
-  //             }
-  //           },
-  //           color: AppColors.indianRed,
-  //           child: Text(
-  //             'Tiếp tục',
-  //             style: whiteText,
-  //           )),
-  //     );
-  //   });
-  // }
-
-  Widget _buttonAddToBag(double totalPrice, int items) {
+  Widget _buttonAddToBag(double totalPrice, int items, Cart cart) {
     return BlocListener(
       bloc: context.bloc<OrderBloc>(),
       listener: (context, state) {
@@ -200,14 +224,27 @@ class _CartScreenState extends State<CartScreen> {
                         toastLength: Toast.LENGTH_LONG, // length
                         gravity: ToastGravity.CENTER, // location
                       )
-                    : _isCreated
-                        // ? Navigator.pushNamed(context, RouteConstant.checkout,
-                        //     arguments: {
-                        //         'totalPrice': totalPrice,
-                        //         'orderId': _orderId
-                        //       })
-                        ? null
-                        : createOrder(lstOrder),
+                    : !_isValidToBuy
+                        ? Fluttertoast.showToast(
+                            msg:
+                                "Bạn chỉ có thể mua ${_lstMaxBuy} sản phẩm tối đa cho sản phẩm thứ ${_lstIndex}", // message
+                            toastLength: Toast.LENGTH_LONG, // length
+                            gravity: ToastGravity.CENTER, // location
+                          )
+                        : _isOutOfStock
+                            ? Fluttertoast.showToast(
+                                msg: "Sản phẩm bạn mua đã hết hàng", // message
+                                toastLength: Toast.LENGTH_LONG, // length
+                                gravity: ToastGravity.CENTER, // location
+                              )
+                            : _isCreated
+                                // ? Navigator.pushNamed(context, RouteConstant.checkout,
+                                //     arguments: {
+                                //         'totalPrice': totalPrice,
+                                //         'orderId': _orderId
+                                //       })
+                                ? null
+                                : createOrder(lstOrder),
                 color:
                     _isCreated ? AppColors.paleVioletRed : AppColors.indianRed,
                 child: Text(
@@ -372,5 +409,14 @@ class _CartScreenState extends State<CartScreen> {
     BlocProvider.of<OrderBloc>(context)
         .add(CreateOrderEvent(lstRequest: lstOrder));
     setState(() {});
+  }
+
+  getProductList(Cart cart) async {
+    cart.listCartItem.forEach((cartItem) async {
+      Product product = new Product();
+      product = await _apiDiscoverRepository
+          .getProductDetail(cartItem.product.productId);
+      _lstProduct.add(product);
+    });
   }
 }

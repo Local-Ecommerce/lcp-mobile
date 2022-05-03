@@ -1,16 +1,14 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lcp_mobile/feature/auth/model/user_app.dart';
 import 'package:lcp_mobile/feature/portal/bloc/portal_bloc.dart';
-import 'package:lcp_mobile/feature/portal/model/new.dart';
 import 'package:lcp_mobile/feature/portal/model/poi.dart';
 import 'package:lcp_mobile/references/user_preference.dart';
 import 'package:lcp_mobile/resources/api_strings.dart';
 import 'package:lcp_mobile/route/route_constants.dart';
-import 'package:lcp_mobile/widget/portal_carousel_slider.dart';
 import 'package:lcp_mobile/widget/portal_card_widget.dart';
+import 'package:lcp_mobile/widget/portal_carousel_slider.dart';
 
 class PoiScreen extends StatefulWidget {
   PoiScreen({Key key}) : super(key: key);
@@ -67,7 +65,14 @@ class _PoiScreenState extends State<PoiScreen> {
                             fontWeight: FontWeight.bold),
                       ),
                       FlatButton(
-                          onPressed: () async => null,
+                          onPressed: () {
+                            Navigator.pushNamed(
+                                context, RouteConstant.typePoisRoute,
+                                arguments: {
+                                  "listPoi": lstPopularPois,
+                                  "poiType": lstPopularPois[0].type
+                                });
+                          },
                           child: Text(
                             'Xem thêm',
                             style: TextStyle(color: Colors.orange),
@@ -89,7 +94,14 @@ class _PoiScreenState extends State<PoiScreen> {
                             fontWeight: FontWeight.bold),
                       ),
                       FlatButton(
-                          onPressed: () async => null,
+                          onPressed: () {
+                            Navigator.pushNamed(
+                                context, RouteConstant.typePoisRoute,
+                                arguments: {
+                                  "listPoi": lstHotPois,
+                                  "poiType": lstHotPois[0].type
+                                });
+                          },
                           child: Text(
                             'Xem thêm',
                             style: TextStyle(color: Colors.orange),
@@ -238,4 +250,6 @@ class _PoiScreenState extends State<PoiScreen> {
     BlocProvider.of<PortalBloc>(context).add(LoadingPoisEvent(
         apartmentId: _userData.apartmentId, type: ApiStrings.hot));
   }
+
+  
 }

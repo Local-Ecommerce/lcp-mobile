@@ -14,6 +14,8 @@ class BottomDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
     return BackdropFilter(
       filter: ImageFilter.blur(
         sigmaX: 10,
@@ -32,9 +34,10 @@ class BottomDialog extends StatelessWidget {
               color: Colors.white70,
               padding: const EdgeInsets.all(20),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Flexible(
-                    flex: 4,
+                    flex: 1,
                     child: Text(
                       title ?? '',
                       style: TextStyle(
@@ -44,7 +47,6 @@ class BottomDialog extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  Spacer(),
                   IconButton(
                     color: Theme.of(context).accentColor,
                     visualDensity: VisualDensity.compact,
@@ -54,9 +56,14 @@ class BottomDialog extends StatelessWidget {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: child,
+            SizedBox(
+              height: height * 0.4,
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: child,
+                ),
+              ),
             ),
             ClipRect(
               child: BackdropFilter(

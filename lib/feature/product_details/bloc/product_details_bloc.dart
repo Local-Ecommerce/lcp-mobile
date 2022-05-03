@@ -46,8 +46,9 @@ class ProductDetailsBloc
 
   Stream<ProductDetailsState> _mapLoadProductDetailsEventToState(
       LoadProductDetails event) async* {
-    var product = await _productDetailsDao.getProductDetails(event.productId);
-
+    print(event.productId);
+    Product product =
+        await _productDetailsDao.getProductDetails(event.productId);
     yield LoadProductDetailsFinished(product);
   }
 }

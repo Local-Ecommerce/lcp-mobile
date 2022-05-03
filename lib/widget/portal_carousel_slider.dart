@@ -1,12 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:lcp_mobile/feature/portal/model/new.dart';
 import 'package:lcp_mobile/feature/portal/model/poi.dart';
-import 'package:lcp_mobile/resources/colors.dart';
 import 'package:lcp_mobile/resources/resources.dart';
-import 'package:lcp_mobile/route/route_constants.dart';
 
 class PortalCarousel extends StatefulWidget {
   final POI poi;
@@ -34,9 +30,6 @@ class _PortalCarouselState extends State<PortalCarousel> {
               height: 192.0,
               width: mediaQuery.size.width,
               fit: BoxFit.cover,
-              // placeholder: (context, url) => Platform.isAndroid
-              //     ? CircularProgressIndicator()
-              //     : CupertinoActivityIndicator(),
               errorWidget: (context, url, error) => Image.asset(
                 R.icon.snkr01,
                 fit: BoxFit.cover,

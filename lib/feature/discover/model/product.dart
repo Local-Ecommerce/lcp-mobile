@@ -29,6 +29,8 @@ class Product {
   num weight;
   int isFavorite;
   String residentId;
+  int maxBuy;
+  int quantity;
 
   Product(
       {this.children,
@@ -46,6 +48,8 @@ class Product {
       this.weight,
       this.isFavorite,
       this.belongTo,
+      this.quantity,
+      this.maxBuy,
       this.residentId});
 
   Map<String, dynamic> toMap() {
@@ -65,6 +69,8 @@ class Product {
       'belongTo': belongTo,
       'residentId': residentId,
       'relatedProducts': children,
+      'maxBuy': maxBuy,
+      'quantity': quantity,
     };
   }
 
@@ -85,8 +91,10 @@ class Product {
       weight: map['weight'],
       // isFavorite: map['isFavorite'],
       belongTo: map['belongTo'],
-      residentId: map['residentId'],
+      residentId: map['ResidentId'],
       children: map['relatedProducts'],
+      maxBuy: map['maxBuy'],
+      quantity: map['quantity'],
     );
   }
 
@@ -106,6 +114,8 @@ class Product {
       // 'isFavorite': isFavorite,
       'belongTo': belongTo,
       'residentId': residentId,
+      'maxBuy': maxBuy,
+
       // 'RelatedProducts': children,
     };
   }
@@ -132,7 +142,9 @@ class Product {
     weight = json['Weight'];
     // isFavorite = json['IsFavorite'];
     belongTo = json['belongTo'];
-    residentId = json['residentId'];
+    residentId = json['ResidentId'];
+    maxBuy = json['MaxBuy'];
+    quantity = json['Quantity'];
   }
 
   Map<String, dynamic> toJson() {
@@ -155,12 +167,14 @@ class Product {
     // data['IsFavorite'] = this.isFavorite;
     data['BelongTo'] = this.belongTo;
     data['ResidentId'] = this.residentId;
+    data['quantity'] = this.quantity;
+    data['maxBuy'] = this.maxBuy;
     return data;
   }
 
   @override
   String toString() {
-    return 'Product{id: $productId, productName: $productName, briefDescription: $briefDescription, description: $description, images: $images, colors: $color, defaultPrice: $defaultPrice, isFavorite: $isFavorite, remainingSize: $size, weight: $weight}';
+    return 'Product{id: $productId, productName: $productName, quantity: $quantity, maxBuy: $maxBuy ,briefDescription: $briefDescription, description: $description, images: $images, colors: $color, defaultPrice: $defaultPrice, isFavorite: $isFavorite, remainingSize: $size, weight: $weight}';
   }
 }
 

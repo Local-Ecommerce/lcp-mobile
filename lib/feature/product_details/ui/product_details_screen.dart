@@ -19,8 +19,10 @@ import 'popup_desc_details.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   final String productId;
+  final String residentId;
 
-  const ProductDetailsScreen({Key key, this.productId}) : super(key: key);
+  const ProductDetailsScreen({Key key, this.productId, this.residentId})
+      : super(key: key);
 
   @override
   _ProductDetailsScreenState createState() => _ProductDetailsScreenState();
@@ -33,12 +35,15 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   var _isSelectedSize = false;
   var _isSelectedColor = false;
   var _isSelectedWeight = false;
+  var _residentId;
 
   var _currentIndexWeight = 0;
   var _currentIndexColor = 0;
   var _currentIndexSize = 0;
   var _price;
   var _imageIndex = 0;
+  var _quantity = 0;
+  var _maxBuy = 0;
 
   Product product;
   Store store;
@@ -64,6 +69,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     context
         .bloc<ProductDetailsBloc>()
         .add(LoadProductDetails(widget.productId));
+    getShopName(widget.residentId);
   }
 
   @override
@@ -77,7 +83,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       builder: (context, state) {
         if (state is LoadProductDetailsFinished) {
           product = state.product;
-          if (isFirstLoad == true) _price = product.defaultPrice;
+          if (isFirstLoad == true) {
+            _price = product.defaultPrice;
+            _quantity = product.quantity;
+            _maxBuy = product.maxBuy;
+            _residentId = product.residentId;
+          }
           lstWeight.clear();
           lstSize.clear();
           lstColor.clear();
@@ -197,13 +208,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   }
 
   Widget bodyContentDetails() {
-    getShopName();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Flexible(
@@ -248,6 +259,33 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
                               decoration: TextDecoration.lineThrough,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                  Text.rich(
+                    TextSpan(
+                      children: <TextSpan>[
+                        if (product.quantity != null)
+                          if (!isFirstLoad &&
+                              (!isHaveColor ||
+                                  !isHaveSize ||
+                                  !isHaveWeight)) ...[
+                            TextSpan(
+                              text: "Số lượng : " + _quantity.toString(),
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        if (isFirstLoad &&
+                            (!isHaveColor && !isHaveSize && !isHaveWeight)) ...[
+                          TextSpan(
+                            text: "Số lượng : " + _quantity.toString(),
+                            style: TextStyle(
+                              fontSize: 16,
                             ),
                           ),
                         ],
@@ -578,20 +616,28 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   }
 
   addProductToCart() {
-    if (!isHaveColor && !isHaveSize && !isHaveWeight) {
-      BlocProvider.of<ProductDetailsBloc>(context)
-          .add(AddProductToCart(product));
-    } else if (isHaveColor || isHaveSize || isHaveWeight) {
-      if (!isFirstLoad) {
-        BlocProvider.of<ProductDetailsBloc>(context).add(AddProductToCart(
-            product.children.length != 0 ? getDetailProduct() : product));
-      } else {
-        Fluttertoast.showToast(
-          msg: "Bạn chưa chọn sản phẩm chi tiết", // message
-          toastLength: Toast.LENGTH_LONG, // length
-          gravity: ToastGravity.CENTER, // location
-        );
+    if (_quantity > 0) {
+      if (!isHaveColor && !isHaveSize && !isHaveWeight) {
+        BlocProvider.of<ProductDetailsBloc>(context)
+            .add(AddProductToCart(product));
+      } else if (isHaveColor || isHaveSize || isHaveWeight) {
+        if (!isFirstLoad) {
+          BlocProvider.of<ProductDetailsBloc>(context).add(AddProductToCart(
+              product.children.length != 0 ? getDetailProduct() : product));
+        } else {
+          Fluttertoast.showToast(
+            msg: "Bạn chưa chọn sản phẩm chi tiết", // message
+            toastLength: Toast.LENGTH_LONG, // length
+            gravity: ToastGravity.CENTER, // location
+          );
+        }
       }
+    } else {
+      Fluttertoast.showToast(
+        msg: "Sản phẩm bạn chọn đã hết hàng", // message
+        toastLength: Toast.LENGTH_LONG, // length
+        gravity: ToastGravity.CENTER, // location
+      );
     }
   }
 
@@ -622,7 +668,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     selectedProduct[0].images = product.images;
     selectedProduct[0].productName = product.productName;
 
-    print(selectedProduct[0]);
     return selectedProduct[0];
   }
 
@@ -630,14 +675,16 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     Product _product = getDetailProduct();
     setState(() {
       _price = _product.defaultPrice;
+      _quantity = _product.quantity;
+      _maxBuy = _product.maxBuy;
       isFirstLoad = false;
       _isAddedToBag = false;
     });
   }
 
-  getShopName() async {
+  getShopName(String residentId) async {
     store = await _apiDiscoverRepository
-        .getStoreNameByResidentId(product.residentId);
+        .getStoreNameByResidentId(widget.residentId);
     // setState(() {});
   }
 }
