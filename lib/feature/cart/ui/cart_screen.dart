@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:lcp_mobile/feature/auth/model/user_app.dart';
 import 'package:lcp_mobile/feature/cart/bloc/cart_bloc.dart';
 import 'package:lcp_mobile/feature/cart/models/cart.dart';
 import 'package:lcp_mobile/feature/cart/models/cart_item.dart';
@@ -8,6 +9,7 @@ import 'package:lcp_mobile/feature/cart/repository/api_cart_repository.dart';
 import 'package:lcp_mobile/feature/discover/model/product.dart';
 import 'package:lcp_mobile/feature/order/bloc/order_bloc.dart';
 import 'package:lcp_mobile/feature/order/model/order.dart';
+import 'package:lcp_mobile/references/user_preference.dart';
 import 'package:lcp_mobile/resources/app_theme.dart';
 import 'package:lcp_mobile/resources/colors.dart';
 import 'package:lcp_mobile/route/route_constants.dart';
@@ -26,14 +28,30 @@ class _CartScreenState extends State<CartScreen> {
 
   List<OrderRequest> lstOrder = [];
   OrderRequest orderRequest;
+  Product product;
   bool _isCreated = false;
   bool _isValidToBuy = true;
-  bool _isOutOfStock = false;
+  bool _isValidToBuyQuan = true;
+  bool _isValidToBuyPrice = true;
+  bool _isValidToBuyStock = true;
+  bool _isLowerThanQuanBuy = false;
+  bool _isChangePrice = false;
+
+  List<int> _lstIndexQuan = [];
   List<int> _lstIndex = [];
   List<int> _lstMaxBuy = [];
+  List<int> _lstQuantityRemain = [];
+
   List<bool> _lstValid = [];
   List<bool> _lstStock = [];
+  List<bool> _lstQuanLower = [];
+  List<bool> _lstChangePrice = [];
+
   List<Product> _lstProduct = [];
+
+  UserData _userData;
+
+  int _itemIndex = 0;
 
   ApiDiscoverRepository _apiDiscoverRepository;
 
@@ -43,6 +61,7 @@ class _CartScreenState extends State<CartScreen> {
     BlocProvider.of<CartBloc>(context).add(CartLoadingEvent());
     orderRequest = new OrderRequest();
     _apiDiscoverRepository = new ApiDiscoverRepository();
+    _userData = UserPreferences.getUser();
   }
 
   @override
@@ -54,10 +73,10 @@ class _CartScreenState extends State<CartScreen> {
             builder: (context, state) {
               Cart cart;
               lstOrder = [];
-              _lstIndex = [];
+              _lstIndexQuan = [];
               _lstMaxBuy = [];
               _lstValid = [];
-              _lstStock = [];
+
               if (state is CartLoadFinished) {
                 cart = state.cart;
               }
@@ -74,7 +93,7 @@ class _CartScreenState extends State<CartScreen> {
                       cart.listCartItem[i].product.maxBuy) {
                     // _isValidToBuy = false;
                     _lstValid.add(false);
-                    _lstIndex.add(i + 1);
+                    _lstIndexQuan.add(i + 1);
                     _lstMaxBuy.add(cart.listCartItem[i].product.maxBuy);
                   } else {
                     // _isValidToBuy = true;
@@ -193,6 +212,7 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   Widget _buttonAddToBag(double totalPrice, int items, Cart cart) {
+    Product product;
     return BlocListener(
       bloc: context.bloc<OrderBloc>(),
       listener: (context, state) {
@@ -218,33 +238,95 @@ class _CartScreenState extends State<CartScreen> {
                 padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 14.0),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0)),
-                onPressed: () => items == 0
-                    ? Fluttertoast.showToast(
-                        msg: "Không có sản phẩm nào trong giỏ hàng", // message
-                        toastLength: Toast.LENGTH_LONG, // length
-                        gravity: ToastGravity.CENTER, // location
-                      )
-                    : !_isValidToBuy
-                        ? Fluttertoast.showToast(
-                            msg:
-                                "Bạn chỉ có thể mua ${_lstMaxBuy} sản phẩm tối đa cho sản phẩm thứ ${_lstIndex}", // message
-                            toastLength: Toast.LENGTH_LONG, // length
-                            gravity: ToastGravity.CENTER, // location
-                          )
-                        : _isOutOfStock
-                            ? Fluttertoast.showToast(
-                                msg: "Sản phẩm bạn mua đã hết hàng", // message
-                                toastLength: Toast.LENGTH_LONG, // length
-                                gravity: ToastGravity.CENTER, // location
-                              )
-                            : _isCreated
-                                // ? Navigator.pushNamed(context, RouteConstant.checkout,
-                                //     arguments: {
-                                //         'totalPrice': totalPrice,
-                                //         'orderId': _orderId
-                                //       })
-                                ? null
-                                : createOrder(lstOrder),
+                onPressed: () async => {
+                      // _lstStock = [],
+                      // _lstQuanLower = [],
+                      // _lstChangePrice = [],
+                      // _lstQuantityRemain = [],
+                      // _lstIndex = [],
+                      // _itemIndex = 0,
+                      // cart.listCartItem.forEach((cartItem) async {
+                      //   _itemIndex++;
+                      //   product = await _apiDiscoverRepository
+                      //       .getProductDetail(cartItem.product.productId);
+
+                      //   if (product.quantity <= cartItem.quantity) {
+                      //     _lstIndex.add(_itemIndex);
+                      //     _lstQuantityRemain.add(product.quantity);
+                      //     _lstQuanLower.add(true);
+                      //   }
+
+                      //   if (product.quantity <= 0) {
+                      //     _lstStock.add(true);
+                      //   }
+
+                      //   if (product.defaultPrice !=
+                      //       cartItem.product.defaultPrice) {
+                      //     _lstChangePrice.add(true);
+                      //   }
+                      //   // _lstProduct.add(product);
+                      // }),
+                      // _userData.status != 14001
+                      //     ? Fluttertoast.showToast(
+                      //         msg:
+                      //             "Tài khoản của bạn không đủ điều kiện để mua hàng", // message
+                      //         toastLength: Toast.LENGTH_LONG, // length
+                      //         gravity: ToastGravity.CENTER, // location
+                      //       )
+                      //     : items == 0
+                      //         ? Fluttertoast.showToast(
+                      //             msg:
+                      //                 "Không có sản phẩm nào trong giỏ hàng", // message
+                      //             toastLength: Toast.LENGTH_LONG, // length
+                      //             gravity: ToastGravity.CENTER, // location
+                      //           )
+                      //         : !_isValidToBuy
+                      //             ? Fluttertoast.showToast(
+                      //                 msg:
+                      //                     "Bạn chỉ có thể mua ${_lstMaxBuy} sản phẩm tối đa cho sản phẩm thứ ${_lstIndexQuan}", // message
+                      //                 toastLength: Toast.LENGTH_LONG, // length
+                      //                 gravity: ToastGravity.CENTER, // location
+                      //               )
+                      //             : _lstStock.contains(true)
+                      //                 ? Fluttertoast.showToast(
+                      //                     msg:
+                      //                         "Sản phẩm bạn mua đã hết hàng", // message
+                      //                     toastLength:
+                      //                         Toast.LENGTH_LONG, // length
+                      //                     gravity:
+                      //                         ToastGravity.CENTER, // location
+                      //                   )
+                      //                 : _lstChangePrice.contains(true)
+                      //                     ? Fluttertoast.showToast(
+                      //                         msg:
+                      //                             "Giá sản phẩm của bạn đã bị thay đổi", // message
+                      //                         toastLength:
+                      //                             Toast.LENGTH_LONG, // length
+                      //                         gravity: ToastGravity
+                      //                             .CENTER, // location
+                      //                       )
+                      //                     : _lstQuanLower.contains(true)
+                      //                         ? Fluttertoast.showToast(
+                      //                             msg:
+                      //                                 "Mặt hàng thứ ${_lstIndex} chỉ còn lại ${_lstQuantityRemain} sản phẩm", // message
+                      //                             toastLength: Toast
+                      //                                 .LENGTH_LONG, // length
+                      //                             gravity: ToastGravity
+                      //                                 .CENTER, // location
+                      //                           )
+                      //                         : _isCreated
+                      //                             // ? Navigator.pushNamed(context, RouteConstant.checkout,
+                      //                             //     arguments: {
+                      //                             //         'totalPrice': totalPrice,
+                      //                             //         'orderId': _orderId
+                      //                             //       })
+                      //                             ? null
+                      //                             : createOrder(lstOrder),
+                      if (checkValid(cart, items))
+                        {
+                          createOrder(lstOrder),
+                        }
+                    },
                 color:
                     _isCreated ? AppColors.paleVioletRed : AppColors.indianRed,
                 child: Text(
@@ -418,5 +500,100 @@ class _CartScreenState extends State<CartScreen> {
           .getProductDetail(cartItem.product.productId);
       _lstProduct.add(product);
     });
+  }
+
+  checkValid(Cart cart, int items) {
+    var _isValidToCreate = false;
+    _lstStock = [];
+    _lstQuanLower = [];
+    _lstChangePrice = [];
+    // _lstQuantityRemain.length > 0 ? _lstQuantityRemain = [] : null;
+    // _lstIndex = [];
+
+    int _itemIndex = 0;
+
+    cart.listCartItem.forEach((cartItem) async {
+      _itemIndex++;
+      product = await _apiDiscoverRepository
+          .getProductDetail(cartItem.product.productId);
+
+      if (product.quantity <= 0) {
+        _lstStock.add(true);
+      } else if (product.quantity <= cartItem.quantity) {
+        setState(() {
+          _lstIndex.add(_itemIndex);
+          _lstQuantityRemain.add(product.quantity);
+        });
+
+        _lstQuanLower.add(true);
+      } else if (product.defaultPrice != cartItem.product.defaultPrice) {
+        _lstChangePrice.add(true);
+      }
+
+      _lstQuanLower.contains(true)
+          ? _isValidToBuyQuan = false
+          : _isValidToBuyQuan = true;
+
+      _lstStock.contains(true)
+          ? _isValidToBuyStock = false
+          : _isValidToBuyStock = true;
+
+      _lstChangePrice.contains(true)
+          ? _isValidToBuyPrice = false
+          : _isValidToBuyPrice = true;
+      // _lstProduct.add(product);
+    });
+
+    print("_isValidToBuyQuan");
+    print(_isValidToBuyQuan);
+    print("_isValidToBuyPrice");
+    print(_isValidToBuyPrice);
+    print("_isValidToBuyStock");
+    print(_isValidToBuyStock);
+
+    _userData.status != 14001
+        ? Fluttertoast.showToast(
+            msg: "Tài khoản của bạn không đủ điều kiện để mua hàng", // message
+            toastLength: Toast.LENGTH_LONG, // length
+            gravity: ToastGravity.CENTER, // location
+          )
+        : items == 0
+            ? Fluttertoast.showToast(
+                msg: "Không có sản phẩm nào trong giỏ hàng", // message
+                toastLength: Toast.LENGTH_LONG, // length
+                gravity: ToastGravity.CENTER, // location
+              )
+            : !_isValidToBuyStock
+                ? Fluttertoast.showToast(
+                    msg: "Sản phẩm bạn mua đã hết hàng", // message
+                    toastLength: Toast.LENGTH_LONG, // length
+                    gravity: ToastGravity.CENTER, // location
+                  )
+                : !_isValidToBuy
+                    ? Fluttertoast.showToast(
+                        msg:
+                            "Bạn chỉ có thể mua ${_lstMaxBuy} sản phẩm tối đa cho sản phẩm thứ ${_lstIndexQuan}", // message
+                        toastLength: Toast.LENGTH_LONG, // length
+                        gravity: ToastGravity.CENTER, // location
+                      )
+                    : !_isValidToBuyPrice
+                        ? Fluttertoast.showToast(
+                            msg:
+                                "Giá sản phẩm của bạn đã bị thay đổi", // message
+                            toastLength: Toast.LENGTH_LONG, // length
+                            gravity: ToastGravity.CENTER, // location
+                          )
+                        : !_isValidToBuyQuan
+                            ? Fluttertoast.showToast(
+                                msg:
+                                    "Mặt hàng thứ ${_lstIndex} chỉ còn lại ${_lstQuantityRemain} sản phẩm", // message
+                                toastLength: Toast.LENGTH_LONG, // length
+                                gravity: ToastGravity.CENTER, // location
+                              )
+                            : _isCreated
+                                ? null
+                                : _isValidToCreate = true;
+
+    return _isValidToCreate;
   }
 }

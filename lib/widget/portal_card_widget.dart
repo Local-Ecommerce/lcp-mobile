@@ -139,12 +139,12 @@ class PortalCard extends StatelessWidget {
                         if (image != null) ...[
                           Container(
                               alignment: Alignment.topRight,
-                              height: width * 0.16,
+                              height: width * 0.15,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.vertical(
                                     top: Radius.circular(8)),
                                 child: FadeInImage(
-                                    fit: BoxFit.contain,
+                                    fit: BoxFit.fill,
                                     image: NetworkImage(image),
                                     // image: AssetImage(R.icon.snkr01),
                                     placeholder: AssetImage(R.icon.snkr01)),

@@ -62,7 +62,10 @@ class _ProductCategoryScreenState extends State<ProductCategoryScreen> {
     return InkWell(
       onTap: () => Navigator.pushNamed(
           context, RouteConstant.productDetailsRoute,
-          arguments: product.productId),
+          arguments: {
+            'productId': product.productId,
+            'residentId': product.residentId,
+          }),
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.0),

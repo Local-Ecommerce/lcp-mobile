@@ -118,4 +118,32 @@ class ApiDiscoverRepository {
       _dio.clear();
     }
   }
+
+  Future<List<Product>> searchProductByName(String name) async {
+    String _url = ApiService.PRODUCT + "?search=${name}";
+
+    _refreshTokens = TokenPreferences.getRefreshTokens();
+
+    _dio.options.headers["Authorization"] =
+        "Bearer ${_refreshTokens.accessToken}";
+    // _dio.options.headers["Authorization"] = "Bearer ${ApiStrings.token}";
+
+    try {
+      Response _response = await _dio.get(_url);
+      BaseResponse _baseResponse =
+          BaseResponse.fromJson(jsonDecode(_response.data));
+
+      Data data = Data.fromJson(_baseResponse.data);
+
+      List<Product> _listProduct =
+          List.from(data.list).map((e) => Product.fromJson(e)).toList();
+
+      // print(_listProduct[0].children);
+      _dio.clear();
+      return _listProduct;
+    } on DioError catch (ex) {
+      log(jsonEncode(ex.response));
+      _dio.clear();
+    }
+  }
 }

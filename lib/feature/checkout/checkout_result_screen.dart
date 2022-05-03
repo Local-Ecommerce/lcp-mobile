@@ -441,6 +441,6 @@ class _CheckoutResultScreenState extends State<CheckoutResultScreen> {
   }
 
   Widget getTextWidgets(List<String> strings) {
-    return new Row(children: strings.map((item) => new Text(item)).toList());
+    return new Column(children: strings.map((item) => new Text(item)).toList());
   }
 }

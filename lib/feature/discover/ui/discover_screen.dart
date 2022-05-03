@@ -4,6 +4,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:lcp_mobile/feature/apartment/model/apartment.dart';
 import 'package:lcp_mobile/feature/apartment/repository/api_apartment_repository.dart';
 import 'package:lcp_mobile/feature/auth/model/user_app.dart';
+import 'package:lcp_mobile/feature/cart/repository/api_cart_repository.dart';
 import 'package:lcp_mobile/feature/discover/bloc/discover_bloc.dart';
 import 'package:lcp_mobile/feature/discover/model/product.dart';
 import 'package:lcp_mobile/feature/menu/bloc/category_bloc.dart';
@@ -51,15 +52,18 @@ class _DiscoverScreenState extends State<DiscoverScreen>
   List<Product> listProduct = [];
   List<SysCategory> listSysCategories = [];
   List<SysCategory> listChildCategories = [];
+  List<Product> listSearchProduct = [];
 
   TabController _tabController;
 
-  ApiProductCategoryRepository _apiProductCate;
   ApiApartmentRepository _apartmentRepository;
+  ApiDiscoverRepository _apiDiscoverRepository;
+  ApiProductCategoryRepository _apiProductCate;
 
   UserData _userData;
   RefreshTokens _refreshTokens;
   List<Apartment> _lstApartment = [];
+  TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -70,6 +74,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
       _refreshTokens = TokenPreferences.getRefreshTokens();
 
       _apartmentRepository = new ApiApartmentRepository();
+      _apiDiscoverRepository = new ApiDiscoverRepository();
 
       _userData != null ? getApartment(_userData.apartmentId) : null;
     });
@@ -178,53 +183,66 @@ class _DiscoverScreenState extends State<DiscoverScreen>
             _isSelectedCategory = _currentIndexCategory == index;
             return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: Card(
-                  color: Colors.white,
-                  child: Container(
-                    width: width * 0.5,
-                    height: width * 0.4,
-                    child: Stack(
-                      children: [
-                        // Align(
-                        //   child: IconButton(
-                        //       icon: Image.asset(
-                        //         R.icon.heartOutline,
-                        //         width: 20,
-                        //         height: 20,
-                        //       ),
-                        //       onPressed: () {}),
-                        //   alignment: Alignment.topRight,
-                        // ),
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: LayoutBuilder(
-                            builder: (context, constraints) {
-                              return Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.network(
-                                    category.categoryImage,
-                                    // R.icon.snkr01,
-                                    width: constraints.maxWidth * 0.5,
-                                    height: constraints.maxHeight * 0.5,
-                                  ),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        category.sysCategoryName,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              );
-                            },
+                child: GestureDetector(
+                  onTap: () async {
+                    listSearchProduct = await _apiDiscoverRepository
+                        .searchProductByName(category.sysCategoryName);
+                    if (listSearchProduct != null) {
+                      Navigator.pushNamed(
+                          context, RouteConstant.productCategory, arguments: {
+                        "listProduct": listSearchProduct,
+                        "categoryName": category.sysCategoryName
+                      });
+                    }
+                  },
+                  child: Card(
+                    color: Colors.white,
+                    child: Container(
+                      width: width * 0.5,
+                      height: width * 0.4,
+                      child: Stack(
+                        children: [
+                          // Align(
+                          //   child: IconButton(
+                          //       icon: Image.asset(
+                          //         R.icon.heartOutline,
+                          //         width: 20,
+                          //         height: 20,
+                          //       ),
+                          //       onPressed: () {}),
+                          //   alignment: Alignment.topRight,
+                          // ),
+                          Align(
+                            alignment: Alignment.bottomCenter,
+                            child: LayoutBuilder(
+                              builder: (context, constraints) {
+                                return Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.network(
+                                      category.categoryImage,
+                                      // R.icon.snkr01,
+                                      width: constraints.maxWidth * 0.5,
+                                      height: constraints.maxHeight * 0.5,
+                                    ),
+                                    Column(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          category.sysCategoryName,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                );
+                              },
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ));
@@ -496,6 +514,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                     borderRadius: BorderRadius.circular(8.0)),
                 primary: false,
                 title: TextField(
+                    controller: _searchController,
                     decoration: InputDecoration(
                         hintText: "Tìm sản phẩm",
                         border: InputBorder.none,
@@ -504,7 +523,17 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                   IconButton(
                     icon: Icon(Icons.search,
                         color: Theme.of(context).primaryColor),
-                    onPressed: () {},
+                    onPressed: () async {
+                      listSearchProduct = await _apiDiscoverRepository
+                          .searchProductByName(_searchController.text);
+                      if (listSearchProduct != null) {
+                        Navigator.pushNamed(
+                            context, RouteConstant.productCategory, arguments: {
+                          "listProduct": listSearchProduct,
+                          "categoryName": _searchController.text
+                        });
+                      }
+                    },
                   ),
                 ],
               ),

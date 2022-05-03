@@ -409,7 +409,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 Navigator.pushNamed(context, RouteConstant.checkoutResultRoute,
                     arguments: {
                       'totalPrice': widget.totalPrice,
-                      'lstOrderId': _lstOrderId[0],
+                      'lstOrderId': _lstOrderId,
                     })
               });
     }

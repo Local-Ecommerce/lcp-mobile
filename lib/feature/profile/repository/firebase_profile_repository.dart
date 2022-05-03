@@ -16,6 +16,7 @@ class FirebaseProfileRepository extends ProfileRepository {
 
   FirebaseProfileRepository() {
     _auth = FirebaseAuth.instance;
+    db = DBProvider.instance.database;
   }
 
   @override
@@ -23,12 +24,12 @@ class FirebaseProfileRepository extends ProfileRepository {
     if (_auth.currentUser != null) {
       TokenPreferences.clearToken();
       UserPreferences.clearUser();
-      await db.delete(DBProvider.TABLE_CART_ITEMS);
+      db.delete(DBProvider.TABLE_CART_ITEMS);
       return await _auth.signOut();
     } else {
       TokenPreferences.clearToken();
       UserPreferences.clearUser();
-      await db.delete(DBProvider.TABLE_CART_ITEMS);
+      db.delete(DBProvider.TABLE_CART_ITEMS);
       return await _googleSignIn.signOut();
     }
   }
