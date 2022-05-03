@@ -98,8 +98,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         if (!mounted) return;
         setState(() {
           Order order = Order.fromMoMoResponse(uri.queryParameters);
+          // Navigator.pushNamed(context, RouteConstant.checkoutResultRoute,
+          //     arguments: order.orderId);
           Navigator.pushNamed(context, RouteConstant.checkoutResultRoute,
-              arguments: order.orderId);
+              arguments: {
+                'totalPrice': widget.totalPrice,
+                'lstOrderId': _lstOrderId,
+              });
           _err = null;
         });
       }, onError: (Object err) {
@@ -402,7 +407,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           .createPayment(_paymentRequest, resultCreditCard.type)
           .then((value) => {
                 Navigator.pushNamed(context, RouteConstant.checkoutResultRoute,
-                    arguments: order.orderId)
+                    arguments: {
+                      'totalPrice': widget.totalPrice,
+                      'lstOrderId': _lstOrderId,
+                    })
               });
     }
   }

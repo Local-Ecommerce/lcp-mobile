@@ -2,7 +2,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 class DBProvider {
-  static const DB_NAME = 'lcp-test6.db';
+  static const DB_NAME = 'lcp-test8.db';
   static const DB_VERSION = 1;
   static Database _database;
 
@@ -61,7 +61,8 @@ class DBProvider {
                     weight FLOAT,
                     size TEXT,
                     belongTo TEXT, 
-                    residentId TEXT
+                    residentId TEXT,
+                    maxBuy INT
           );
     ''';
 

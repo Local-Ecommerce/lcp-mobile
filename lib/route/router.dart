@@ -40,10 +40,14 @@ class AppRouter {
       case RouteConstant.becomeMerchantRoute:
         return SlideRouteBuilder(page: BecomeMerchantScreen());
       case RouteConstant.productDetailsRoute:
-        String productId = settings.arguments;
+        final Map arguments = settings.arguments as Map;
+
+        String productId = arguments['productId'];
+        String residentId = arguments['residentId'];
         return SlideRouteBuilder(
             page: ProductDetailsScreen(
           productId: productId,
+          residentId: residentId,
         ));
       case RouteConstant.newDetailsRoute:
         New news = settings.arguments;
@@ -58,11 +62,13 @@ class AppRouter {
           poi: poi,
         ));
       case RouteConstant.checkoutResultRoute:
-        String orderId = settings.arguments;
+        final Map arguments = settings.arguments as Map;
+
+        List<String> lstOrderId = arguments['lstOrderId'];
+        double totalPrice = arguments['totalPrice'];
         return SlideRouteBuilder(
             page: CheckoutResultScreen(
-          orderId: orderId,
-        ));
+                lstOrderId: lstOrderId, totalPrice: totalPrice));
       case RouteConstant.loginRoute:
         return SlideRouteBuilder(page: LoginScreen());
       case RouteConstant.registerRoute:

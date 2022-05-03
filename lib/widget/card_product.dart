@@ -51,8 +51,8 @@ class CardProduct extends StatelessWidget {
                       getPriceRange(),
                       style: TextStyle(
                           fontWeight: FontWeight.normal,
-                          color: Colors.white,
-                          fontSize: 18),
+                          color: Colors.black87,
+                          fontSize: 14),
                     ),
                     SizedBox(
                       height: 10,

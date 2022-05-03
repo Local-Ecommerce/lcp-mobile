@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:lcp_mobile/feature/apartment/model/apartment.dart';
+import 'package:lcp_mobile/feature/apartment/repository/api_apartment_repository.dart';
 import 'package:lcp_mobile/feature/auth/model/user_app.dart';
 import 'package:lcp_mobile/feature/discover/bloc/discover_bloc.dart';
 import 'package:lcp_mobile/feature/discover/model/product.dart';
@@ -51,11 +53,13 @@ class _DiscoverScreenState extends State<DiscoverScreen>
   List<SysCategory> listChildCategories = [];
 
   TabController _tabController;
-  // DiscoverFreshItemScreen _freshItemScreen;
-  // DiscoverItemScreen _otherItemScreen;
+
   ApiProductCategoryRepository _apiProductCate;
+  ApiApartmentRepository _apartmentRepository;
+
   UserData _userData;
   RefreshTokens _refreshTokens;
+  List<Apartment> _lstApartment = [];
 
   @override
   void initState() {
@@ -64,11 +68,12 @@ class _DiscoverScreenState extends State<DiscoverScreen>
       _userData = UserPreferences.getUser();
 
       _refreshTokens = TokenPreferences.getRefreshTokens();
+
+      _apartmentRepository = new ApiApartmentRepository();
+
+      _userData != null ? getApartment(_userData.apartmentId) : null;
     });
 
-    // print("userData:");
-    // print(_userData);
-    // print("refreshToken:");
     print(_refreshTokens);
 
     _apiProductCate = new ApiProductCategoryRepository();
@@ -79,10 +84,6 @@ class _DiscoverScreenState extends State<DiscoverScreen>
         apartmentId: _userData == null ? "AP001" : _userData.apartmentId,
         category: _currentCategory));
   }
-
-  // getSysCategory() async {
-  //   listSysCategories = await _apiProductCate.getAllCategories();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +151,9 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                   // Flexible(flex: 2, child: _buildCardBottomNew()),
                   // Flexible(flex: 2, child: _buildCardBottomNew()),
                   Container(
-                      height: 150, width: width * 0.917, child: _buildTestList())
+                      height: 150,
+                      width: width * 0.917,
+                      child: _buildTestList())
                 ],
               ),
             )
@@ -323,7 +326,10 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                 onTapCard: () {
                   Navigator.pushNamed(
                       context, RouteConstant.productDetailsRoute,
-                      arguments: product.productId);
+                      arguments: {
+                        'productId': product.productId,
+                        'residentId': product.residentId,
+                      });
                 },
               );
             });
@@ -426,7 +432,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
   }
 
   _appBar(height) => PreferredSize(
-        preferredSize: Size(MediaQuery.of(context).size.width, height + 70),
+        preferredSize: Size(MediaQuery.of(context).size.width, height + 60),
         child: Stack(
           children: <Widget>[
             Container(
@@ -456,8 +462,9 @@ class _DiscoverScreenState extends State<DiscoverScreen>
                         Padding(padding: EdgeInsets.only(left: 5)),
                         Flexible(
                           child: Text(
-                            // "${_userData.apartmentId}",
-                            "Chung cư Vinhomes Grand Park quận 9",
+                            _lstApartment.length != 0
+                                ? _lstApartment[0].apartmentName
+                                : "",
                             overflow: TextOverflow.ellipsis,
                             maxLines: 3,
                             style: TextStyle(
@@ -558,5 +565,9 @@ class _DiscoverScreenState extends State<DiscoverScreen>
         category: _currentCategoryChild,
         apartmentId: _userData.apartmentId,
         lstChildCategory: category.lstSysCategories));
+  }
+
+  getApartment(String id) async {
+    _lstApartment = await _apartmentRepository.getApartmentById(id);
   }
 }

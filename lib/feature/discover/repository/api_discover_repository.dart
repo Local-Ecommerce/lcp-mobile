@@ -129,7 +129,6 @@ class ApiDiscoverRepository {
       Response _response = await _dio.get(_url);
       BaseResponse _baseResponse =
           BaseResponse.fromJson(jsonDecode(_response.data));
-
       Data data = Data.fromJson(_baseResponse.data);
       List<Store> _listStore =
           List.from(data.list).map((e) => Store.fromJson(e)).toList();
