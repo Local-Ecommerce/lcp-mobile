@@ -125,7 +125,7 @@ class FirebaseLoginRepository extends LoginRepository {
   }
 
   Future<bool> googleLogin() async {
-    // _googleSignIn.signOut();
+    _googleSignIn.signOut();
 
     final googleUser = await _googleSignIn.signIn();
 
@@ -133,7 +133,6 @@ class FirebaseLoginRepository extends LoginRepository {
     _googleUser = googleUser;
 
     final googleAuth = await googleUser.authentication;
-
     final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
 
@@ -144,6 +143,10 @@ class FirebaseLoginRepository extends LoginRepository {
     final idToken = await _auth.currentUser.getIdToken();
     try {
       if (userFirebase.data() == null) {
+        await userCollection
+            .doc(_userCredential.user.uid)
+            .set({'email': _userCredential.user.email, 'apartmentId': 'AP001'});
+        _apiLoginRepository.apiLogin(idToken);
         return false;
       } else {
         await _apiLoginRepository.apiLogin(idToken);
@@ -187,5 +190,4 @@ class FirebaseLoginRepository extends LoginRepository {
     }
     return false;
   }
-  
 }

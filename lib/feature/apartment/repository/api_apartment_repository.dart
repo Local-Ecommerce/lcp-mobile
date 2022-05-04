@@ -23,8 +23,6 @@ class ApiApartmentRepository {
 
       apartments =
           List.from(data.list).map((e) => Apartment.fromJson(e)).toList();
-      print('Response là');
-      print(apartments);
       _dio.clear();
       return apartments;
     } on DioError catch (ex) {
@@ -47,8 +45,6 @@ class ApiApartmentRepository {
 
       apartments =
           List.from(data.list).map((e) => Apartment.fromJson(e)).toList();
-      print('Response là');
-      print(apartments);
       _dio.clear();
       return apartments;
     } on DioError catch (ex) {

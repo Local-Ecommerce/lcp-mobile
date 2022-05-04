@@ -50,12 +50,32 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       yield* _mapPhoneNumberChangedToState(event.phonenum);
     } else if (event is Submitted) {
       yield* _mapSubmittedRegisterToState();
+    } else if (event is UpdateGoogleSubmitted) {
+      yield* _mapSubmittedUpdateGoogleToState();
     } else if (event is LoadingApartmentEvent) {
       yield* _mapLoadApartmentEventToState(event);
     } else if (event is UpdateSubmitted) {
       yield* _mapSubmittedUpdateToState();
     } else if (event is ChangePassSubmitted) {
       yield* _mapSubmittedChangePassToState();
+    }
+  }
+
+  Stream<RegisterState> _mapSubmittedUpdateGoogleToState() async* {
+    if (checkStateUpdateGoogleValid()) {
+      UserData userData = UserData()
+        ..fullName = state.fullname
+        ..apartmentId = state.apartmentId
+        ..deliveryAddress = state.deliveryAddress
+        ..phoneNumber = state.phonenum
+        ..role = "Customer";
+      if (await _loginRepository.updateProfile(userData)) {
+        yield UpdateFinishedState(isSuccess: true);
+      } else {
+        yield UpdateFinishedState(isSuccess: false);
+      }
+    } else {
+      yield UpdateFinishedState(isSuccess: false);
     }
   }
 
@@ -116,10 +136,12 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         isPasswordInvalid: !ValidatorsTransformer.isValidPassword(password));
   }
 
-  Stream<RegisterState> _mapNewPasswordChangedToState(String newPassword) async* {
+  Stream<RegisterState> _mapNewPasswordChangedToState(
+      String newPassword) async* {
     yield state.copyWith(
         newPassword: newPassword,
-        isNewPasswordInvalid: !ValidatorsTransformer.isValidPassword(newPassword));
+        isNewPasswordInvalid:
+            !ValidatorsTransformer.isValidPassword(newPassword));
   }
 
   Stream<RegisterState> _mapConfirmPasswordChangedToState(
@@ -224,6 +246,16 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         state.isApartmentInvalid == false &&
         state.isDeliveryAddressInvalid == false &&
         state.isGenderInvalid == false &&
+        state.isPhoneNumberInvalid == false &&
+        state.isFullNameInvalid == false) {
+      return true;
+    }
+    return false;
+  }
+
+  bool checkStateUpdateGoogleValid() {
+    if (state.isApartmentInvalid == false &&
+        state.isDeliveryAddressInvalid == false &&
         state.isPhoneNumberInvalid == false &&
         state.isFullNameInvalid == false) {
       return true;

@@ -179,8 +179,9 @@ class _EmailInput extends StatelessWidget {
         }
         return TextFormField(
           controller: _emailController,
-          onChanged: (value) =>
-              context.bloc<LoginBloc>().add(EmailLoginChanged(email: value.trim())),
+          onChanged: (value) => context
+              .bloc<LoginBloc>()
+              .add(EmailLoginChanged(email: value.trim())),
           keyboardType: TextInputType.emailAddress,
           decoration: InputDecoration(
               labelText: 'Email',
@@ -261,7 +262,7 @@ class _SubmitLoginState extends State<_SubmitLogin> {
           } else if (state is UpdateInfoState) {
             if (state.isSuccess) {
               Navigator.pushNamedAndRemoveUntil(
-                  context, RouteConstant.updateProfileRoute, (r) => false);
+                  context, RouteConstant.updateGoogleRoute, (r) => false);
             }
           }
         },

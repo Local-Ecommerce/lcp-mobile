@@ -479,6 +479,9 @@ class _GenderInputState extends State<_GenderInput> {
       context
           .bloc<RegisterBloc>()
           .add(GenderChanged(gender: widget.data.gender));
+    } else {
+      _currentGenderValue = 'Nam';
+      context.bloc<RegisterBloc>().add(GenderChanged(gender: 'Nam'));
     }
     super.initState();
   }
