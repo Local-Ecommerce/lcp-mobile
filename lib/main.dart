@@ -38,6 +38,6 @@ void main() async {
 
   runApp(MyApp(
     // initialRoute: RouteConstant.feedback,
-    initialRoute: _initialRoute,
+    initialRoute: RouteConstant.loginRoute,
   ));
 }

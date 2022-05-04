@@ -76,8 +76,15 @@ class _DiscoverScreenState extends State<DiscoverScreen>
       _apartmentRepository = new ApiApartmentRepository();
       _apiDiscoverRepository = new ApiDiscoverRepository();
 
-      _userData != null ? getApartment(_userData.apartmentId) : null;
+      print("_userData");
+      print(_userData);
+
+      _userData != null
+          ? getApartment(_userData.apartmentId)
+          : getApartment("AP001");
     });
+
+    // getApartment(_userData.apartmentId);
 
     print(_refreshTokens);
 
@@ -332,6 +339,7 @@ class _DiscoverScreenState extends State<DiscoverScreen>
 
         if (state is DiscoverLoadFinished) {
           listProduct = state.products;
+          getApartment(_userData.apartmentId);
         }
 
         return ListView.builder(

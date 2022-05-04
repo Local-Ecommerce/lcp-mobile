@@ -83,6 +83,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       builder: (context, state) {
         if (state is LoadProductDetailsFinished) {
           product = state.product;
+          print("detail:");
+          print(product.toString());
           if (isFirstLoad == true) {
             _price = product.defaultPrice;
             _quantity = product.quantity;
@@ -219,7 +221,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             children: [
               Flexible(
                 child: Text(
-                  product.productName,
+                  product.productName != null ? product.productName : "",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
@@ -311,7 +313,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             height: 20,
           ),
           Text(
-            product.description,
+            product.description != null ? product.description : "",
             style: TextStyle(color: Colors.black54),
             maxLines: 5,
           ),

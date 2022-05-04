@@ -3,6 +3,7 @@ import 'package:lcp_mobile/feature/auth/password/change_password_screen.dart';
 import 'package:lcp_mobile/feature/auth/password/forgot_password_screen.dart';
 import 'package:lcp_mobile/feature/auth/login/ui/login_screen.dart';
 import 'package:lcp_mobile/feature/auth/register/ui/regis_screen.dart';
+import 'package:lcp_mobile/feature/auth/register/ui/update_info_google_screen.dart';
 import 'package:lcp_mobile/feature/auth/register/ui/update_info_screen.dart';
 import 'package:lcp_mobile/feature/cart/ui/cart_screen.dart';
 import 'package:lcp_mobile/feature/checkout/checkout_screen.dart';
@@ -79,6 +80,8 @@ class AppRouter {
         return SlideRouteBuilder(page: ForgotPasswordScreen());
       case RouteConstant.updateProfileRoute:
         return SlideRouteBuilder(page: UpdateProfileScreen());
+      case RouteConstant.updateGoogleRoute:
+        return SlideRouteBuilder(page: UpdateGoogleScreen());
       case RouteConstant.cart:
         return SlideRouteBuilder(page: CartScreen());
       case RouteConstant.shippingMethod:

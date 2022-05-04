@@ -168,6 +168,10 @@ class UpdateSubmitted extends RegisterEvent {
   UpdateSubmitted();
 }
 
+class UpdateGoogleSubmitted extends RegisterEvent {
+  UpdateGoogleSubmitted();
+}
+
 class GoogleLogin extends RegisterEvent {
   GoogleLogin();
 }
