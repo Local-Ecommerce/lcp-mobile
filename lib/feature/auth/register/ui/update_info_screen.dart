@@ -188,47 +188,47 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   }
 }
 
-class _ImageInput extends StatefulWidget {
-  final File image;
+// class _ImageInput extends StatefulWidget {
+//   final File image;
 
-  const _ImageInput({Key key, this.image}) : super(key: key);
-  @override
-  State<_ImageInput> createState() => _ImageInputState();
-}
+//   const _ImageInput({Key key, this.image}) : super(key: key);
+//   @override
+//   State<_ImageInput> createState() => _ImageInputState();
+// }
 
-class _ImageInputState extends State<_ImageInput> {
-  Future pickImage() async {
-    final image = await ImagePicker().getImage(source: ImageSource.gallery);
-    if (image == null) return;
+// class _ImageInputState extends State<_ImageInput> {
+//   Future pickImage() async {
+//     final image = await ImagePicker().getImage(source: ImageSource.gallery);
+//     if (image == null) return;
 
-    File _imageFile = File(image.path);
-    setState(() {
-      String base64Image = base64Encode(_imageFile.readAsBytesSync());
-      print("Sauce là:");
-      print(base64Image);
-    });
-  }
+//     File _imageFile = File(image.path);
+//     setState(() {
+//       String base64Image = base64Encode(_imageFile.readAsBytesSync());
+//       print("Sauce là:");
+//       print(base64Image);
+//     });
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        minimumSize: Size.fromHeight(56),
-        primary: Colors.white,
-        onPrimary: Colors.black,
-        textStyle: TextStyle(fontSize: 20),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.image_outlined),
-          const SizedBox(width: 16),
-          Text('Chọn ảnh đại diện')
-        ],
-      ),
-      onPressed: pickImage,
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return ElevatedButton(
+//       style: ElevatedButton.styleFrom(
+//         minimumSize: Size.fromHeight(56),
+//         primary: Colors.white,
+//         onPrimary: Colors.black,
+//         textStyle: TextStyle(fontSize: 20),
+//       ),
+//       child: Row(
+//         children: [
+//           Icon(Icons.image_outlined),
+//           const SizedBox(width: 16),
+//           Text('Chọn ảnh đại diện')
+//         ],
+//       ),
+//       onPressed: pickImage,
+//     );
+//   }
+// }
 
 class _SubmitUpdate extends StatelessWidget {
   @override
@@ -248,8 +248,7 @@ class _SubmitUpdate extends StatelessWidget {
               );
             } else {
               String faildMessage = 'Cập nhật thất bại!';
-              Navigator.pushReplacementNamed(
-                  context, RouteConstant.updateProfileRoute);
+              Navigator.pop(context);
               Fluttertoast.showToast(
                 msg: faildMessage, // message
                 toastLength: Toast.LENGTH_LONG, // length
@@ -476,10 +475,14 @@ class _GenderInputState extends State<_GenderInput> {
   void initState() {
     if (widget.data.gender != null) {
       _currentGenderValue = widget.data.gender;
-      context
+    context
           .bloc<RegisterBloc>()
           .add(GenderChanged(gender: widget.data.gender));
+    } else {
+      _currentGenderValue = 'Nam';
+      context.bloc<RegisterBloc>().add(GenderChanged(gender: 'Nam'));
     }
+
     super.initState();
   }
 
@@ -538,12 +541,10 @@ class _ApartmentDropdown extends StatefulWidget {
 class __ApartmentDropdownState extends State<_ApartmentDropdown> {
   @override
   void initState() {
-    if (widget.userData.apartmentId != null) {
-      _currentSelectedValue = widget.userData.apartmentId;
-      context
-          .bloc<RegisterBloc>()
-          .add(ApartmentChanged(apartment: widget.userData.apartmentId));
-    }
+    _currentSelectedValue = widget.userData.apartmentId;
+    context
+        .bloc<RegisterBloc>()
+        .add(ApartmentChanged(apartment: widget.userData.apartmentId));
     super.initState();
   }
 

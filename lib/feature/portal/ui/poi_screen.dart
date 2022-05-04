@@ -250,6 +250,4 @@ class _PoiScreenState extends State<PoiScreen> {
     BlocProvider.of<PortalBloc>(context).add(LoadingPoisEvent(
         apartmentId: _userData.apartmentId, type: ApiStrings.hot));
   }
-
-  
 }

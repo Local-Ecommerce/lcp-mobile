@@ -57,7 +57,7 @@ class _TypePoiState extends State<TypePoiScreen> {
       child: Card(
         elevation: 16,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(32.0),
+          borderRadius: BorderRadius.circular(16.0),
         ),
         color: Colors.white,
         child: Container(
@@ -86,13 +86,6 @@ class _TypePoiState extends State<TypePoiScreen> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.only(left: 16, bottom: 12),
-              //   child: Text(
-              //     poi.releaseDate,
-              //     style: TextStyle(fontWeight: FontWeight.bold),
-              //   ),
-              // ),
             ],
           ),
         ),

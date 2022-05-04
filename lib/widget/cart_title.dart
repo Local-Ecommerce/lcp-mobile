@@ -70,25 +70,6 @@ class _OpenFlutterCartTileState extends State<OpenFlutterCartTile> {
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            // ElevatedButton(
-                            //   padding: EdgeInsets.only(
-                            //       left: 4, right: 4, top: 1, bottom: 1),
-                            //   color: AppColors.white,
-                            //   onPressed: () {
-                            //     // ApiFeedBackRepository apiFeedBackRepository =
-                            //     //     new ApiFeedBackRepository();
-                            //     // apiFeedBackRepository.createFeedback(feedback);
-                            //   },
-                            //   shape: RoundedRectangleBorder(
-                            //       borderRadius: BorderRadius.circular(30),
-                            //       side: BorderSide(
-                            //           color: AppColors.red, width: 1)),
-                            //   child: Text(
-                            //     'Báo cáo',
-                            //     style: TextStyle(
-                            //         color: AppColors.red, fontSize: 5),
-                            //   ),
-                            // ),
                             if (widget.status == 5007) ...[
                               Container(
                                 padding: EdgeInsets.only(right: 8),
@@ -109,7 +90,7 @@ class _OpenFlutterCartTileState extends State<OpenFlutterCartTile> {
                                       Navigator.pushNamed(
                                           context, RouteConstant.feedback,
                                           arguments:
-                                              widget.product['ProductId']);
+                                              widget.product);
                                     },
                                     child: Text('Báo cáo'),
                                   ),

@@ -58,7 +58,7 @@ class _TypeNewScreenState extends State<TypeNewScreen> {
       child: Card(
         elevation: 16,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(32.0),
+          borderRadius: BorderRadius.circular(16.0),
         ),
         color: Colors.white,
         child: Container(

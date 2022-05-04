@@ -117,4 +117,34 @@ class ApiUpdateUserRepository extends UpdateRepository {
     }
     return userData;
   }
+
+    @override
+  Future<UserData> getResidentByPhoneNumber(String phoneNumber) async {
+    UserData userData = UserData();
+
+    String _url = ApiService.RESIDENT + "?phonenumber=$phoneNumber";
+
+    _refreshTokens = TokenPreferences.getRefreshTokens();
+
+    _dio.options.headers["Authorization"] =
+        "Bearer ${_refreshTokens.accessToken}";
+    try {
+      Response _response = await _dio.get(_url);
+      BaseResponse _baseResponse =
+          BaseResponse.fromJson(jsonDecode(_response.data));
+
+      Data data = Data.fromJson(_baseResponse.data);
+
+      List<UserData> _listResident =
+          List.from(data.list).map((e) => UserData.fromJson(e)).toList();
+
+      userData = _listResident[0];
+
+      _dio.clear();
+      return userData;
+    } on Exception catch (e) {
+      print(e);
+    }
+    return userData;
+  }
 }
