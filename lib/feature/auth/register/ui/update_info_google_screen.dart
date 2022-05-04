@@ -238,10 +238,6 @@ class _FullNameInput extends StatelessWidget {
           onChanged: (value) => context
               .bloc<RegisterBloc>()
               .add(FullnameChanged(fullname: value.trim())),
-          keyboardType: TextInputType.name,
-          inputFormatters: <TextInputFormatter>[
-            FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z ]')),
-          ],
           decoration: InputDecoration(
               labelText: 'Họ và Tên',
               contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),

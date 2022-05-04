@@ -145,7 +145,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
         contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         border: OutlineInputBorder(),
       ),
-    );
+  );
   }
 
   TextEditingController _contentController = TextEditingController();
