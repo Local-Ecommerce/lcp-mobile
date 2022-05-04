@@ -115,10 +115,13 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         iconTheme: IconThemeData(
           color: Colors.black, //change your color here
         ),
-        title: Center(
-          child: Text(
-            R.strings.updateInfoTitle,
-            style: TextStyle(color: Colors.black),
+        title: Padding(
+          padding: const EdgeInsets.only(right: 40),
+          child: Center(
+            child: Text(
+              R.strings.updateInfoTitle,
+              style: TextStyle(color: Colors.black),
+            ),
           ),
         ),
       ),

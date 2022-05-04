@@ -21,10 +21,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         iconTheme: IconThemeData(
           color: Colors.black, //change your color here
         ),
-        title: Center(
-          child: Text(
-            R.strings.forgotPassword,
-            style: TextStyle(color: Colors.black),
+        title: Padding(
+          padding: const EdgeInsets.only(right: 40),
+          child: Center(
+            child: Text(
+              R.strings.forgotPassword,
+              style: TextStyle(color: Colors.black),
+            ),
           ),
         ),
       ),
