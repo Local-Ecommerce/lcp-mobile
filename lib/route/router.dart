@@ -138,8 +138,8 @@ class AppRouter {
         Order order = settings.arguments;
         return SlideRouteBuilder(page: MyOrderDetailsView(order: order));
       case RouteConstant.feedback:
-        String productId = settings.arguments;
-        return SlideRouteBuilder(page: FeedbackScreen(productId: productId));
+        dynamic product = settings.arguments;
+        return SlideRouteBuilder(page: FeedbackScreen(product: product));
       default:
         return MaterialPageRoute(
             builder: (_) => Scaffold(

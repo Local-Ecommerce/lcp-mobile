@@ -19,10 +19,13 @@ class _BecomeMerchantScreenState extends State<BecomeMerchantScreen> {
         iconTheme: IconThemeData(
           color: Colors.black, //change your color here
         ),
-        title: Center(
-          child: Text(
-            "Các bước để trở thành người bán",
-            style: TextStyle(color: Colors.black),
+        title: Padding(
+          padding: const EdgeInsets.only(right: 40),
+          child: Center(
+            child: Text(
+              "Cách trở thành người bán hàng",
+              style: TextStyle(color: Colors.black),
+            ),
           ),
         ),
       ),

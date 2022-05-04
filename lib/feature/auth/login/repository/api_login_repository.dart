@@ -52,6 +52,8 @@ class ApiLoginRepository {
 
       UserData userData = UserData();
 
+      
+
       userData = userDataResponse.residents[0];
 
       userData.profileImage = userDataResponse.profileImage;

@@ -21,10 +21,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         iconTheme: IconThemeData(
           color: Colors.black, //change your color here
         ),
-        title: Center(
-          child: Text(
-            R.strings.forgotPassword,
-            style: TextStyle(color: Colors.black),
+        title: Padding(
+          padding: const EdgeInsets.only(right: 40),
+          child: Center(
+            child: Text(
+              R.strings.forgotPassword,
+              style: TextStyle(color: Colors.black),
+            ),
           ),
         ),
       ),
@@ -98,7 +101,7 @@ class _SubmitForgotPassword extends StatelessWidget {
           } else {
             Navigator.pop(context);
             Fluttertoast.showToast(
-              msg: "Đã xảy ra lỗi, vui lòng thử lại sau!", // message
+              msg: "Vui lòng kiểm tra lại thông tin đã nhập!", // message
               toastLength: Toast.LENGTH_LONG, // length
               gravity: ToastGravity.CENTER, // location
             );
@@ -109,10 +112,6 @@ class _SubmitForgotPassword extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 0.0),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
         onPressed: () {
-          showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (context) => Center(child: CircularProgressIndicator()));
           context.bloc<LoginBloc>().add(ResetPassSubmitted());
         },
         color: AppColors.indianRed,

@@ -74,7 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       style: headingTextWhite,
                     ),
                     Text(
-                      userData.email,
+                      userData.email == null ? "Không email" : userData.email,
                       style: whiteText,
                     ),
                   ],

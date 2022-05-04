@@ -2,38 +2,36 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
+import 'package:lcp_mobile/feature/auth/login/bloc/login_bloc.dart';
 import 'package:lcp_mobile/feature/auth/register/bloc/register_bloc.dart';
+import 'package:lcp_mobile/feature/cart/repository/api_cart_repository.dart';
+import 'package:lcp_mobile/feature/discover/model/product.dart';
 import 'package:lcp_mobile/feature/feedback/model/feedback.dart';
 import 'package:lcp_mobile/feature/feedback/repository/api_feedback_repository.dart';
 import 'package:lcp_mobile/resources/api_strings.dart';
 import 'package:lcp_mobile/resources/resources.dart';
-import 'package:lcp_mobile/widget/loader_widget.dart';
-
-import '../../apartment/model/apartment.dart';
-import '../../apartment/repository/api_apartment_repository.dart';
 
 class FeedbackScreen extends StatefulWidget {
-  final String productId;
+  final dynamic product;
 
-  const FeedbackScreen({Key key, this.productId}) : super(key: key);
+  const FeedbackScreen({Key key, this.product}) : super(key: key);
 
   @override
   _FeedbackScreenState createState() => _FeedbackScreenState();
 }
 
-RegisterBloc _registerBloc = RegisterBloc();
-
-String _currentSelectedValue = '';
-
 class _FeedbackScreenState extends State<FeedbackScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   File _imageFile;
+  Product product;
   List<File> _lstImage = [];
   List<String> _lstImageBase64 = [];
+  String name;
+  ApiDiscoverRepository _apiDiscoverRepository;
   ApiFeedBackRepository _apiFeedBackRepository;
   FeedbackRequest _feedbackRequest;
   final picker = ImagePicker();
@@ -46,8 +44,6 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
           ? _imageFile = File(pickedFile.path)
           : _imageFile = null;
       _lstImage.add(_imageFile);
-      // String base64Image =
-      //     "data:image/jpg;base64," + base64Encode(_imageFile.readAsBytesSync());
       String base64Image = base64Encode(_imageFile.readAsBytesSync());
       _lstImageBase64.add(base64Image);
       print(_lstImageBase64[0].toString());
@@ -58,6 +54,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   void initState() {
     super.initState();
     _apiFeedBackRepository = new ApiFeedBackRepository();
+    _apiDiscoverRepository = new ApiDiscoverRepository();
     _feedbackRequest = new FeedbackRequest();
   }
 
@@ -83,6 +80,10 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
         child: ListView(
           children: <Widget>[
             _buildImageList(context),
+            SizedBox(
+              height: 10,
+            ),
+            buildProductName(context),
             SizedBox(
               height: 10,
             ),
@@ -115,11 +116,6 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
             gridDelegate:
                 SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
             itemBuilder: (context, index) {
-              // return Container(
-              //     child: IconButton(
-              //   icon: Icon(Icons.add_a_photo),
-              //   onPressed: pickImage,
-              // ));
               return index == 0
                   ? Center(
                       child: IconButton(
@@ -135,54 +131,86 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     );
   }
 
+  Widget buildProductName(BuildContext context) {
+    var _theme = Theme.of(context);
+    return TextFormField(
+      minLines: 3,
+      maxLines: null,
+      initialValue:  widget.product["ProductName"],
+      style: _theme.textTheme.bodyText1.copyWith(
+          fontWeight: FontWeight.bold, color: AppColors.black, fontSize: 17),
+      readOnly: true,
+      decoration: InputDecoration(
+        labelText: "Tên sản phẩm",
+        contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+        border: OutlineInputBorder(),
+      ),
+    );
+  }
+
   TextEditingController _contentController = TextEditingController();
 
   Widget buildContentField() {
-    return TextFormField(
+    return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
+      return TextFormField(
         controller: _contentController,
         minLines: 6,
         keyboardType: TextInputType.multiline,
         maxLines: null,
-        validator: (value) {
-          if (value.isEmpty) {
-            return 'Bạn hãy cho biết nội dung';
-          }
-          return null;
-        },
+        onChanged: (value) =>
+            context.bloc<LoginBloc>().add(FeedBackChanged(feedback: value)),
         decoration: InputDecoration(
           labelText: 'Nội dung',
           border: OutlineInputBorder(),
           contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        ));
+          errorText: state.isFeedBackInvalid != null && state.isFeedBackInvalid
+              ? 'Báo cáo không được để trống'
+              : null,
+        ),
+      );
+    });
   }
 
   Widget _buildSubmitButton() {
-    return RaisedButton(
-      padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 0.0),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-      onPressed: () async {
-        _feedbackRequest.feedbackDetail = _contentController.text;
-        _feedbackRequest.image = _lstImageBase64;
-        _feedbackRequest.productId = widget.productId;
-        if (await _apiFeedBackRepository.createFeedback(_feedbackRequest)) {
-          Fluttertoast.showToast(
-            msg: "Gửi báo cáo thành công", // message
-            toastLength: Toast.LENGTH_LONG, // length
-            gravity: ToastGravity.CENTER, // location
-          );
-          Navigator.pop(context);
-        } else {
-          Fluttertoast.showToast(
-            msg: "Gửi báo cáo thất bại", // message
-            toastLength: Toast.LENGTH_LONG, // length
-            gravity: ToastGravity.CENTER, // location
-          );
+    return BlocListener(
+      bloc: context.bloc<LoginBloc>(),
+      listener: (context, state) {
+        if (state is FeedBackFinishedState) {
+          if (state.isSuccess) {
+            Fluttertoast.showToast(
+              msg: "Gửi báo cáo thành công", // message
+              toastLength: Toast.LENGTH_LONG, // length
+              gravity: ToastGravity.CENTER, // location
+            );
+            Navigator.pop(context);
+          } else {
+            Fluttertoast.showToast(
+              msg: "Gửi báo cáo thất bại", // message
+              toastLength: Toast.LENGTH_LONG, // length
+              gravity: ToastGravity.CENTER, // location
+            );
+          }
         }
       },
-      color: AppColors.indianRed,
-      child: Text(
-        ApiStrings.feedback,
-        style: whiteText,
+      child: RaisedButton(
+        padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 0.0),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+        onPressed: () {
+          context
+              .bloc<LoginBloc>()
+              .add(ImageFeedBackChanged(images: _lstImageBase64));
+          context
+              .bloc<LoginBloc>()
+              .add(ProductIdChanged(productId: widget.product["ProductId"]));
+          setState(() {
+            context.bloc<LoginBloc>().add(FeedBackSubmitted());
+          });
+        },
+        color: AppColors.indianRed,
+        child: Text(
+          ApiStrings.feedback,
+          style: whiteText,
+        ),
       ),
     );
   }

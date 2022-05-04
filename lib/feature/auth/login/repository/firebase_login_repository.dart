@@ -6,7 +6,6 @@ import 'package:lcp_mobile/feature/auth/login/repository/api_login_repository.da
 import 'package:lcp_mobile/feature/auth/login/repository/api_update_user_repository.dart';
 import 'package:lcp_mobile/feature/auth/login/repository/login_repository.dart';
 import 'package:lcp_mobile/feature/auth/model/user_app.dart';
-import 'package:lcp_mobile/references/user_preference.dart';
 
 class FirebaseLoginRepository extends LoginRepository {
   FirebaseAuth _auth;

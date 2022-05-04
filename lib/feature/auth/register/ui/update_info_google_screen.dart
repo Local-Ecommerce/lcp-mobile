@@ -170,7 +170,7 @@ class _DeliveryAddressInput extends StatelessWidget {
         return previous.deliveryAddress != current.deliveryAddress;
       },
       builder: (context, state) {
-        if (state is RegisFinishedState) _deliveryAddressController.clear();
+        if (state is UpdateFinishedState) _deliveryAddressController.clear();
         return TextFormField(
           controller: _deliveryAddressController,
           onChanged: (value) => context
@@ -199,7 +199,7 @@ class _PhoneNumberInput extends StatelessWidget {
         return previous.phonenum != current.phonenum;
       },
       builder: (context, state) {
-        if (state is RegisFinishedState) _phoneNumberController.clear();
+        if (state is UpdateFinishedState) _phoneNumberController.clear();
         return TextFormField(
           controller: _phoneNumberController,
           onChanged: (value) => context
@@ -232,7 +232,7 @@ class _FullNameInput extends StatelessWidget {
         return previous.fullname != current.fullname;
       },
       builder: (context, state) {
-        if (state is RegisFinishedState) _fullNameController.clear();
+        if (state is UpdateFinishedState) _fullNameController.clear();
         return TextFormField(
           controller: _fullNameController,
           onChanged: (value) => context
@@ -283,7 +283,7 @@ class __ApartmentDropdownState extends State<_ApartmentDropdown> {
           isEmpty: _currentSelectedValue.isEmpty,
           child: BlocBuilder<RegisterBloc, RegisterState>(
               builder: (context, state) {
-            if (state is RegisFinishedState) _currentSelectedValue = '';
+            if (state is UpdateFinishedState) _currentSelectedValue = '';
             return DropdownButtonHideUnderline(
               child: DropdownButton<String>(
                 value: _currentSelectedValue.isNotEmpty
